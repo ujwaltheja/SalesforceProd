@@ -1,0 +1,61 @@
+<!--
+    
+    Visualforce Development Cookbook Recipe 5_3
+
+    Custom convert lead page
+     
+ -->
+<apex:page StandardController="Lead" extensions="LConvertExt" tabStyle="Lead" sidebar="false">
+  <apex:form >
+    <apex:sectionHeader title="Convert Lead - {!Lead.FirstName} {!Lead.LastName}" />
+    <apex:pageBlock >
+      <font color="red"><apex:messages ></apex:messages></font>
+      <apex:pageBlockButtons >
+        <apex:commandButton value="Convert" action="{!convertLead}"/>
+        <apex:commandButton value="Cancel" action="{!cancel}"/>
+      </apex:pageBlockButtons>
+      
+      <!-- general info -->
+      <apex:pageBlockSection title="Convert Lead" columns="1">
+        <apex:inputField value="{!carrier.AccountId}" />
+        <apex:pageBlockSectionItem >
+          <apex:outputLabel value="New Account '{!Lead.Company}'" />
+          <apex:inputCheckbox value="{!newAccount}" />
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLabel value="Record Owner"/>
+            <apex:inputField value="{!Lead.OwnerId}" required="false"/>
+        </apex:pageBlockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Opportunity Name"/>
+            <apex:inputfield value="{!opp.Name}" required="false"/>
+        </apex:pageblockSectionItem>
+        <apex:pageBlockSectionItem >
+          <apex:outputLabel value="Lead Status" />
+          <apex:selectList value="{!convertedStatus}">
+            <apex:selectOptions value="{!convertedOptions}" />
+          </apex:selectList>
+        </apex:pageBlockSectionItem>
+      </apex:pageBlockSection>
+      
+      <!-- Task info -->
+      <apex:pageBlockSection title="Task Information" columns="1">
+        <apex:inputField value="{!task.Subject}" required="false" />
+        <apex:inputField value="{!task.Status}" required="false" />
+        <apex:inputField value="{!task.ActivityDate}" required="false" />
+        <apex:inputField value="{!task.Priority}" required="false"/>
+      </apex:pageBlockSection>
+      
+      <!-- Description Info-->
+      <apex:pageblockSection title="Description Information">
+          <apex:inputField value="{!task.Description}"/>
+      </apex:pageblockSection>
+      
+      <!-- Reminder Set Info -->
+      <apex:pageblockSection title="Reminder">
+          <apex:inputfield value="{!task.IsReminderSet}"/>
+      </apex:pageblockSection>
+      
+    </apex:pageBlock>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,3 @@
+<apex:page id="KnownIssues" controller="ses.Constants">
+	<apex:iframe src="{!knownIssues}" scrolling="true" id="KnownIssuesfrm"/>
+</apex:page>

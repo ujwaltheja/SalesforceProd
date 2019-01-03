@@ -1,0 +1,145 @@
+<apex:page id="SESGlobalCodeReviewer" controller="ses.SESGlobalCodeReviewer">
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" /> 
+	<style>
+		.odd {
+			background-color: #FCF7F7;
+		}
+		 
+		.even {
+			background-color: #E3DCDB;
+		}
+	 	.titlefont{
+	 		font-size: 14pt
+	 	}
+
+</style>
+
+	<apex:Form > 
+		<apex:outputPanel id="Results" >
+		<apex:PageBlock >			
+			
+			<apex:pagemessages />
+			<!-- if limits hit show link to increase limits -->
+		     	  <apex:outputpanel Rendered="{!apiLimitWarning}">
+		     	 <apex:outputLink target="_blank" Value="{!$Page.ses__UpdateCustomSettings}" id="UpdateCustomSettings" styleclass="btnPrimary publishersharebutton btn firstbtn" >
+		            Update Required Limits
+		            </apex:outputLink>
+		     	 </apex:outputPanel>
+			<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.SESGlobalCodeReviewer__c}');" >  
+				<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+			</apex:commandLink>-->
+
+			<apex:outputPanel rendered="{!displayDownloadedFunctions}">
+				<apex:pageBlockTable title="Functions in SES Global"
+					value="{!downloadedGlobalFunctions}" var="GlobalFunc"
+					rowClasses="even,odd">
+					<apex:column headerValue="Function Name" title="Function Name"
+						value="{!GlobalFunc.ses__Function_Method__c}" />
+					<apex:column headerValue="Function Description"
+						title="Function Description" value="{!GlobalFunc.ses__Task_Descr__c}" />
+					<apex:column headerValue="Function Link"
+						title="Link" >
+						<apex:outputLink target="_blank" value="/{!GlobalFunc.ID}" >Link</apex:outputLink>
+					</apex:column>
+					<apex:column headerValue="Document Link"
+						title="Link" >
+						<apex:outputLink target="_blank" value="/{!GlobalFunc.ses__DocumentID__c}" >Link</apex:outputLink>
+					</apex:column>
+				</apex:pageBlockTable>
+			</apex:outputPanel>
+				<apex:outputText rendered="{!IF(cntrFuncs > 0, true,false)}" value="There are currently {0,number, ###,###,###,###} Functions in SES Global. Here are some examples." styleclass="titlefont" >
+					<apex:param value="{!cntrFuncs}"/>
+				</apex:outputText>
+				
+                    <apex:outputPanel id="taskType"  >
+	                    <apex:pageBlockSection columns="1" title="Search For Functions" >
+	                    	<apex:pageBlockSectionItem >
+		                    	<apex:outputPanel >
+			                    	<apex:pageBlockSection columns="2">
+				                    	<apex:pageBlockSectionItem >
+				                    		<apex:outputLabel styleclass="boldlabel" value="Enter keywords" />
+				                    		<apex:outputPanel >
+				                    			<apex:inputText id="keywords" value="{!searchkeywords}" styleclass="searchbox" />
+												<apex:outputLabel value="" />  
+											</apex:outputPanel> 		
+				                    	</apex:pageBlockSectionItem> 
+				                    	<apex:pageBlockSectionItem >
+				                    		<apex:commandButton id="import" styleclass="btnPrimary publishersharebutton btn" status="RefreshMatchesStatus" action="{!searchForTasks}"  value="Search" rerender="taskType" />
+				                    		<apex:actionStatus startText="calculating....." id="RefreshMatchesStatus" />
+				                    	</apex:pageBlockSectionItem>
+				                    </apex:pageBlockSection>
+				                </apex:outputPanel>
+				             </apex:pageBlockSectionItem>
+
+	                        <apex:pageBlockSectionItem > 
+	                        	<apex:outputPanel rendered="{!showCurrentGlobalFunctions}" >
+		                        <apex:outputPanel layout="block" styleclass="NewLine" />
+		                         <apex:outputLabel styleclass="boldlabel" value="Functions Of SES Global" />
+		                        <apex:outputPanel layout="block" styleclass="NewLine" />
+		                        <apex:outputPanel id="GlobalSESFuncs" >
+		                            <apex:pageBlockTable title="Global Functions" value="{!proj.displayCurrentGlobalFunctions}" var="GlobalFunc">
+		                                <apex:column headerValue="Caption" title="Caption" value="{!GlobalFunc.caption}" /> 
+		                                <apex:column headerValue="Description" title="Description" value="{!GlobalFunc.description}" /> 
+		                                <apex:column headerValue="Download" title="Download" >
+											<apex:commandButton styleclass="btnPrimary publishersharebutton btn" style="height: 25px;width: 120px" action="{!downloadSearchedFunctions}" value="Download Function" rerender="Results" >
+												<apex:param assignTo="{!downloadThisFunction}" name="downloadThisFunction" value="{!GlobalFunc.taskID}" />
+											</apex:commandButton>	
+		                                    <!--                                     	<apex:actionsupport event="onclick" action="{!displayTaskFunctionSelection}">
+		                                        	<apex:param name="selectedTask" assignTo="{!selectedTask}" value="{!GlobalFunc.taskID}" />
+		                                        </apex:actionsupport>
+		                                    <apex:commandlink value="Use" onclick="displayTaskFunctionSelection('{!GlobalFunc.taskID}')" >
+		                                        <!-- <apex:param assignTo="{!selectedTask}" value="" /> 
+		                                    </apex:commandlink> -->
+		                                </apex:column>  
+		                            </apex:pageBlockTable> 
+		    
+		                            <apex:outputPanel layout="block" styleclass="NewLine" /> 
+		                            <apex:commandButton id="Gfirst" styleclass="btnPrimary publishersharebutton btn" action="{!returnGlobalFunctionsFirst}"  value="<<" rerender="GlobalSESFuncs" />
+		                            <apex:outputPanel styleclass="spaces" />
+		                            <apex:commandButton id="Gdec" styleclass="btnPrimary publishersharebutton btn" action="{!returnGlobalFunctionsDecrease}"  value="<" rerender="GlobalSESFuncs" />
+		                            <apex:outputPanel styleclass="spaces" />
+		                            <apex:commandButton id="Ginc" styleclass="btnPrimary publishersharebutton btn" action="{!returnGlobalFunctionsIncrease}"  value=">" rerender="GlobalSESFuncs"  />
+		                            <apex:outputPanel styleclass="spaces" />
+		                            <apex:commandButton id="Glast" styleclass="btnPrimary publishersharebutton btn" action="{!returnGlobalFunctionsLast}"  value=">>" rerender="GlobalSESFuncs"  />
+									<script> 
+									
+										function displayTaskFunctionSelection(funcid){
+											document.getElementById('{!$Component.selectedTask}').value = funcid;
+										}
+									</script>
+		                            
+		                            <apex:outputPanel layout="block" styleclass="NewLine" /> 
+		                        </apex:outputPanel>
+		                     </apex:outputPanel>
+		                  </apex:pageBlockSectionItem>
+	              </apex:pageBlockSection>
+                </apex:outputPanel>
+
+				<apex:pageBlockSection title="Browse Examples of Functions in SES Global" columns="1">
+				<apex:pageBlockTable title="Functions in SES Global"
+					value="{!exampleGlobalFunctions}" var="GlobalFunc"
+					rowClasses="even,odd">
+					
+					<apex:column headerValue="Select" title="Select">
+						<apex:commandButton styleclass="btnPrimary publishersharebutton btn" style="height: 25px;width: 120px" action="{!downloadFunctions}" value="Download Function" rerender="Results" >
+							<apex:param assignTo="{!downloadThisFunction}" name="downloadThisFunction" value="{!GlobalFunc.func}" />
+						</apex:commandButton>	
+						<!-- <apex:variable value="{!GlobalFunc.func}" var="thisFunction" /><input type="radio" checked="{!GlobalFunc.selected}" />
+						<apex:Select >
+							<apex:SelectRadio value="{!GlobalFunc.selected}" />
+						</apex:Select> -->
+					</apex:column>
+					<apex:column headerValue="Function Name" title="Function Name"
+						value="{!GlobalFunc.ThisGlobalFunctions.ses__Function_Method__c}" />
+					<apex:column headerValue="Function Description"
+						title="Function Description" value="{!GlobalFunc.ThisGlobalFunctions.ses__Task_Descr__c}" />
+				</apex:pageBlockTable>
+				<apex:commandLink id="close"
+					styleclass="btnPrimary publishersharebutton btn"
+					onclick="window.close();" value="Close Screen" />
+			</apex:pageBlockSection>
+			
+		</apex:PageBlock>
+		</apex:outputPanel>
+	</apex:Form>
+</apex:page>

@@ -1,0 +1,390 @@
+<apex:page id="Snippets" controller="ses.Snippets" sidebar="true" showheader="true" >
+
+<style>
+ .buttonsnip{
+ 	
+ }
+ .clink{
+ 	text-decoration: none; color: white;cursor: pointer;
+ }
+</style> 
+
+ <script src="http://code.jquery.com/jquery-1.9.0.js"></script>
+    <apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" />
+<apex:includeScript value="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js" /> 
+<apex:includeScript value="http://code.jquery.com/ui/1.10.4/jquery-ui.js"/>
+<apex:stylesheet value="//ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery.ui.theme.css"/>
+<apex:stylesheet value="//ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery.ui.base.css"/>
+
+ <script>
+ 
+    function addSnip(snip){
+    	 document.getElementByID('{!$Component.codeblock}').value = document.getElementByID('{!$Component.codeblock}').value + snip;     
+    }
+    var newSnippet = '{!$Component.NewSnippet}';
+    
+        $j = jQuery.noConflict();
+		$j(function() {
+        
+        $j( "#dialogOpenSnippet" ).dialog({
+          autoOpen: false,
+          height: 500,
+          width: 650,
+          modal: true,
+          buttons: {
+            Open: function() {
+                if ($j('#SelectedSnippet').val() == '')
+                    alert('Please wait...');
+                else{
+                	
+	            openFunction();
+	            
+	                $j( this ).dialog( "close" );
+				}                
+            },
+            Cancel: function() {            
+              resetOpenSnippet();
+              $j( this ).dialog( "close" );
+            }
+          },
+          close: function() {
+          }
+        });
+     
+        $j( "#dialogAddSnippet" ).dialog({
+          autoOpen: false,
+          height: 500,
+          width: 650,
+          modal: true,
+          buttons: {
+            Add: function() {
+                if ($j('#AddThisSnippet').val() == '')
+                    alert('Please wait...');
+                else{
+                	
+                	addThisSnippet();
+                	//document.getElementById('NewSnippet').value += document.getElementById('AddThisSnippet').value;
+	                
+	                $j( this ).dialog( "close" );
+				}                
+            },
+            Help: function() {
+            	$j( this ).dialog( "close" );
+            	openThisImgLarge();
+            },
+            "Open Snip": function() {
+            	$j( this ).dialog( "close" );
+            	openSnippet();
+            },
+            Cancel: function() {
+            
+              resetAddSnippet();
+              $j( this ).dialog( "close" );
+            }
+          },
+          close: function() {
+          }
+        });
+     
+     
+     });
+        
+	function openURL(thisimg){    	
+   		window.open(thisimg,"lookup", 500, 500,"width=900,height=700,,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=yes", true);
+    }
+                               
+  </script>
+  <apex:form >
+  <apex:actionFunction name="resetOpenSnippet" action="{!resetOpenSnippet}" />
+  
+  <apex:actionregion >
+	  <apex:actionFunction name="openFunction" action="{!openFunction}" rerender="Results"/>
+	  <apex:actionFunction name="addThisSnippet" action="{!addThisSnippet}" rerender="Results"/>
+	  <apex:actionFunction name="resetAddSnippet" action="{!resetAddSnippet}" rerender="Results"/>	 	  
+  </apex:actionregion>
+  
+  <div id="dialogOpenSnippet">
+        <apex:actionRegion >
+            <table border="0" width="98%" cellpadding="7">
+                <tr>
+                    <td valign="top">
+                        <div style="font-size:1.6em;">
+                            <strong>Select A Working Snippet</strong>
+                        </div>
+                        <div> </div>
+                        <apex:pageblock >
+                            <apex:pageblocksection title="" collapsible="false">
+                                
+                                <apex:pageblocksectionItem >
+                                    <apex:outputpanel >
+                                        <apex:outputpanel id="SelectedSnippetResults">
+                                        	<apex:outputpanel rendered="{!displayOpenSnippetResult && !ISNULL(selectedSnippet)}">
+	                                        	<apex:pageblocksection title="" collapsible="false">
+	                                        		<apex:pageblocksectionItem >
+	                                        			<apex:outputpanel >
+	                                        				<apex:outputlabel value="Selected Snippet" /><br />
+	                                        			
+		                                        			<textarea  name="SelectedSnippet" id="SelectedSnippet" rows="4" cols="50" >{!snipStoreMap[selectedSnippet].ses__code__c}</textarea>
+														</apex:outputpanel>	                                        			
+	                                        		</apex:pageblocksectionItem>
+	                                        	</apex:pageblocksection>
+                                           </apex:outputpanel>
+	                                        <apex:actionFunction name="updateSelectedSnippet" rerender="SelectedSnippetResults" action="{!updateSelectedSnippet}" >
+	                                            <apex:param name="selectedSnippet" assignTo="{!selectedSnippet}" value="" />
+	                                        </apex:actionFunction>
+	                                    	
+                                         </apex:outputpanel> 
+                                            
+                                        <apex:outputlabel value="Select Snippet" /><br />
+                                        <apex:selectList value="{!selectedSnippet}" id="ThisSnippetSelected" size="1" onchange="updateSelectedSnippet(this.value);" > 
+                                            <apex:SelectOptions value="{!AllWorkingFunctions}" />                                                                                                                          
+                                        </apex:selectList>  
+                                    </apex:outputpanel>
+                                </apex:pageblocksectionItem>
+                                
+                                <!-- <input type="text" value="{!selectedSnippet}" style="display:none;"  />
+                                <apex:pageblocksectionItem >
+	                                <label>Name of new Floor</label>
+	                                <input type="text" name="newFloorName" id="newFloorName" class="text ui-widget-content ui-corner-all" style="width: 20px" />
+                                </apex:pageblocksectionItem> 
+                                -->
+                            </apex:pageblocksection>
+                        </apex:pageblock>
+                    </td>
+                </tr>
+            </table>
+        </apex:actionRegion>
+    </div>
+                            
+
+  <div id="dialogAddSnippet">
+        <apex:actionRegion >
+            <table border="0" width="98%" cellpadding="7">
+                <tr>
+                    <td valign="top">
+                        <div style="font-size:1.6em;">
+                            <strong>Select A Code Snippet</strong>
+                        </div>
+                        <div> </div>
+                        <apex:pageblock > 
+                            <apex:pageblocksection title="" collapsible="false">
+                                
+                                <apex:pageblocksectionItem > 
+                                    <apex:outputpanel >  
+                                        <apex:outputpanel id="SelectedAddSnippetResults">
+                                        	<apex:actionFunction name="openThisImgLarge" oncomplete="if('{!selectedAddSnippetURL}' != '') openURL('{!selectedAddSnippetURL}'); else alert('No help link for this selection');" />
+                                        	<!-- oncomplete="if('{!selectedAddSnippetURL}' != '') openURL('{!selectedAddSnippetURL}');  else alert('No help link for this selection');" /> -->
+                                        	<apex:outputpanel rendered="{!displayAddSnippetResult}">
+	                                        	<apex:pageblocksection title="" collapsible="false">
+	                                        		<apex:pageblocksectionItem >
+	                                        			<apex:outputlabel value="Selected Snippet" /><br />
+	                                        			<textarea  name="AddThisSnippet" id="AddThisSnippet" rows="4" cols="50" >{!selectedAddSnippet}</textarea>
+	                                        		</apex:pageblocksectionItem>	                                        		
+	                                        	</apex:pageblocksection>
+	                                        	<apex:actionFunction name="openSnippet" oncomplete="openURL('/{!selectedAddSnippetID}');" />
+	                                       </apex:outputpanel>
+                                           <input type="text" value="{!selectedAddSnippet}" style="display:none;"  />
+                                            <apex:actionFunction name="updateSelectedAddSnippet" rerender="SelectedAddSnippetResults" action="{!updateSelectedAddSnippet}" >
+                                                <apex:param name="selectedAddSnippet" assignTo="{!selectedAddSnippet}" value="" />
+                                            </apex:actionFunction>
+
+                                            <apex:actionFunction name="updateSelectedTypeSnippet" rerender="SelectedAddSnippetResults" action="{!updateSelectedTypeSnippet}" >
+                                                <apex:param name="selectedTypeSnippet" assignTo="{!selectedTypeSnippet}" value="" />
+                                            </apex:actionFunction>
+                                         
+
+	                                        <apex:outputlabel value="Select Snippet Type" /><br />
+	                                        <apex:selectList value="{!selectedTypeSnippet}" id="ThisTypeSnippetSelected" size="1" onchange="updateSelectedTypeSnippet(this.value);" > 
+	                                            <apex:SelectOptions value="{!snippetTypeList}" />                                                                                                                          
+	                                        </apex:selectList>  
+	                                            
+	                                        <apex:outputpanel rendered="{!displaySnippetList}">
+		                                        <p />
+		                                        <apex:outputlabel value="Select A Code Snippet" /><br />
+		                                        <apex:selectList value="{!selectedAddSnippet}" id="ThisAddSnippetSelected" size="1" onchange="updateSelectedAddSnippet(this.value);" > 
+		                                            <apex:SelectOptions value="{!snippetList}" />                                                                                                                          
+		                                        </apex:selectList>  
+		                                    </apex:outputpanel>
+		                                </apex:outputpanel> 
+                                    </apex:outputpanel>
+                                </apex:pageblocksectionItem>
+                                
+                                <!-- 
+                                <apex:pageblocksectionItem >
+	                                <label>Name of new Floor</label>
+	                                <input type="text" name="newFloorName" id="newFloorName" class="text ui-widget-content ui-corner-all" style="width: 20px" />
+                                </apex:pageblocksectionItem> 
+                                -->
+                            </apex:pageblocksection>
+                        </apex:pageblock>
+                    </td>
+                </tr>
+            </table>
+        </apex:actionRegion>
+    </div>
+
+     <!-- <apex:actionFunction action="{!Snippet}" rerender="Results" name="Snippet" id="Snippet" />-->
+     
+   <apex:actionFunction action="{!emailFunction}" rerender="Results" name="EmailUser" id="EmailUser" >
+   		<apex:param name=" userId " assignTo="{!userId}" value="" />
+   </apex:actionFunction>
+
+    <apex:pageblock >
+        <apex:toolbar height="30px" Width="20%" contentStyle="background-color: darkblue;" id="theToolbar">
+	        <apex:toolbarGroup itemSeparator="line" style="background-color: darkblue;" >	           
+	           <apex:commandLink value="New Snippet" action="{!newSnippet}" rerender="Results" style="text-decoration: none; color: white;cursor: pointer" /> 
+	        </apex:toolbarGroup>
+	        <apex:toolbarGroup itemSeparator="line" style="background-color: darkblue;" >
+	        	<!-- <apex:commandLink value="Open Snippet" action="{!openFunction}" rerender="Results" style="text-decoration: none; color: white;cursor: pointer"/>-->
+	        	 
+	            <a onclick="$j('#dialogOpenSnippet').dialog('open');" style="text-decoration: none; color: white;cursor: pointer" > Open Snippet </a>
+	             
+	        </apex:toolbarGroup>
+	        <apex:toolbarGroup itemSeparator="line" style="background-color: darkblue;" >
+	        	<a onclick="$j('#dialogAddSnippet').dialog('open');" style="text-decoration: none; color: white;cursor: pointer" > Add Snippet </a>
+	        </apex:toolbarGroup>
+	        <apex:toolbarGroup itemSeparator="line" style="background-color: darkblue;" >	           
+	           <apex:commandLink value="Save Snippet" action="{!saveFunction}" rerender="Results" style="text-decoration: none; color: white;cursor: pointer" /> 
+	        </apex:toolbarGroup>
+	        <!-- <apex:toolbarGroup itemSeparator="line" style="background-color: darkblue;" >	           
+	           <apex:outputLink value="New Function Builder" value="google.com" style="text-decoration: none; color: white;cursor: pointer" /> 
+	        </apex:toolbarGroup>
+	         -->
+        </apex:toolbar>
+
+        <apex:outputpanel id="Results">
+           <apex:outputpanel id="ResultsTaskDocument">
+           		<apex:actionRegion >
+         				<apex:commandButton value="Refresh Snippets From SES Global" action="{!refreshSnippetsFromSESGlobal}" rerender="msg" style="float:right;" />
+           		</apex:actionRegion>
+	           <apex:outputpanel id="msg">
+	           		<apex:pagemessages />
+	           </apex:outputpanel>
+	           <apex:outputpanel rendered="{!displaySavedSnippetResult}">
+		          <apex:pageblocksection title="" collapsible="false" columns="1">
+		         		<apex:pageblocksectionItem >
+		         			<apex:outputlink target="_blank" value="/{!newSnip.id}" >Link</apex:outputlink>
+		         		</apex:pageblocksectionItem>
+			           <apex:outputpanel rendered="{!displayTaskResult}">
+			         		<apex:pageblocksectionItem >
+			         			<apex:outputlink target="_blank" value="/{!tk.id}" >Task Link</apex:outputlink>
+			         		</apex:pageblocksectionItem>
+			           </apex:outputpanel>
+		         		<apex:pageblocksectionItem >
+		         			<apex:outputlabel value="Select A Task" />
+		         			<apex:inputField value="{!newSubTk.ses__Parent_Task__c}" />
+		         		</apex:pageblocksectionItem>
+		         		<apex:pageblocksectionItem >
+		         			<apex:outputlabel value="" />
+		         			<apex:commandButton value="Replace Task's Document" action="{!replaceTaskDocument}" rerender="ResultsTaskDocument"  />
+		         		</apex:pageblocksectionItem>
+		         	</apex:pageblocksection>  
+		        </apex:outputpanel>
+		   </apex:outputpanel>
+		     			
+           <apex:pageblock >
+           		<apex:pageblockbuttons >
+           			<apex:outputpanel id="SnipettToLibraryResult">
+	           			<apex:outputpanel rendered="{!newSnipID != null}">
+	           				<apex:pagemessages />
+	           				<apex:outputlink target="_blank" value="/{!newSnipId}" >New Snipett</apex:outputlink>
+	           				<p />
+	           			</apex:outputpanel>
+	           			<apex:commandbutton styleclass="btnPrimary publishersharebutton btn" action="{!saveToLibrary}" value="Save New Snipett To Library" rerender="SnipettToLibraryResult" />
+	           		</apex:outputpanel>
+           		</apex:pageblockbuttons>
+	           <apex:pageblocksection title="" collapsible="false" columns="1">
+	           		<apex:pageblocksectionItem >
+	           			<apex:outputlabel value="Snippet Name" />
+	           			<apex:inputField label="Snippet Name" id="NewSnippetName" value="{!newSnip.Name}" />
+					</apex:pageblocksectionItem>    			       		
+	           		<apex:pageblocksectionItem >
+	           			<apex:outputlabel value="Snippet Code" />
+	           			<apex:inputTextArea id="NewSnippetCode" label="Snippet Code" value="{!newSnip.ses__code__c}" cols="70" rows="20" />
+		                <!--    <textarea  id="NewSnippet" rows="4" cols="50" >{!newSnip.ses__code__c}</textarea>
+		                 -->   
+	    			</apex:pageblocksectionItem>
+	           		<apex:pageblocksectionItem >
+	           			<apex:outputlabel value="Snippet Type" />
+	           			<apex:inputField label="Snippet Type" id="NewSnippetType" value="{!newSnip.ses__Snippet_Type__c}" />
+					</apex:pageblocksectionItem>    			       		
+	           		<apex:pageblocksectionItem >
+	           			<apex:outputlabel value="Description" />
+	           			<apex:outputlabel >
+		           			<div class="requiredInput" style="width: 150px;height: 25px"><div class="requiredBlock" style="border-left-style:solid;border-left-color: red;border-left-width:2px;width: 2px;padding-right:-5px"></div>
+		           				<div style="margin-top: 5px" />
+		         				<apex:inputTextArea label="Description" id="NewSnippetDescr" value="{!newSnip.ses__Description__c}"  cols="70" rows="20" />
+		         			</div>
+		         			<div style="height: 262px"></div>
+		         		</apex:outputlabel> 
+					</apex:pageblocksectionItem>    			       		
+	           </apex:pageblocksection>
+	       </apex:pageblock>
+	       
+           <!-- 
+           <apex:pageblocksection title="" collapsible="false" columns="1">
+               <apex:repeat value="{!AllWorkingFunctions}" var="func">
+	               <apex:pageblocksectionItem >
+	                   <apex:outputpanel>
+		                   <apex:commandLink title="{!func.Name}">
+			                   <apex:outputlabel value="Name of Code" />
+			                   <apex:inputText value="{!func.Name}" />
+			               </apex:commandLink>
+		               </apex:outputpanel>
+	               </apex:pageblocksectionItem>
+	           </apex:repeat>
+           </apex:pageblocksection>
+            -->
+           <apex:outputpanel Rendered="{!showNewFunc}">
+               <apex:pageblocksection title="" collapsible="false" columns="1">
+	               <!-- <apex:pageblocksectionItem >
+	                   <apex:outputlabel value="Name of Code" /> 
+	                   <apex:inputText value="{!newSnip.Name}" />
+	               </apex:pageblocksectionItem>
+	               <apex:pageblocksectionItem >
+	                   <apex:outputlabel value="Code" />
+	                   <apex:inputTextArea cols="50" Rows="50" value="{!newSnip.ses__code__c}" id="codeblock"/>
+	               </apex:pageblocksectionItem> -->
+	               <apex:pageblocksectionItem >
+	                   <apex:outputlabel value="Email User" />
+	                   <apex:outputpanel >
+		                   <apex:selectList value="{!userId}" size="5" multiselect="false" onchange="EmailUser(this.value);" >
+	                         <apex:SelectOptions value="{!AllUsers}" ></apex:SelectOptions>                                   
+	                      </apex:selectList>
+		                  <!-- <apex:actionRegion>
+		                      <apex:inputText id="CustomEmail" value="{!userId}" />
+		                      <script>
+		                      		var em = '{!$Component.CustomEmail}';
+		                      </script>
+		                      
+		                      <apex:commandbutton styleclass="btnPrimary publishersharebutton btn" onclick="EmailUser(document.getElementByID(em).value)" value="Email" /><!-- onclick="EmailUser(document.getElementByID(em).value)" action="{!emailFunction}" 
+		                  </apex:actionRegion> -->
+	                      </apex:outputpanel> 
+                   </apex:pageblocksectionItem>
+               </apex:pageblocksection>
+
+               <apex:pageblocksection title="" collapsible="false" columns="1">
+		               <table border="0" width="100%" >
+			                <apex:repeat value="{!snips}" var="snp">               
+			                           <tr>
+			                               <td>
+			              						<input type="button" class="buttonsnip" value="{!snp.Name}" onclick="addSnip('{!snp.ses__code_snippet__c}')" />
+			                               </td>
+			                           </tr>
+			               </apex:repeat>
+		               </table>
+               </apex:pageblocksection>
+           </apex:outputpanel><!-- {!showNewFunc} -->
+           
+        </apex:outputpanel><!-- Results -->
+	</apex:pageblock>
+</apex:form>
+           			<script>
+           				var newSnippetName = '{!$Component.NewSnippetName}';
+           				
+           				var newSnippetType = '{!$Component.NewSnippetType}';
+           				var newSnippetDescr = '{!$Component.NewSnippetDescr}';
+           				
+           			</script>
+
+</apex:page>

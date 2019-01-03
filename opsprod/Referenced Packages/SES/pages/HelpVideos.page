@@ -1,0 +1,95 @@
+<apex:page id="HelpVideos" controller="ses.HelpVideos">
+<style>
+	.panl{
+		background: darkblue;
+		width: 150px;
+		margin-bottom: 10px;
+	}
+	.rich-panelbar{
+		background: darkblue;
+		width: 150px;
+		margin-bottom: 10px;
+	}
+	.rich-panelbar-b{
+		background: darkblue;
+		width: 150px;
+		margin-bottom: 10px;
+	}
+	.rich-panelbar-interior{
+		background: darkblue;
+		width: 150px;
+		margin-bottom: 10px;
+	}
+	.rich-panelbar-header{
+		cursor: none;
+	}
+    .boldlabel {
+        font-weight: bold
+    }
+    .NewLine{
+        margin-bottom: 2em;
+    }
+</style>	
+<apex:pageblock >
+		<apex:sectionHeader title="Help Videos" />
+           <apex:pageblocksection title="" collapsible="false">                                
+               <apex:pageblocksectionItem >
+					<apex:outputpanel >
+						<c:HelpMenuTemplate HelpMenus="{!allHelpVideoMenus}" Menutitle="Help Videos"/>
+
+						<apex:outputpanel layout="block" style="padding-top: 200px">
+							<apex:outputPanel layout="block" styleclass="NewLine" />
+							<apex:outputLabel styleclass="boldlabel">If you have problems accessing Help Videos</apex:outputLabel>
+							<apex:outputPanel layout="block" styleclass="NewLine" />
+							<apex:repeat value="{!allHelpVideoMenus}" var="hlp">
+								<apex:outputLink value="{!hlp.videoLink}" target="_blank" >{!hlp.helperName}</apex:outputLink>
+								<apex:outputPanel layout="block" styleclass="NewLine" />
+							</apex:repeat>
+						</apex:outputpanel>
+					</apex:outputpanel>
+				</apex:pageblocksectionItem>
+				<apex:pageblocksectionItem >
+					<apex:outputpanel >
+						<apex:outputLabel value="Setup Tasks"  />
+						<apex:panelBar styleclass="panl" style="width: 200px">
+							<apex:panelBarItem label="Salesforce Connection" />
+							<apex:panelBarItem label="Send Invitation" />
+							<apex:panelBarItem label="Setup" />
+						</apex:panelBar>
+						<apex:outputLabel value="Task Creation"  />
+						<apex:panelBar styleclass="panl" style="width: 200px">
+							<apex:panelBarItem label="New Epics Projects and Tasks" />
+							<apex:panelBarItem label="Create Tasks From Cases" />
+							<apex:panelBarItem label="Create Linked Tasks From Cases" />
+							<apex:panelBarItem label="Main Project Management Screen" />
+							<apex:panelBarItem label="Main Project Management Screen continued" />
+							<apex:panelBarItem label="Import Tasks" />
+						</apex:panelBar>
+						<apex:outputLabel value="Matching Functions"  />
+						<apex:panelBar styleclass="panl" style="width: 200px">
+							<apex:panelBarItem label="Task Matching" />
+							<apex:panelBarItem label="Advanced Task Matching" />
+							<apex:panelBarItem label="Quick Task Matching" />
+							<apex:panelBarItem label="Focus On Keywords" />
+						</apex:panelBar>
+						<apex:outputLabel value="Download From SES"  />
+						<apex:panelBar styleclass="panl" style="width: 200px">
+							<apex:panelBarItem label="Download SES Global Code Examples" />
+							<apex:panelBarItem label="Refresh Functions From SES Gloabl" />
+						</apex:panelBar>
+						<apex:outputLabel value="Refresh Private"  />
+						<apex:panelBar styleclass="panl" style="width: 200px">
+							<apex:panelBarItem label="Refresh Functions From Private Scope" />
+						</apex:panelBar>
+						<apex:outputLabel value="Transfer To SES"  />
+						<apex:panelBar styleclass="panl" style="width: 200px">
+							<apex:panelBarItem label="Transfer Private Functions To SES" />
+							<apex:panelBarItem label="Transfer Private Tasks To SES" />
+							<apex:panelBarItem label="Transfer Global Functions And Tasks To Global Group Companies" />
+						</apex:panelBar>
+					</apex:outputpanel>
+				</apex:pageblocksectionItem>
+			</apex:pageblocksection>
+	</apex:pageblock>
+				
+</apex:page>

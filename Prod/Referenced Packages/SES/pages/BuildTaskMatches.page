@@ -1,0 +1,247 @@
+<apex:page standardController="ses__Task_Name__c" extensions="ses.SearchFunction" id="BuildTaskMatches"  ><!-- action="{!setupfunc}" -->
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" /> 
+    <style>
+        a Label{ 
+            display:none;border:none;width: 400px;text-decoration:none;font-style:normal
+        }
+        
+        a:hover Label,a:active Label{display:inline;background:#ffffff;
+            border:1px solid #cccccc;
+            color:#6c6c6c;width: 400px;text-decoration:none;font-style:normal
+        }
+        
+        a.tooltip:link div label,a.tooltip:visited div label{
+            border:none;width:0px;text-decoration:none;font-style:normal
+            display:none;
+            padding:2px 3px;
+            margin-left:8px;width: 400px;text-decoration:none;
+            !immedaiate: true;
+        }
+        
+        a.tooltip:hover div label{
+            display:inline;font-style:normal
+            background:#ffffff;
+            border:1px solid #cccccc;
+            color:#6c6c6c;width: 400px;text-decoration:none;
+        }
+
+	    .noSecondHeader{
+	    	color: white !important;
+	    }
+
+		.NewLine{
+	        margin-bottom: 2em;
+	    }
+	 	.spaces{
+	 		padding-left: 20px;
+	 	}
+	 	.titlefont{
+	 		font-size: 14pt
+	 	}
+	 	    .italics{
+	    	font-style:italic;
+	    }
+		.LargeNewLine{
+	        margin-bottom: 4em;
+	    }
+	 	
+    </style>
+	<apex:Form >
+		<apex:PageBlock > 
+        	<apex:inputhidden value="{!myTaskID}" />
+			<!-- <apex:outputPanel id="DebugMessageId">
+				<c:DebugMessage />
+			</apex:outputPanel>
+			<apex:InputField value="{!thisSub.Parent_Task__c}" />
+			 -->
+			<!-- Displays the private functions that can be uploaded to Global, user ticks those wanted to upload -->
+			<apex:sectionHeader title="SES Auto-Matching Project Tasks Screen"/>
+			
+		            <a class="tooltip" style="text-decoration:none;font-style:normal">
+			            <img src="/s.gif" alt="" class="helpOrb" title="" />
+			            <div style="width: 400px;position:absolute;z-index: 1;font-size: 13px">
+			                <label>Update Function Scopes and Upload Global Functions To Global Org</label>
+			            </div>
+		            </a>
+					<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.BuildTaskMatches__c}');" >  
+						<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+					</apex:commandLink>-->
+
+			<apex:outputLink target="_blank" value="/{!myTaskID}" >This Task</apex:outputLink>
+			<apex:outputPanel layout="block" styleclass="NewLine" /> 
+			<apex:outputPanel id="PFunctions" rendered="{!displayPrivateFunctionsOnVFPage}" >				
+		  		<apex:outputLabel value="Your Namespace"  /><apex:outputPanel layout="block"/>
+		  		<apex:outputText value="{!setNamespace}"/>
+
+				<apex:outputPanel layout="block" styleclass="NewLine" /> 
+				<apex:pageBlockSection title="Upload To SES Global" columns="1">
+					<apex:outputPanel id="UploadToGlobal">
+						<apex:pageBlockTable title="Private Functions Can Be Uploaded To Global" value="{!myCurrentPrivateFunctions}" var="PrivateFunc">
+							<apex:column headerValue="Class Name" title="Class Name" value="{!PrivateFunc.privateFunction.ses__Function_Class__c}"/>	
+							<apex:column headerValue="Function Name" title="Function Name" value="{!PrivateFunc.privateFunction.ses__Function_Method__c}"/>
+							<apex:column headerValue="Scope" title="Scope" value="{!PrivateFunc.privateFunction.ses__Function_Scope__c}"/>	
+							<apex:column headerValue="Change Scope" title="Change Scope" >	
+								 <apex:inputcheckBox value="{!PrivateFunc.switchToGlobal}" />
+							</apex:column>	
+						</apex:pageBlockTable>
+					</apex:outputPanel>
+					<apex:pageBlockSectionItem >
+						<apex:outputPanel >
+							<apex:commandButton id="first" styleclass="btnPrimary publishersharebutton btn" action="{!returnPrivateFunctionsFirst}"  value="<<" rerender="PFunctions" />
+							<apex:outputPanel styleclass="spaces" />
+							<apex:commandButton id="dec" styleclass="btnPrimary publishersharebutton btn" action="{!returnPrivateFunctionsDecrease}"  value="<" rerender="PFunctions" />
+							<apex:outputPanel styleclass="spaces" />
+							<apex:commandButton id="inc" styleclass="btnPrimary publishersharebutton btn" action="{!returnPrivateFunctionsIncrease}"  value=">" rerender="PFunctions"  />
+							<apex:outputPanel styleclass="spaces" />
+							<apex:commandButton id="last" styleclass="btnPrimary publishersharebutton btn" action="{!returnPrivateFunctionsLast}"  value=">>" rerender="PFunctions"  />
+							<apex:outputPanel layout="block" styleclass="NewLine" /> 
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+					
+				   	 <!-- Select objects to upload -->
+				     <apex:outputPanel id="refreshObj">
+				     	<apex:pagemessages />
+					<!-- if limits hit show link to increase limits -->
+				     	  <apex:outputpanel Rendered="{!apiLimitWarning}">
+				     	 <apex:outputLink target="_blank" Value="{!$Page.ses__UpdateCustomSettings}" id="UpdateCustomSettings" styleclass="btnPrimary publishersharebutton btn firstbtn" >
+				            Update Required Limits
+				            </apex:outputLink>
+				     	 </apex:outputPanel>
+				     	<apex:outputLabel styleclass="titlefont" value="Upload Objects to SES Global" />
+				     	<apex:outputPanel styleclass="spaces" /><apex:outputLink styleclass="italics" target="_blank" value="/apex/SESHelp">Help</apex:outputLink>
+				     	<br />
+					     <apex:outputLabel styleclass="boldlabel" value="Select A Object" />
+					     <apex:selectList value="{!selectedobj}" size="1" > 
+					         <apex:SelectOptions value="{!allObjects}" ></apex:SelectOptions> 
+					         <apex:actionSupport action="{!getSchemaFields}" event="onchange"  rerender="refreshObj" />
+					     </apex:selectList>
+					   	 <apex:outputPanel rendered="{!displaySelectedFields}">
+						    <apex:pageBlockSection >
+							     <apex:pageBlockSectionItem >
+								     <apex:pageBlockTable value="{!allOfObject}" var="thisObj" id="theTable" rowClasses="odd,even" styleClass="tableClass">
+										<apex:column >
+											<apex:facet name="header">Field</apex:facet>
+											<apex:outputText value="{!thisObj.Fld}"/>
+										</apex:column>      
+										<apex:column >
+											<apex:facet name="header">Select</apex:facet>
+											<apex:inputCheckBox value="{!thisObj.selected}" />
+										</apex:column>   
+									  </apex:pageBlockTable>
+								</apex:pageBlockSectionItem> 
+					   	 	</apex:pageBlockSection> 
+	
+					   	 	<apex:outputPanel id="refreshselected">
+						   	 	<apex:commandbutton styleclass="btnPrimary publishersharebutton btn" value="Include Fields" action="{!includeFields}" rerender="refreshselected"  />
+						   	 		<apex:outputPanel rendered="{!renderSelectedFields}">
+								   	 		<apex:pageBlockSection columns="1">
+								   	 		<apex:outputLabel value="Selected Fields" />
+									   	 	<apex:repeat value="{!includedFields}" var="myObj" >
+												<apex:repeat value="{!includedFields[myObj]}" var="myflds" >							
+													<apex:pageBlockSectionItem >
+														{!myflds}
+													</apex:pageBlockSectionItem>
+												</apex:repeat>
+											</apex:repeat>	 
+										</apex:pageBlockSection>
+									</apex:outputPanel>
+							</apex:outputPanel>
+					   	 </apex:outputPanel>
+	
+						<apex:commandButton id="Update" styleclass="btnPrimary publishersharebutton btn" action="{!UpdateUploadPrivateFunctions}"  value="Update and Upload" rerender="UploadToGlobal" />
+					</apex:outputPanel>
+			</apex:pageBlockSection>
+							
+			</apex:outputPanel>
+			<apex:outputPanel layout="block" styleclass="NewLine" />
+			 <!-- User could have uploaded more functions into the org etc, so may want to run the task matching after the page is loaded.
+			 Click on RefreshMatches apex:commandButton to run the matching again -->
+			 <apex:pageBlockSection title="SES Auto-Matching" columns="1">
+				 <apex:pageBlockSectionItem >
+					 <apex:outputPanel >
+						 <apex:outputLabel value="Refresh Task Matches" />
+						 <apex:inputCheckBox value="{!refreshTaskMatching}"></apex:inputCheckBox>
+					 </apex:outputPanel>
+				 </apex:pageBlockSectionItem>
+				 <apex:pageBlockSectionItem >
+					 <apex:outputPanel >
+			             <apex:outputLabel value="Select Scope Of Search" />
+			             <apex:selectList value="{!ScopeSearch}" size="1" >
+			                 <apex:SelectOptions value="{!ScopeSearchOptions}" ></apex:SelectOptions>
+			             </apex:selectList>
+					 </apex:outputPanel>
+				 </apex:pageBlockSectionItem>
+	                 <!-- <apex:actionSupport action="{!resetNamespaceEntry}" rerender="PFunctions" event="onchange" /> --> 
+				
+				<apex:outputPanel id="NewTaskNames" >
+					<apex:pagemessages />
+					<apex:commandButton id="RefreshMatches" styleclass="btnPrimary publishersharebutton btn" action="{!refreshTaskMatch}"  value="Refresh Matches" rerender="NewTaskNames" status="RefreshMatchesStatus"><!--  -->
+					<apex:actionStatus startText="loading....." id="RefreshMatchesStatus" />
+					
+					<!--  <apex:param assignTo="{!thisid}" value="{!thisSub.Parent_Task__c}" />--> 
+					 </apex:commandButton>
+					 <!-- rerender="DebugMessageId" -->
+					<apex:outputPanel styleclass="spaces" />
+					<!-- Archives matches -->
+					 <apex:commandButton id="Archive" styleclass="btnPrimary publishersharebutton btn" action="{!archiveTaskMatches}"  value="Archive All Task Matches"  />
+					
+					<apex:outputPanel layout="block" styleclass="NewLine" /> 
+				
+					<!-- Update New Class Names For Tasks -->
+					<apex:outputPanel rendered="{!displayNewTaskNames}">					
+						<apex:pageBlockTable title="Update New Class Name For Tasks" value="{!newTaskNames}" var="TaskFunctions">
+							<apex:outputLabel value="{!TaskFunctions.ses__Document_Relating_To_Function__c}" />	
+							<apex:column headerValue="New Class Name" title="New Class Name" >
+								<apex:inputField value="{!TaskFunctions.ses__Assoc_Class__c}" />
+							</apex:column>
+							<apex:column headerValue="Task ID" title="Task ID" >
+								<apex:outputLink target="_blank" id="OpenTask" value="{!URLFOR('/' + TaskFunctions.id)}" >
+									Task
+								</apex:outputLink>
+							</apex:column>
+							<apex:column headerValue="Task Caption" title="Task Caption" value="{!TaskFunctions.ses__Task_Caption__c}"/>
+							<apex:column headerValue="New Class Method" title="New Class Method" value="{!TaskFunctions.ses__Assoc_Method__c}"/>
+							<apex:column headerValue="Function Class" title="Function Class" value="{!TaskFunctions.ses__Function_Class__c}"/>
+							<apex:column headerValue="Function Name" title="Function Name" value="{!TaskFunctions.ses__Function_Method__c}"/>
+							<apex:column headerValue="Link To Document" title="Link To Document" >							
+								<apex:outputLink target="_blank" id="OpenDocument" value="{!URLFOR('/' + TaskFunctions.ses__Document_Relating_To_Function__c)}" >
+									Document
+								</apex:outputLink>
+								<!-- <apex:commandButton action="{!openDocument}" value="Select" >
+									<apex:param assignTo="{!selectedDocument}" value="{!TaskFunctions.ses__Document_Relating_To_Function__c}" />
+								</apex:commandButton>
+								--> 
+							</apex:column>
+						</apex:pageBlockTable>
+						<apex:commandButton id="UpdateClassOnTasks" styleclass="btnPrimary publishersharebutton btn" action="{!updateClassOnTasks}" value="Update Class Names On Tasks"  />			 
+					 </apex:outputPanel>
+					 
+					 <apex:outputPanel layout="block" styleclass="NewLine" /> 
+					 
+					 <!-- When page is loaded all functions that were matched and that are Global are shown below along with the details of the company/person who
+					 originally created the function. This is why companies/people will upload and share their functions in the community -->
+					 <apex:outputPanel rendered="{!displayGlobalFuncs}">
+					 	<apex:outputPanel layout="block" styleclass="LargeNewLine" />			 			
+			 			<div class="fixed sidebar" style="background-color:transparent;" id="sidebarDiv">
+							<div class="sidebarModule recentItemModule" style="height: 30px;">
+							<div class="sidebarModuleHeader">
+							<h2>Developers of Matched Code</h2>
+						</div></div></div>					 	 
+						<apex:pageBlockTable title="Global Functions Used To Build New Classes"  value="{!displayGlobalFuncsUsed}" var="func">
+							<apex:column headerValue="Class Method" title="Class Method" value="{!func.classMethod}"/>	
+							<apex:column headerValue="Company Name" title="Company Name" value="{!func.globalProfile.ses__CompanyName__c}"/>	
+							<apex:column headerValue="Logo" title="Logo" >
+								<apex:outputlink target="_blank" value="{!func.globalProfile.ses__Contributor_Website__c}"><apex:image value="{!func.globalProfile.ses__logo__c}" /></apex:outputlink>
+							</apex:column>
+							<apex:column headerValue="Website" title="Website" value="{!func.globalProfile.ses__Contributor_Website__c}"/>	
+							<apex:column headerValue="Profile" title="Profile" value="{!func.globalProfile.ses__Contributor_Short_Profile__c}"/>	
+							<apex:column headerValue="Name" title="Name" value="{!func.globalProfile.ses__Contributor_Name__c}"/>	
+							<apex:column headerValue="Main Telephone" title="Main Telephone" value="{!func.globalProfile.ses__Contributor_Main_Telephone__c}"/>	
+							<apex:column headerValue="2nd Telephone" title="2nd Telephone" value="{!func.globalProfile.ses__Contributor_Second_Telephone__c}"/>	
+						</apex:pageBlockTable>
+					</apex:outputPanel>	
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+		</apex:PageBlock>	
+	</apex:Form>
+</apex:page>

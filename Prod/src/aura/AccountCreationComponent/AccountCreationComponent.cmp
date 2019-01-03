@@ -1,0 +1,19 @@
+<aura:component controller="AccountCreationController" implements="force:appHostable">
+    
+    <aura:attribute name="newAccount" type="Account" default="{'sobjectType': 'Account',
+                    														  'Name':'',
+                                                                              'AccountNumber':''}"/>
+    <form>
+    	<fieldset>
+        	
+            <ui:inputText aura:id="accname" label="Account Name" class="form-control"
+                          value="{!v.newAccount.Name}"
+                          placeholder="Enter Account Name" required="true" />
+            <ui:inputText aura:id="accnum" label="Account Number" class="form-control"
+                          value="{!v.newAccount.AccountNumber}"
+                          placeholder="Enter Account Number" />
+            <ui:button label="Create Account" press="{!c.createAccount}" />
+        </fieldset>
+    </form>
+	
+</aura:component>

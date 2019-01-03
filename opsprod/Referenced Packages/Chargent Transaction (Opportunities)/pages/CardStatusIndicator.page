@@ -1,0 +1,15 @@
+<apex:page standardController="Opportunity" extensions="ChargentBase.TChargentStaticHelper" showHeader="false">
+	<style type="text/css">
+		.green {
+			background-color: #b6d7a8;
+		}
+		.yellow {
+			background-color: #ffe599;
+		}
+		.red {
+			background-color: #e06666;
+		}
+	</style>
+
+	<apex:outputText value="{!indicatorString}" styleClass="{!status}"/>
+</apex:page>

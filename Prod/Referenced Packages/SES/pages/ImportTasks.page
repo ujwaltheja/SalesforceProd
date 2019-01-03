@@ -1,0 +1,151 @@
+<apex:page id="ImportTasks" controller="ses.ImportTasks" TabStyle="ses__Task_Name__c">
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" />
+
+<style>
+        
+        input [type=file]{
+        	background-color: white
+        }
+        
+	    .NewLine{
+	        margin-bottom: 2em;
+	    }
+	    .spaces{
+	        padding-left: 20px;
+	    }
+	    .boldlabel {
+	        font-weight: bold
+	    }
+    </style> 
+    <apex:Form enctype="multipart/form-data">
+        <apex:PageBlock > 
+        	 
+            <apex:outputPanel id="taskType"  >
+                 <apex:pagemessages /> 
+					<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.ImportTasks__c}');" >  
+						<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+					</apex:commandLink>-->
+	
+	                <apex:pageBlockSection columns="1" title="Download Templates">
+	                	<apex:pageBlockSectionItem >
+	                		<apex:commandLink target="_blank" id="Task" styleclass="btnPrimary publishersharebutton btn firstbtn" action="https://dl.dropboxusercontent.com/u/11350523/Template%20Task%20Name%20Object%20Import.csv" >
+	                		Download CSV Template For Task Name object
+	                		</apex:commandLink>
+	                	</apex:pageBlockSectionItem>
+	                	<apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+	                	<apex:pageBlockSectionItem >
+	                		<apex:commandLink target="_blank" id="SubTask" styleclass="btnPrimary publishersharebutton btn firstbtn" action="https://dl.dropboxusercontent.com/u/11350523/Template%20Sub%20Task%20Object%20Import.csv" >
+	                		Download CSV Template For Sub Task object
+	                		</apex:commandLink>
+	                	</apex:pageBlockSectionItem>
+	                	<apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+	                	<apex:pageBlockSectionItem >
+	                		<apex:commandLink target="_blank" id="LowerTask" styleclass="btnPrimary publishersharebutton btn firstbtn" action="https://dl.dropboxusercontent.com/u/11350523/Template%20Lower%20Task%20Object%20Import.csv" >
+	                		Download CSV Template For Lower Task object
+	                		</apex:commandLink>
+	                	</apex:pageBlockSectionItem>	                	
+	                	<apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+	                </apex:pageBlockSection>
+	                
+	                <apex:pageBlockSection columns="4" title="Import Tasks" rendered="{!!showTask}">
+	                	
+		                <apex:pageBlockSectionItem >
+		                     <apex:outputLabel styleclass="boldlabel" value="New Project" />
+		                     <apex:commandButton id="Proj" styleclass="btnPrimary publishersharebutton btn" action="{!createNewTaskFunction}"  value="Create A New Project" rerender="taskType" >
+		                        <apex:param name="newTaskType" assignTo="{!newTaskType}" value="Proj" />
+		                    </apex:commandButton>
+		                </apex:pageBlockSectionItem>
+	                </apex:pageBlockSection>
+				<apex:outputPanel rendered="{!displayNewObject}"> 
+                    <apex:outputPanel > 
+                        <apex:pageBlockSection > 
+                            <apex:repeat value="{!accessibleFields}" var="fprj">
+                                <apex:inputField value="{!obj[fprj]}" />
+                            </apex:repeat>
+                        </apex:pageBlockSection>
+                        <apex:outputPanel layout="block" styleclass="spaces" />
+
+                        <apex:pageBlockSection columns="4" >
+	                        <apex:pageBlockSectionItem >
+	                            <apex:outputLabel value="" />
+	                            <apex:commandButton id="insertProj" styleclass="btnPrimary publishersharebutton btn" action="{!createNewProj}"  value="Insert New Project" rerender="taskType" />
+	                        </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                        <apex:outputPanel layout="block" styleclass="NewLine" />                    
+                    </apex:outputPanel>
+				</apex:outputPanel>
+
+				<apex:outputPanel rendered="{!!showTask}" >
+	                <apex:outputPanel layout="block" styleclass="NewLine" />
+	                 <apex:outputLabel styleclass="boldlabel" value="Select A Project" />
+	                 <apex:selectList value="{!selectedproject}" size="1" >
+	                     <apex:SelectOptions value="{!allProjects}"></apex:SelectOptions> 
+	                     <apex:actionSupport action="{!displayTaskType}" event="onchange"  rerender="taskType" />
+	                 </apex:selectList>
+	            
+	                <apex:outputPanel styleclass="spaces" />
+	                <apex:commandButton id="CloseProject" styleclass="btnPrimary publishersharebutton btn" action="{!projectStatusChange}"  value="Close Project" rerender="taskType" >
+	                    <apex:param name="prjStatus" assignTo="{!prjStatus}" value="Closed" />
+	                </apex:commandButton> 
+	                    
+	                <apex:outputPanel styleclass="spaces" />
+	                <apex:commandButton id="CompleteProject" styleclass="btnPrimary publishersharebutton btn" action="{!projectStatusChange}"  value="Completed Project" rerender="taskType" >
+	                    <apex:param name="prjStatus" assignTo="{!prjStatus}" value="Completed" />
+	                </apex:commandButton> 
+				</apex:outputPanel>
+				
+	         <apex:outputPanel id="TaskArea" rendered="{!showTask}" >
+		         <apex:pageBlockSection columns="1" title="Import Tasks" >
+		        	<apex:pageBlockSectionItem >
+	                    <apex:outputPanel >
+		                    <apex:outputLabel styleclass="boldlabel" value="Select A Task Type" />
+		                    <apex:selectRadio value="{!selectedTaskType}">
+		                        <apex:selectOptions value="{!tasktype}"/>
+		                    </apex:selectRadio>
+	                    </apex:outputPanel>
+					</apex:pageBlockSectionItem>
+		        	<!-- <apex:pageBlockSectionItem >
+	                    <apex:outputPanel >
+		                    <apex:outputLabel styleclass="boldlabel" value="Enter the number of fields in the csv file" />
+		                    <apex:inputText id="numberOfFields" value="{!numberOfFields}"  />
+	                    </apex:outputPanel>
+					</apex:pageBlockSectionItem> storeDoc.Body-->
+					
+					<apex:outputPanel layout="block" styleclass="NewLine" />
+					
+		        	<apex:pageBlockSectionItem >
+	                    <apex:outputPanel >
+		                    <apex:outputLabel styleclass="boldlabel" value="Enter Task Name (optional)" />				        	
+		                    <apex:inputText id="taskname" value="{!taskname}"  />	
+		                </apex:outputPanel>	                
+		            </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+		        		 <apex:inputFile styleclass="btnPrimary publishersharebutton btn" value="{!fileContent}" accept="csv" filename="{!filename}"/> 
+		        		<apex:outputPanel >
+			        		<apex:commandButton id="import" styleclass="btnPrimary publishersharebutton btn" action="{!importTasksFromCSV}" value="Import Tasks From csv" /><!-- onclick="displayResults();"  -->
+			        		<apex:outputPanel layout="block" styleclass="NewLine" /> 
+			        		<apex:commandButton id="showprojButtons" styleclass="btnPrimary publishersharebutton btn" action="{!showprojButtons}"  value="Refresh Screen" />
+			        	</apex:outputPanel>
+		        	</apex:pageBlockSectionItem>
+		        </apex:pageBlockSection> 
+
+		        
+		    </apex:outputPanel>
+		    </apex:outputPanel>
+
+                <apex:outputPanel id="displayObjects" rendered="{!showNewObject}"> <!--  -->
+                    <apex:pageBlockSection title="New Records"> 
+                        <apex:panelGroup id="theTable">
+							<apex:repeat value="{!newids}" var="thisID">
+	                            <apex:outputLink target="_blank" value="{!URLFOR('/' + thisID)}" >New Record</apex:outputLink>  
+	                            <apex:outputPanel layout="block" styleclass="NewLine" />
+	                        </apex:repeat>
+	                    </apex:panelGroup>
+                    </apex:pageBlockSection>
+                </apex:outputPanel>
+		    
+   		</apex:PageBlock>
+   </apex:Form>
+</apex:page>

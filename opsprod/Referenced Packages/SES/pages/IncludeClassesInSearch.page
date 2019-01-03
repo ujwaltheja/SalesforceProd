@@ -1,0 +1,37 @@
+<apex:page id="IncludeClassesInSearch" controller="ses.IncludeClassesInSearch">
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" /> 
+
+<style>
+	.NewLine{
+        margin-bottom: 2em;
+    }
+	.SmallLine{
+        margin-bottom: 1em;
+    }
+</style>
+    
+    <apex:Form >
+		<apex:PageBlock >			
+			<apex:outputPanel id="IncludeResults">
+				<apex:pagemessages /> 
+				<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.IncludeClassesInSearch__c}');" >  
+					<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+				</apex:commandLink>-->
+
+				<apex:outputPanel layout="block" styleclass="NewLine" /> 
+				<apex:outputLabel style="text-decoration: underline;font-size: 14pt;font-style: it" value="Help" />
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel style="font-size: 12pt;color: red" value="Selected Classes will exclusively be searched when matching to SES Tasks. If no Classes are selected here you should look at limiting of private classes searched using Exclude Classes and limiting the number of classes searched in 'Update Required Custom Settings'"  />
+				<apex:outputPanel layout="block" styleclass="NewLine" /> 
+				<apex:pageBlockTable title="Include Classes In Search" value="{!allSearchClass}" var="cls"> 
+					<apex:column headerValue="Include" title="Include" >
+						<apex:inputcheckBox value="{!cls.thisselected}" />	
+					</apex:column>
+					<apex:column headerValue="Class Name" title="Class Name" value="{!cls.thisClass}" />
+				</apex:pageBlockTable>
+				<apex:outputPanel layout="block" styleclass="NewLine" /> 
+				<apex:commandButton id="Update" styleclass="btnPrimary publishersharebutton btn" action="{!UpdateIncludes}"  value="Update Includes" rerender="IncludeResults" />
+			</apex:outputPanel>
+		</apex:PageBlock>
+	</apex:Form>
+</apex:page>

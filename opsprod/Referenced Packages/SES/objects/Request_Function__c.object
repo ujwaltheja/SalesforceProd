@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
+    <fields>
+        <fullName>Attachment__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Links to the Attachment for objects and fields so this link is made in SES Global and the correct objects can be downloaded to private orgs</description>
+        <externalId>false</externalId>
+        <inlineHelpText>ID of the Attachment containing code to build custom objects and fields required for the code in the Document ID</inlineHelpText>
+        <label>Attachment</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Developing__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Identifies that the user of this org is currently developing for this function. Note that the developer can still continue developing the solution after 3 days and upload their solution, but whoever builds a working solution first and the requestor closes the Request, this then stops any other person uploading another solution to SES. After 3 days the Request is simply opened up to anyone else who wants to build the solution</description>
+        <externalId>false</externalId>
+        <label>Developing</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>DocumentID__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Id to Document that contains the code for the class</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Id to Document that contains the code for the class</inlineHelpText>
+        <label>Document ID</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Function_Description__c</fullName>
+        <deprecated>false</deprecated>
+        <description>this is a descr of what the function should do</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is a description of what the function should do and so should provide a full set of detailed requirements</inlineHelpText>
+        <label>Function Description</label>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Global_Function__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>A matched function is found so is linked to that function, the status will change to Matched</description>
+        <externalId>false</externalId>
+        <inlineHelpText>A matched function is found so is linked to that function, the status will change to Matched</inlineHelpText>
+        <label>Global Function</label>
+        <referenceTo>Global_Function__c</referenceTo>
+        <relationshipLabel>Request Functions</relationshipLabel>
+        <relationshipName>Request_Functions</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Local_ID__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Local ID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Requestor_Email__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used to comm to the requestor</description>
+        <externalId>false</externalId>
+        <label>Requestor Email</label>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Requests_Origin__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Identifies which org the request was made by, allowing to distinguish between requests for new functions and functions you may want to build</description>
+        <externalId>false</externalId>
+        <label>Requests Origin</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SES_Global_ID__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Ref to ID in SES Global</description>
+        <externalId>false</externalId>
+        <label>SES Global ID</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Communicates the status of the function during the development</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Communicates the status of the function during the development</inlineHelpText>
+        <label>Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Submitted</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>SES Approved</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>SES Rejected</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Requesting More Details From Customer</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Development In Progress</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>SES Approved Development</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Function Downloaded</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Matched</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Task_Caption_Keywords__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>true</externalId>
+        <label>Task Caption Keywords</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Task_Caption__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Brief descr of task, part of SES tags</description>
+        <externalId>true</externalId>
+        <label>Task Caption</label>
+        <length>100</length>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Task_Descr_Keywords__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Task Description Keywords</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Task_Descr__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Complete descr of task, part of SES tags</description>
+        <externalId>false</externalId>
+        <label>Task Description</label>
+        <length>32000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Task_Matching__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>A matched function is found so is linked to that function, the status will change to Matched</description>
+        <externalId>false</externalId>
+        <inlineHelpText>A matched function is found so is linked to that function, the status will change to Matched</inlineHelpText>
+        <label>Task Matching</label>
+        <referenceTo>Task_Matching__c</referenceTo>
+        <relationshipLabel>Request Functions</relationshipLabel>
+        <relationshipName>Request_Functions</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>other1__c</fullName>
+        <deprecated>false</deprecated>
+        <description>additional spare field</description>
+        <externalId>false</externalId>
+        <label>other1</label>
+        <length>150</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>other2__c</fullName>
+        <deprecated>false</deprecated>
+        <description>additional spare field</description>
+        <externalId>false</externalId>
+        <label>other1</label>
+        <length>150</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>other3__c</fullName>
+        <deprecated>false</deprecated>
+        <description>additional spare field</description>
+        <externalId>false</externalId>
+        <label>other1</label>
+        <length>150</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>other4__c</fullName>
+        <deprecated>false</deprecated>
+        <description>additional spare field</description>
+        <externalId>false</externalId>
+        <label>other1</label>
+        <length>150</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>other5__c</fullName>
+        <deprecated>false</deprecated>
+        <description>additional spare field</description>
+        <externalId>false</externalId>
+        <label>other1</label>
+        <length>150</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Request Function</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Request Function Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Request Functions</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

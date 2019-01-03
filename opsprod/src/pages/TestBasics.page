@@ -1,0 +1,62 @@
+<apex:page standardController="Account" sidebar="false">
+    <apex:tabPanel switchType="client">
+        <!-- First tab -->
+    	<apex:tab label="Overview" name="Overview">
+        	<apex:detail relatedList="false"/>
+        </apex:tab>
+        
+       <!-- Secon Tab iterates the contact related list-->
+        <apex:tab label="Contacts" name="Contacts">
+        	<apex:repeat value="{!Account.contacts}" var="con">
+                <apex:pageBlock title="{!con.name}">
+                	<apex:pageBlockSection >
+                    	<apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Name"/>
+                            <apex:outputLink value="{!URLFOR($Action.Contact.View, Con.id)}">
+                                <apex:outputField value="{!con.Name}"/>
+                            </apex:outputLink>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                        </apex:pageBlockSectionItem>
+                        	<apex:outputField value="{!con.Email}"/>
+                            <apex:outputField value="{!con.HasOptedOutOfEmail}" />
+            				<apex:outputField value="{!Con.Phone}" />
+            				<apex:outputField value="{!Con.DoNotCall}" />
+            				<apex:outputField value="{!con.Fax}" />
+            				<apex:outputField value="{!con.HasOptedOutOfFax}" />
+                        
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+                <apex:relatedList subject="{!con}" list="OpenActivities"/>
+                <br/>
+            </apex:repeat>
+        </apex:tab>
+        <!-- Third tab- iterates the opportunity related list-->
+        <apex:tab label="Open Opportunities" name="Open Opportunities">
+        	<apex:repeat value="{!Account.opportunities}" var="opp">
+            	
+                <!-- Only show open opportunities -->
+                <apex:outputPanel rendered="{!NOT(opp.IsClosed)}">
+                	<apex:pageBlock title="{!opp.Name}">
+            			<apex:pageBlockSection >
+              				<apex:pageBlockSectionItem >
+                				<apex:outputLabel value="Name"/>
+                					<apex:outputLink value="{!URLFOR($Action.Opportunity.View, opp.id)}">
+                  					<apex:outputField value="{!opp.name}" />
+                				</apex:outputLink>
+              				</apex:pageBlockSectionItem>
+              				<apex:pageBlockSectionItem />
+              					<apex:outputField value="{!opp.CloseDate}" />
+                                <apex:outputField value="{!opp.Amount}" />
+                                <apex:outputField value="{!opp.StageName}" />
+                                <apex:outputField value="{!opp.Probability}" />
+            			</apex:pageBlockSection>
+          			</apex:pageBlock>
+           
+          			<!-- include the line items for the opportunity via the standard relatedList component -->
+          				<apex:relatedList subject="{!opp}" list="OpportunityLineItems" />
+                	</apex:outputPanel>
+            </apex:repeat>
+        </apex:tab>
+    </apex:tabPanel>
+</apex:page>

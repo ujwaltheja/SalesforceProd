@@ -1,0 +1,94 @@
+<apex:page standardcontroller="Account" showHeader="false" standardStylesheets="false">
+    <apex:stylesheet value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />
+  
+    <apex:includeScript value="https://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.min.js"/>
+    <apex:includeScript value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"/>
+      <script type="text/javascript"> 
+        $ = jQuery.noConflict();
+        $(document).ready(function() {
+        $('[id$=commentForm]').validate();             
+              
+            $('[id$=name]').rules("add",{
+                required: true,
+                minlength: 5
+            });     
+             
+            $('[id$=email]').rules("add",{
+                required: true,
+                email: true
+            });      
+             
+            $('[id$=url]').rules("add",{
+                url: true
+            });
+             
+            $('[id$=comment]').rules("add",{
+                required: true
+            });
+             
+            $('[id$=pwd]').rules("add",{
+                required: true,
+                minlength: 5
+            });
+              
+            $('[id$=cpwd]').rules("add",{
+                required: true,
+                minlength: 5,
+                equalTo: '[id$=pwd]'
+            });   
+             
+            /* Customised the messages */
+           jQuery.validator.messages.required = "<label style='color:red'>This field is required</label>"; 
+           jQuery.validator.messages.equalTo = "<label style='color:red'>No silly, you're supposed to type the same set of characters AGAIN.</label>";
+                                                          
+        });
+         
+    </script> 
+     
+   
+        <apex:define name="title">
+            <a href="http://thesilverlining-developer-edition.na7.force.com/jqueryvalidatedemo/">jQuery Forms Validation Demo</a>
+        </apex:define>
+         
+        <apex:define name="blurb">
+            <p>
+                Fiddle with the form entering combinations of correct and incorrect values to see the validation rules in action. Hitting the sumbit button will also trigger form checking.
+            </p>
+        </apex:define>
+
+
+        <apex:define name="content">    
+            <apex:outputPanel layout="block" style="text-align:center; font-size:12px;padding: 4px">
+                <apex:form id="commentForm" > 
+
+                        <apex:outputlabel for="name">Name <span class="star">*</span></apex:outputlabel> 
+                        <apex:inputtext id="name" value="{!account.name}" required="true"/>
+                        <br/>
+                        <apex:outputlabel for="email">E-Mail <span class="star">*</span></apex:outputlabel> 
+                        <apex:inputtext id="email"  value="{!account.name}" required="true"/> 
+                        <br/>
+                        <apex:outputlabel for="url">URL (optional)</apex:outputlabel> 
+                        <apex:inputtext id="url"  value="{!account.name}" required="true" /> 
+                        <br/>
+                        <apex:outputlabel for="comment">Your comment <span class="star">*</span></apex:outputlabel> 
+                        <apex:inputtextarea id="comment" value="{!account.name}"  style="width: 30%" required="true"/>
+                        <br/>
+                        <apex:outputLabel for="pwd">Password <span class="star">*</span></apex:outputLabel>
+                        <apex:inputSecret id="pwd" value="{!account.name}" required="true"/>
+                        <br/>
+                        <apex:outputLabel for="cpwd">Confirm Password <span class="star">*</span></apex:outputLabel>
+                        <apex:inputSecret id="cpwd" value="{!account.name}" required="true"/>                        
+                        <br/>
+                        <apex:commandButton value="Save" action="{!save}" />
+                        <!--
+                        <input type="submit" />
+                          
+                         -->
+                </apex:form>
+             
+            </apex:outputPanel>
+             
+        </apex:define>
+  
+</apex:page>

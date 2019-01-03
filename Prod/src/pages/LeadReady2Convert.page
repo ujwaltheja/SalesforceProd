@@ -1,0 +1,33 @@
+<apex:page standardController="Lead">
+  <apex:form id="form">
+      <div style="visibility:hidden;">
+          <apex:inputfield value="{!Lead.Ready_to_Convert__c}" id="ready2Convert" style="visibility:hidden;"/>
+      </div>
+      <apex:actionFunction name="quickSave" action="{!quickSave}" oncomplete="standardConvert();"/>    
+      <apex:actionFunction name="standardConvert" 
+          action="{!URLFOR($Action.Lead.Convert, lead.id, [retURL=$CurrentPage.parameters.retURL], true)}" reRender="form" />
+     <script language="JavaScript">
+          var LeadId="{!Lead.Id}";
+          var previousOnload = onload;
+          var newOnload = window.unload;
+          addEventListener("load",function(){
+              if(previousOnload){
+                  previousOnload();
+                  
+               }  
+                 
+               fixLead();
+               alert('Please aware'+LeadId);               
+          });
+          function fixLead(){
+              
+              var cbReady2Convert = document.getElementById('{!$Component.ready2Convert}');
+              cbReady2Convert.checked = true;
+              quickSave();
+              
+          }
+      </script>
+         
+  </apex:form>
+
+</apex:page>

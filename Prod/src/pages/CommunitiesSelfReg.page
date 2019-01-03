@@ -1,0 +1,137 @@
+<apex:page showHeader="false" controller="CommunitiesSelfRegController" docType="html-5.0"  title="{!$Label.site.user_registration}" standardStylesheets="false">
+    
+<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />
+     
+<apex:includeScript value="https://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.min.js"/>
+             
+
+    <head>
+        <style>
+        	.error{
+              font-weight:bold;
+              color:#900;
+            
+            }
+        </style>
+    </head>
+    <body>
+    <script src="https://track.gaconnector.com/gaconnector.js" type="text/javascript"></script>
+    <script type="text/javascript">gaconnector2.track("ce9b0be3305782213e9e568f36313948");</script>
+    
+    <apex:define name="body">
+         <apex:outputPanel id="message">
+                    <!--<apex:pageMessages id="error"/>-->
+         </apex:outputPanel>
+      <center>
+<apex:outputPanel layout="block" style="text-align:center; font-size:12px;padding: 4px">
+<apex:form id="theForm" forceSSL="true">
+    				
+                    <apex:panelGrid columns="4" style="margin-top:1em;">
+
+                      <apex:outputLabel value="First Name" for="firstName"/>
+                      <apex:inputText id="firstName" value="{!firstName}" label="First Name"/>
+                        <apex:outputLabel value="Last Name" for="lastName"><span class="star">*</span></apex:outputLabel>
+                      <apex:inputText id="lastName" value="{!lastName}" label="Last Name" />
+                      <apex:outputLabel value="Phone" for="phone"/>
+                      <apex:inputText id="phone" value="{!phone}" label="Phone"/>
+                      <!--<apex:outputLabel value="{!$Label.site.community_nickname}" for="communityNickname"/>
+                      <apex:inputText required="true" id="communityNickname" value="{!communityNickname}" label="{!$Label.site.community_nickname}"/>-->
+                        <apex:outputLabel value="{!$Label.site.email}" for="email"><span class="star">*</span></apex:outputLabel>
+                      <apex:inputText id="email" value="{!email}" label="{!$Label.site.email}"/>
+                      <!--<apex:outputLabel value="User Name" for="userName"/>
+                      <apex:inputText required="true" id="userName" value="{!userName}" label="User Name"/>-->
+                        <apex:outputLabel value="{!$Label.site.password}" for="password"><span class="star">*</span></apex:outputLabel>
+                      <apex:inputSecret id="password" value="{!password}"/>
+                        <apex:outputLabel value="{!$Label.site.confirm_password}" for="confirmPassword"><span class="star">*</span></apex:outputLabel>
+                      <apex:inputSecret id="confirmPassword" value="{!confirmPassword}"/>
+                      <!--<apex:outputText value=""/> -->
+                       <apex:outputLabel >Contact Prefrences:</apex:outputLabel> 
+                        <apex:selectCheckboxes value="{!SelectedPreferences}">
+                            <apex:selectOptions value="{!PreferenceOptions}"/>
+                        </apex:selectCheckboxes>
+                      <apex:outputLabel value="Address" for="address"/>
+                      <apex:outputText value=""/>
+                      <apex:outputLabel value="Street" for="street"/>
+                        <apex:inputTextarea required="false" id="street" value="{!street}" label="Street" style="width:168px;"/>
+                      <apex:outputLabel value="City" for="city"/>
+                        <apex:inputText required="false" id="city" value="{!city}" label="City"/>
+                      <apex:outputLabel value="State" for="state"/>
+                        <apex:inputText required="false" id="state" value="{!state}" label="State/Province"/>
+                      <apex:outputLabel value="Postal Code" for="postalCode"/>
+                        <apex:inputText required="false" id="postalCode" value="{!postalCode}" label="Zip/Postal Code"/>
+                      <apex:outputLabel value="Country" for="country"/>
+                       <apex:selectList value="{!TestCountry1}" size="1">
+                           	<apex:selectOption itemValue="UK" itemLabel="UK"/>
+                           <apex:selectOption itemValue="GB" itemLabel="GB"/>
+                           <apex:selectOption itemValue="United Kingdom" itemLabel="United Kingdom"/>
+                       		<!--<apex:selectOptions value="{!TestCountries}"></apex:selectOptions>-->
+                       </apex:selectList>
+                      <!--<apex:inputText required="false" id="country" value="{!country}" label="Country"/> -->
+                      <apex:commandButton action="{!registerUser}" value="{!$Label.site.submit}" onclick="validate();" id="submit"/>
+                    </apex:panelGrid> 
+                  <br/>
+</apex:form>
+</apex:outputPanel>
+     </center>
+      <br/>
+    </apex:define>
+    <script type="text/javascript">
+    	var j$=jQuery.noConflict();
+        j$('[id$=theForm]').validate();             
+              errorclass: "myerrorclass";
+              
+               j$('[id$=lastName]').rules("add",{
+                required: true,
+                minlength: 5,
+                maxlength: 50,               
+                messages:{
+                  required:"<br/>Required Customer Name",
+                  minlength: jQuery.validator.format("<br/>Please etner at least 5 characters are necessary"),
+                  
+               } 
+               
+            }); 
+            
+           
+            j$('[id$=phone]').rules("add",{
+                required: true,  
+               range: [10, 13],             
+                messages:{
+                  required:"<br/>Required input",
+                  minlength: jQuery.validator.format("<br/>Please enter a valid number"),
+               }                           
+            }); 
+            
+              j$('[id$=email]').rules("add",{
+                required: true,
+               email:true,              
+                messages:{
+                  required:"<br/>Required Email",
+                  email: jQuery.validator.format("<br/>Please enter valid email id"),
+               }                           
+            }); 
+                       
+            j$('[id$=password]').rules("add",{
+                required: true,
+                minlength: 5,
+                messages:{
+                  required:"<br/>Valid password",                 
+               } 
+            });
+             
+            j$('[id$=confirmPassword]').rules("add",{
+                required: true,
+                minlength: 5,
+                equalTo: '[id$=pwd]',
+                messages:{
+                  required:"<br/>Mismatch Password",                 
+               } 
+            });      
+             
+            /* Customised the messages*/ 
+            jQuery.validator.messages.required = "You better have entered a value.. or else!"; 
+            jQuery.validator.messages.equalTo = "No silly, you're supposed to type the same set of characters AGAIN.";                                                
+
+        </script>
+</body>
+</apex:page>

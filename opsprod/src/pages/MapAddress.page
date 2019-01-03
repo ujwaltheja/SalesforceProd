@@ -1,0 +1,75 @@
+<apex:page standardController="Booking_Request__c">
+    <head>
+        <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false" />
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" />
+        <script type="text/javascript">
+        	$(document).ready(function(){
+                var myOptions = { zoom: 15,mapTypeId: google.maps.MapTypeId.HYBRID,mapTypeControl: true };
+                var map;
+                var maker;
+                var geocoder = new google.maps.Geocoder();
+                var address = "{!Booking_Request__c.Address1__c}";
+                var infowindow = new google.maps.InfoWindow({
+                    content: "<b>{!Booking_Request__c.Name}</b><br>");
+                    
+                geocoder.geocode({address: address}, function(results, status){
+                    if(status = "OK"){
+                        //if(status != google.maps.GeocoderStatus.ZERO_RESULTS){
+                             	
+                            //create map
+                            
+                            map = new google.maps.Map(document.getElementById("map"),myOptions);
+                            
+                            map.setCenter(results[0].geometry.location);
+                            
+                            //create maker
+          
+                            maker = new google.maps.Maker(
+                            position: results[0].geometry.location,
+                            map : map
+                            title : "{!Booking_Request__c.Name}");
+                            
+                            //addListioner
+                           google.maps.event.addListener(marker, 'click', function() {
+								infowindow.open(map,maker);
+							});
+							google.maps.event.addListener(infowindow, 'closeclick', function() {
+								map.setCenter(maker.getPosition());
+							});
+					
+			} else {
+					$('#map').css({'height' : '15px'});
+					$('#map').html("Oops! {!Booking_Request__c.Name}'s address could not be found, please make sure the address is correct.");
+					resizeIframe();
+			}
+	});
+ 
+	function resizeIframe() {
+		var me = window.name;
+		if (me) {
+		var iframes = parent.document.getElementsByName(me);
+		if (iframes&&iframes.length == 1) {
+		height = document.body.offsetHeight;
+		iframes[0].style.height = height + "px";
+	}
+	}
+	}
+});
+</script>
+    
+        <style>
+			#map {
+				font-family: Arial;
+				font-size:12px;
+				line-height:normal !important;
+				height:250px;
+				background:transparent;
+			}
+        </style>
+    </head>
+    <body>
+        <div id="map">
+            
+        </div>
+    </body>
+</apex:page>

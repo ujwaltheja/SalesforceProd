@@ -1,0 +1,59 @@
+<apex:page id="PreventDownloadOfClasses" controller="ses.PreventDownloadOfClasses" >
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" /> 
+    <style>
+        a Label{
+            display:none;border:none;width: 400px;text-decoration:none;font-style:normal
+        }
+        
+        a:hover Label,a:active Label{display:inline;background:#ffffff;
+            border:1px solid #cccccc;
+            color:#6c6c6c;width: 400px;text-decoration:none;font-style:normal
+        }
+        
+        a.tooltip:link div label,a.tooltip:visited div label{
+            border:none;width:0px;text-decoration:none;font-style:normal
+            display:none;
+            padding:2px 3px;
+            margin-left:8px;width: 400px;text-decoration:none;
+            !immedaiate: true;
+        }
+        
+        a.tooltip:hover div label{
+            display:inline;font-style:normal
+            background:#ffffff;
+            border:1px solid #cccccc;
+            color:#6c6c6c;width: 400px;text-decoration:none;
+        }
+
+	.NewLine{
+        margin-bottom: 2em;
+    }
+ 	.spaces{
+ 		padding-left: 20px;
+ 	}
+ 	.titlefont{
+ 		font-size: 14pt
+ 	}
+    </style>
+<apex:Form >    
+	<apex:PageBlock >		
+	  	<apex:pageBlockSection columns="1" title="Prevent Download Of Classes" >	  		
+	  		<apex:outputPanel id="results">
+	  			<apex:pagemessages />
+				<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.PreventDownloadOfClasses__c}');" >  
+					<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+				</apex:commandLink>-->
+
+		  		<apex:pageBlockTable value="{!allPreventDownloads}" var="cls">
+		  			<apex:column headerValue="Class" title="Class" value="{!cls.thisclass}"/>
+		  			<apex:column headerValue="Prevent Download" title="Prevent Download" >
+		  				<apex:inputcheckBox value="{!cls.thisClassPreventDownload}" />
+		  			</apex:column>
+		  		</apex:pageBlockTable>
+		  		<apex:outputPanel layout="block" styleclass="NewLine" />
+		  		<apex:commandButton id="Update" styleclass="btnPrimary publishersharebutton btn" action="{!UpdateAllGlobalFunctions}"  value="Update Global Functions" rerender="results" />
+		  	</apex:outputPanel>
+		</apex:pageBlockSection>
+	</apex:PageBlock>	
+</apex:Form>
+</apex:page>

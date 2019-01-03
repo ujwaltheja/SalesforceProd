@@ -1,0 +1,4 @@
+<apex:page id="MVPApprover" controller="ses.MVPApprover">
+<!-- MVPApprover allows MVPs t o approve Tasks in Global SES-->
+
+</apex:page>

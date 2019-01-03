@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
+    <fields>
+        <fullName>Add_Page_Messages__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Add Page Messages to the code</description>
+        <externalId>false</externalId>
+        <label>Add Page Message</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Error Page Message</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Info Page Message</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Warning Page Message</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Assoc_Class__c</fullName>
+        <deprecated>false</deprecated>
+        <description>identifies the class the code will be generated in</description>
+        <externalId>false</externalId>
+        <label>Associated Class</label>
+        <length>500</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Assoc_Method__c</fullName>
+        <deprecated>false</deprecated>
+        <description>identifies the action method the code will be generated in</description>
+        <externalId>false</externalId>
+        <label>Associated Method</label>
+        <length>1000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Case__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>If entered the Task originated from Cases</description>
+        <externalId>false</externalId>
+        <label>Case</label>
+        <referenceTo>Case</referenceTo>
+        <relationshipLabel>Task Names</relationshipLabel>
+        <relationshipName>Task_Names</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Category__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Category the Task is assigned to do to allow quick search ability</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Category the Task is assigned to do to allow quick search ability</inlineHelpText>
+        <label>Category</label>
+        <referenceTo>Category__c</referenceTo>
+        <relationshipLabel>Task Names</relationshipLabel>
+        <relationshipName>Task_Names</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CompanyName__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used to match to MyProfile</description>
+        <externalId>false</externalId>
+        <formula>$Organization.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Company Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DeActivate_Previous_Matches__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>If user wants to deactivate matching Tasks using the previous Task Matching Records as well as deactivate searching for matched functions</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If user wants to deactivate matching Tasks using the previous Task Matching Records as well as deactivate searching for matched functions</inlineHelpText>
+        <label>DeActivate Previous Matches</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>DeActivate__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>If there are too many records in your project, deactivate some records run the SES match, then re-activate the records and run SES match again. Note, this will not ignore the previous Task Matching Records and if any exists the Task will be matched.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If there are too many records in your project, deactivate some records run the SES match, then re-activate the records and run SES match again. Note, this will not ignore the previous Task Matching Records and if any exists the Task will be matched.</inlineHelpText>
+        <label>DeActivate</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Document_Relating_To_Function__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Allows to easily find the created document</description>
+        <externalId>false</externalId>
+        <label>Document Relating To Function</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Execute_Time__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Execute Time for the matched function to run, used by Generations to identify the most efficient function, measured in seconds</description>
+        <externalId>false</externalId>
+        <label>Execute Time</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>15</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Function_Class__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Function Class</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Function_Method__c</fullName>
+        <deprecated>false</deprecated>
+        <description>new or existing method that performs the task</description>
+        <externalId>false</externalId>
+        <label>Function Method</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GlobalTransfered__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Identifies that the task has been transfered to Global and so doesn&apos;t need to be displayed again in SESTasksToGlobalTransfer</description>
+        <externalId>false</externalId>
+        <label>Global Transfered</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Include_Try_Catch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>A Try Catch block is automatically included in the generated code</description>
+        <externalId>false</externalId>
+        <inlineHelpText>A Try Catch block is automatically included in the generated code</inlineHelpText>
+        <label>Include Try Catch</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Page_Message__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Page Message to be displayed, Page Message picklist must be selected</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Page Message to be displayed</inlineHelpText>
+        <label>Page Message</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Private_Function__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Identifies came from Private Function which then updates.If it is private it can be uploaded to SES</description>
+        <externalId>false</externalId>
+        <label>Private Function</label>
+        <referenceTo>Private_Function__c</referenceTo>
+        <relationshipLabel>Task Names</relationshipLabel>
+        <relationshipName>Task_Names</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Project__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Project</label>
+        <referenceTo>Project__c</referenceTo>
+        <relationshipLabel>Task Names</relationshipLabel>
+        <relationshipName>Task_Names</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>TaskNameName__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Task Name (formula)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Task_Caption_Keywords__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>true</externalId>
+        <label>Task Caption Keywords</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Task_Caption__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Brief descr of task, part of SES tags</description>
+        <externalId>true</externalId>
+        <label>Task Caption</label>
+        <length>100</length>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Task_Descr_Keywords__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Task Description Keywords</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Task_Descr__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Complete descr of task, part of SES tags</description>
+        <externalId>false</externalId>
+        <label>Task Description</label>
+        <length>32000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Task_Matching__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Task Matching</label>
+        <referenceTo>Task_Matching__c</referenceTo>
+        <relationshipLabel>Task Names</relationshipLabel>
+        <relationshipName>Task_Names</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Task_Scope__c</fullName>
+        <deprecated>false</deprecated>
+        <description>If set to Global=this task/func will be uploaded to Global Scope
+Set to Private=this task/func is only available to this org, so wont be uploaded</description>
+        <externalId>false</externalId>
+        <label>Task Scope</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Project Private</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>Organization Private</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Global Organizations</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Update_Document_Objects__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Tells schedule job AutoUpdateDocuments to update Document records with code in classes</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Tells schedule job AutoUpdateDocuments to update Document records with code in classes</inlineHelpText>
+        <label>Update Document Objects</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>include_Debug_Statements__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>adds Debug Statements to the new code produced</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Adds Debug Statements to the new code produced</inlineHelpText>
+        <label>include Debug Statements</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>other1__c</fullName>
+        <deprecated>false</deprecated>
+        <description>additional spare field</description>
+        <externalId>false</externalId>
+        <label>other1</label>
+        <length>150</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>other2__c</fullName>
+        <deprecated>false</deprecated>
+        <description>additional spare field</description>
+        <externalId>false</externalId>
+        <label>other1</label>
+        <length>150</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>other3__c</fullName>
+        <deprecated>false</deprecated>
+        <description>additional spare field</description>
+        <externalId>false</externalId>
+        <label>other1</label>
+        <length>150</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>other4__c</fullName>
+        <deprecated>false</deprecated>
+        <description>additional spare field</description>
+        <externalId>false</externalId>
+        <label>other1</label>
+        <length>150</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>other5__c</fullName>
+        <deprecated>false</deprecated>
+        <description>additional spare field</description>
+        <externalId>false</externalId>
+        <label>other1</label>
+        <length>150</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Task Name</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>Function_Class__c</columns>
+        <columns>Function_Method__c</columns>
+        <columns>Task_Caption__c</columns>
+        <columns>Task_Descr__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Task Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Task Names</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Focus_On_Keywords</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Focus On Keywords</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/apex/FocusOnKeywords?taskid={!Task_Name__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Open_Document</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Open Document</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.open(&apos;/{!URLFOR(Task_Name__c.Document_Relating_To_Function__c)}&apos;,&apos;_top&apos;);</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Remove_All_Class_And_Method_Values</fullName>
+        <availability>online</availability>
+        <description>This removes all entered values for Assoc_Class__c, Assoc_Method__c, Document_Relating_To_Function__c, Function_Class__c, Function_Method__c in all objects in the hierarchy</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Remove All Class And Method Values</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&apos;/soap/ajax/20.0/connection.js&apos;)}
+{!requireScript(&quot;/soap/ajax/20.0/apex.js&quot;)}
+
+var tkUpdate = sforce.apex.execute(&quot;ses.SearchFunctionUtils&quot;, &quot;clearAllFunctionClassAndMethods&quot;,{tkid:&quot;{!Task_Name__c.Id}&quot;,projName: &quot;{!Task_Name__c.Project__c}&quot;});
+window.location.reload();</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Remove_Class_And_Method</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Remove This Class And Method</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&apos;/soap/ajax/20.0/connection.js&apos;)}
+{!requireScript(&quot;/soap/ajax/20.0/apex.js&quot;)}
+
+var tk = new sforce.SObject(&apos;ses__Task_Name__c&apos;);
+
+tk.id = &quot;{!Task_Name__c.Id}&quot;;
+tk.ses__Assoc_Class__c = null;
+tk.ses__Assoc_Method__c = null;
+tk.ses__Document_Relating_To_Function__c = null;
+tk.ses__Function_Class__c = null;
+tk.ses__Function_Method__c = null;
+
+var tkUpdate = sforce.connection.update([tk]);
+window.location.reload();</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Remove_Task_Matches_For_This_Task</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Remove Task Matches For This Task</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&apos;/soap/ajax/20.0/connection.js&apos;)}
+{!requireScript(&quot;/soap/ajax/20.0/apex.js&quot;)}
+
+var tkUpdate = sforce.apex.execute(&quot;ses.SearchFunctionUtils&quot;, &quot;clearAllTaskMatching&quot;,{tkid:&quot;{!Task_Name__c.Id}&quot;});
+window.location.reload();</url>
+    </webLinks>
+</CustomObject>

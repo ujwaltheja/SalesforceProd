@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>When deploying a trigger for first time set this to 200, so that up to 200 records are created in your unit test, after deployment lower this to 10, so that future deployments are not slowed down but the unit tests are still tested</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Record_Creation__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Record Creation</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Test Data For Triggers</label>
+    <visibility>Public</visibility>
+</CustomObject>

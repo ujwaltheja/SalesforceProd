@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>When keywords are created in Private Functions they are identified as possible keywords and automatically suggested to the Admin users</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
+    <fields>
+        <fullName>Occurrences__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Number of times this word is found in all ses__Private_Function__c object ses__Function_Caption_Keywords__c or ses__Function_Descr_Keywords__c fields</description>
+        <externalId>false</externalId>
+        <label>Occurrences</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ignore__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>auto ignore by ticking ignore__c field in ses__Keyword_Suggest__c for records longer than 2 weeks - schedAutoIgnoreOldKeywordSuggestions</description>
+        <externalId>false</externalId>
+        <label>ignore</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Keyword Suggest</label>
+    <listViews>
+        <fullName>All_Details</fullName>
+        <columns>NAME</columns>
+        <columns>ignore__c</columns>
+        <columns>Occurrences__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Details</label>
+    </listViews>
+    <nameField>
+        <label>Keyword Suggest Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Keyword Suggests</pluralLabel>
+    <searchLayouts>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>Forward</excludedStandardButtons>
+        <listViewButtons>Add_Keywords</listViewButtons>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Add_Keywords</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Add Keywords</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&apos;/soap/ajax/20.0/connection.js&apos;)}
+{!requireScript(&quot;/soap/ajax/20.0/apex.js&quot;)}
+
+var recs = {!GETRECORDIDS($ObjectType.Keyword_Suggest__c)};
+
+if (recs.length) {
+
+    var recsInserted = sforce.apex.execute(&quot;ses.SearchFunctionUtils&quot;,&quot;addNewKeywordsFromSuggestions&quot;, {kyIDs : recs});
+
+    if (recsInserted == &apos;true&apos;)
+          alert(&apos;New Keywords inserted&apos;);
+    else
+          alert(&apos;Keywords could not be inserted&apos;);
+}</url>
+    </webLinks>
+</CustomObject>

@@ -1,0 +1,4 @@
+<apex:page sidebar="false" showHeader="false">
+  <h1> Welcome to Saleforce Family</h1>
+  <h2> Srinivas </h2>
+</apex:page>

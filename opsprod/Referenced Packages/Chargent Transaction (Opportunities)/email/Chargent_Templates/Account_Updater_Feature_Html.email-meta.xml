@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Account Updater Feature Html</name>
+    <style>none</style>
+    <subject>Credit Card Expiration Notice</subject>
+    <textOnly>Hello {!Email_Notification__c.First_Name__c}
+
+Your credit card will expire soon.
+
+Please click the link below to use our secure Account Updater online form.
+
+{!Email_Notification__c.Account_Updater_Link_Formatted__c}
+
+Thanks,
+{!Organization.Name}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

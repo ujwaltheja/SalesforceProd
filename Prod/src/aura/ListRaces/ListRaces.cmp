@@ -1,0 +1,37 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" controller="ListRacesApexController">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="races" type="Race__c[]"  />
+    <aura:handler event="c:AddToRaceList" action="{!c.handleAddToRaces}" />
+    
+    <ltng:require scripts="{!$Resource.SLDS + '/styles/lightning-design-system.min.css'}" />
+    <div class="slds">
+       	<div class="slds-m-around--small slds-p-top--large">
+            <div class="slds-card">
+                <aura:iteration items="{!v.races}" var="race">
+                    <header class="slds-card__header">
+                        <p style="color:Blue;"><b>Name: </b>  <ui:outputText class="slds-text-heading--label" value="{!race.Name}" /><br /></p>
+                    </header>
+                    <section class="slds-card__body">
+                    	<div class="slds-title slds-hint-parent">
+                        	<p style="color:Blue;" class="slds-title__title slds-truncate"><b>Race Type: </b>  
+                                <ui:outputText value="{!race.Type__c}" /><br />
+                            </p>
+                            <p style="color:Blue;" class="slds-truncate"><b>Location: </b>  
+                                <ui:outputText value="{!race.Location__C}" /><br />
+                            </p>
+                            <p style="color:Blue;" class="slds-truncate"><b>Date/Time: </b>  
+                                <ui:outputDateTime value="{!race.DateTime__c}" /><br />
+                            </p>
+                            <p style="color:Blue;" class="slds-truncate"><b>Attended?: </b>  
+                                <ui:inputCheckbox change="{!c.handleUpdate}" value="{!race.Attended__c}" /><br />
+                            </p>
+                            <p style="color:Blue;" class="slds-truncate"><b>Results: </b>  
+                                <ui:inputTextArea change="{!c.handleUpdate}" value="{!race.Results__c}" /><br />
+                            </p>
+                        </div>
+                    </section>
+                </aura:iteration>
+            </div>
+        </div>
+    </div>
+</aura:component>

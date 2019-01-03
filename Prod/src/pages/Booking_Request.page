@@ -1,0 +1,15 @@
+<apex:page standardController="Booking_Request__c" id="Page" sidebar="false">
+    <apex:form >
+        <apex:pageBlock >
+            <apex:messages /> 
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Save"/>
+                <apex:commandButton action="{!cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection >
+                <apex:inputField value="{!Booking_Request__c.Acc__c}"/>
+                <apex:inputfield value="{!Booking_Request__c.Address__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

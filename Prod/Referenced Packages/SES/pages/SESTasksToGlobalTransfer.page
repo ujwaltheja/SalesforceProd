@@ -1,0 +1,133 @@
+<apex:page id="SESTasksToGlobalTransfer" Controller="ses.SESTasksToGlobalTransfer" TabStyle="ses__Task_Name__c" >
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" />
+
+<style>
+    .rightspace{
+        margin-right: 20px !important;
+    }
+    .scrollNavig{
+    	width: 1100px; height: 50px; overflow: auto;
+    }
+ 	.titlefont{
+ 		font-size: 12pt
+ 	}
+    .bld{
+    	font-weight: bold;
+    }
+    .italics{
+    	font-style:italic;
+    }
+ 	.spaces{
+ 		padding-left: 20px;
+ 	}
+    .noSecondHeader{
+    	color: white !important;
+    }
+    
+</style>
+<apex:pageBlock title="">
+  <apex:sectionHeader title="Transfer Private Functions And Tasks To Global"/>
+  <apex:form id="theForm">
+  <apex:outputPanel id="results"  >
+  		<apex:pagemessages />
+		<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.SESTasksToGlobalTransfer__c}');" >  
+			<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+		</apex:commandLink>-->
+
+  		<apex:outputLabel value="Your Namespace" styleclass="titlefont" /><apex:outputPanel layout="block"/>
+  		<apex:outputText value="{!setNamespace}"/>
+	    <apex:pageBlockSection >
+	     <apex:pageBlockTable value="{!allOfTheseFunctions}" var="thisfunc" id="theTable" rowClasses="odd,even" styleClass="tableClass">
+			<apex:column >
+				<apex:facet name="header">ID</apex:facet>
+				<apex:outputLink value="/{!thisfunc.pfunction.ID}" target="_blank">Task</apex:outputLink>
+			</apex:column>      
+			<apex:column >
+				<apex:facet name="header">Class</apex:facet>
+				<apex:outputText value="{!thisfunc.pfunction.ses__Function_Class__c}"/>
+			</apex:column>      
+			<apex:column >
+				<apex:facet name="header">Method</apex:facet>
+				<apex:outputText value="{!thisfunc.pfunction.ses__Function_Method__c}"/>
+			</apex:column>   
+			<apex:column >
+				<apex:facet name="header">Task Caption</apex:facet>
+				<apex:outputText value="{!thisfunc.pfunction.ses__Task_Caption__c}"/>
+			</apex:column>   
+			<apex:column >
+				<apex:facet name="header">Transfer</apex:facet>
+				<apex:inputCheckBox value="{!thisfunc.transferRec}" />
+			</apex:column>   
+		  </apex:pageBlockTable>
+	    </apex:pageBlockSection>
+    </apex:outputPanel>
+      <apex:commandbutton styleclass="rightspace btnPrimary publishersharebutton btn" action="{!moveToPage}" rerender="results" value="First" >
+      	<apex:param name="selectedPageFunc" assignTo="{!selectedPageFunc}" value="1" />
+      </apex:commandbutton> 
+      <apex:commandbutton styleclass="rightspace btnPrimary publishersharebutton btn" action="{!moveToPage}" rerender="results" value="Previous" >
+      	<apex:param name="selectedPageFunc" assignTo="{!selectedPageFunc}" value="{!selectedPageFunc-1}" />
+      </apex:commandbutton> 
+      <apex:commandbutton styleclass="rightspace btnPrimary publishersharebutton btn" action="{!moveToPage}" rerender="results" value="Next" >
+      	<apex:param name="selectedPageFunc" assignTo="{!selectedPageFunc}" value="{!selectedPageFunc+1}" />
+      </apex:commandbutton>       
+     <apex:commandbutton styleclass="rightspace btnPrimary publishersharebutton btn" action="{!moveToPage}" rerender="results" value="Last" >
+   	    <apex:param name="selectedPageFunc" assignTo="{!selectedPageFunc}" value="{!numberOfPagesToDisplayFunc}" />
+   	 </apex:commandbutton> 
+     <br />
+     <apex:outputPanel layout="block" styleclass="scrollNavig">
+      <apex:repeat value="{!funcStatusPagesToDisplay}" var="pgs" >
+         <apex:commandLink styleclass="rightspace" id="funcLink" action="{!moveToPage}" rerender="results" >{!pgs}
+             <apex:param name="selectedPagefunc" assignTo="{!selectedPagefunc}" value="{!pgs}" />
+         </apex:commandLink> 
+      </apex:repeat>
+     </apex:outputPanel>
+   	 <br />
+   	  
+
+     <apex:outputPanel id="refreshObj"> 
+     	<apex:pagemessages />    	
+     	<apex:outputLabel styleclass="titlefont bld" value="Upload Objects to SES Global" />
+     	<apex:outputPanel styleclass="spaces" /><apex:outputLink styleclass="italics" target="_blank" value="/apex/SESHelp">Help</apex:outputLink>
+     	<br />
+	     <apex:outputLabel styleclass="boldlabel" value="Select A Object" />
+	     <apex:selectList value="{!selectedobj}" size="1" > 
+	         <apex:SelectOptions value="{!allObjects}" ></apex:SelectOptions> 
+	         <apex:actionSupport action="{!getSchemaFields}" event="onchange"  rerender="refreshObj" />
+	     </apex:selectList>
+	   	 <apex:outputPanel rendered="{!displaySelectedFields}">
+		    <apex:pageBlockSection >
+			     <apex:pageBlockSectionItem >
+				     <apex:pageBlockTable value="{!allOfObject}" var="thisObj" id="theTable" rowClasses="odd,even" styleClass="tableClass">
+						<apex:column >
+							<apex:facet name="header">Field</apex:facet>
+							<apex:outputText value="{!thisObj.Fld}"/>
+						</apex:column>      
+						<apex:column >
+							<apex:facet name="header">Select</apex:facet>
+							<apex:inputCheckBox value="{!thisObj.selected}" />
+						</apex:column>   
+					  </apex:pageBlockTable>
+				</apex:pageBlockSectionItem> 
+	   	 	</apex:pageBlockSection> 
+	   	 	<apex:outputPanel id="refreshselected">
+		   	 	<apex:commandbutton styleclass="btnPrimary publishersharebutton btn" value="Include Fields" action="{!includeFields}" rerender="refreshselected"  />
+		   	 		<apex:outputPanel rendered="{!renderSelectedFields}">
+				   	 		<apex:pageBlockSection columns="1">
+				   	 		<apex:outputLabel value="Selected Fields" />
+					   	 	<apex:repeat value="{!includedFields}" var="myObj" >
+								<apex:repeat value="{!includedFields[myObj]}" var="myflds" >							
+									<apex:pageBlockSectionItem >
+										{!myflds}
+									</apex:pageBlockSectionItem>
+								</apex:repeat>
+							</apex:repeat>	 
+						</apex:pageBlockSection>
+					</apex:outputPanel>
+			</apex:outputPanel>
+	   	 </apex:outputPanel>
+   	 	<apex:commandbutton styleclass="btnPrimary publishersharebutton btn" value="Transfer Records" action="{!transfer}" />
+   	 </apex:outputPanel>   	 		
+  </apex:form> 
+  </apex:pageBlock>
+
+</apex:page>

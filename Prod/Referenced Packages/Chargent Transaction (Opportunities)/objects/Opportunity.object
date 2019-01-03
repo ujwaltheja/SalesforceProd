@@ -1,0 +1,2729 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Balance_Due__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Total__c -  Transaction_Total__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This field subtracts the total of all transactions (both manual and recurring) from the Amount field.  The Payment Stop option of Balance Due uses this field to determine when to stop recurring charges.</inlineHelpText>
+        <label>Balance Due</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Bank_Account_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Name on the Bank Account.  e.g., John Doe</inlineHelpText>
+        <label>Bank Account Name</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bank_Account_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter the Bank Account number without spaces or dashes</inlineHelpText>
+        <label>Bank Account Number</label>
+        <length>24</length>
+        <maskChar>asterisk</maskChar>
+        <maskType>lastFour</maskType>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>EncryptedText</type>
+    </fields>
+    <fields>
+        <fullName>Bank_Account_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Bank Account Type</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Payment_Method__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Checking</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Savings</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Business Checking</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Check</controllingFieldValue>
+                <valueName>Checking</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Check</controllingFieldValue>
+                <valueName>Savings</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Check</controllingFieldValue>
+                <valueName>Business Checking</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Bank_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Ex: &quot;Wells Fargo Bank&quot; or &quot;Bank of America&quot;</inlineHelpText>
+        <label>Bank Name</label>
+        <length>129</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bank_Routing_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter the Bank Routing number with no spaces or dashes</inlineHelpText>
+        <label>Bank Routing Number</label>
+        <length>11</length>
+        <maskChar>asterisk</maskChar>
+        <maskType>lastFour</maskType>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>EncryptedText</type>
+    </fields>
+    <fields>
+        <fullName>Billing_Address_Line_2__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Address Line 2</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Billing_Address__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Address</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Billing_City__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing City</label>
+        <length>64</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Company__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Company</label>
+        <length>64</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Country__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Country</label>
+        <length>64</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Email__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Email</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Fax__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Fax</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Billing_First__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing First Name</label>
+        <length>64</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Last__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Last Name</label>
+        <length>64</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Phone__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Phone</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Billing_Postcode__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Deprecated (Billing Postcode)</label>
+        <length>64</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_State__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing State</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Alabama</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Alaska</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Arizona</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Arkansas</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>California</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Colorado</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Connecticut</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Delaware</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>District of Columbia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Florida</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Georgia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Hawaii</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Idaho</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Illinois</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Indiana</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Iowa</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kansas</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kentucky</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Louisiana</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Maine</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Maryland</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Massachusetts</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Michigan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Minnesota</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mississippi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Missouri</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Montana</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nebraska</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nevada</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Hampshire</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Jersey</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Mexico</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New York</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>North Carolina</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>North Dakota</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ohio</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Oklahoma</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Oregon</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pennsylvania</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Rhode Island</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>South Carolina</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>South Dakota</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tennessee</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Texas</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Utah</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Vermont</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Virginia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Washington</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>West Virginia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Wisconsin</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Wyoming</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Alberta</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>British Columbia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Manitoba</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Brunswick</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Newfoundland</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Northwest Territory</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nova Scotia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ontario</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Prince Edward Island</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Quebec</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Saskatchewan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yukon Territory</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Australian Capital Territory</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New South Wales</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Northern Territory</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Queensland</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>South Australia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tasmania</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Victoria</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Western Australia</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Billing_Zip__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Zip/Postal</label>
+        <length>10</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CPF_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>CPF Number</label>
+        <length>20</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Card_Last_4__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Card Last 4</label>
+        <length>4</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Card_Month_Indicator__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Card Expiration Month Indicator</label>
+        <length>2</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Card_Month__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Card Expiration Month</label>
+        <length>2</length>
+        <maskChar>asterisk</maskChar>
+        <maskType>all</maskType>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>EncryptedText</type>
+    </fields>
+    <fields>
+        <fullName>Card_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Name on the card to be charged - will default to Billing First and Billing Last</inlineHelpText>
+        <label>Card Name</label>
+        <length>129</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Card_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter the complete credit card number without spaces or dashes</inlineHelpText>
+        <label>Card Number</label>
+        <length>16</length>
+        <maskChar>asterisk</maskChar>
+        <maskType>lastFour</maskType>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>EncryptedText</type>
+    </fields>
+    <fields>
+        <fullName>Card_Security__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Card Security Code</label>
+        <length>5</length>
+        <maskChar>asterisk</maskChar>
+        <maskType>all</maskType>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>EncryptedText</type>
+    </fields>
+    <fields>
+        <fullName>Card_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Card Type</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Payment_Method__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Visa</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mastercard</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Discover</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>American Express</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MC Eurocard</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>UK Maestro</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>JCB Card</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Diners Club</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Credit Card</controllingFieldValue>
+                <valueName>Visa</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Credit Card</controllingFieldValue>
+                <valueName>Mastercard</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Credit Card</controllingFieldValue>
+                <valueName>Discover</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Credit Card</controllingFieldValue>
+                <valueName>American Express</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Credit Card</controllingFieldValue>
+                <valueName>MC Eurocard</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Credit Card</controllingFieldValue>
+                <valueName>UK Maestro</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Credit Card</controllingFieldValue>
+                <valueName>JCB Card</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Credit Card</controllingFieldValue>
+                <valueName>Diners Club</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Card_Year_Indicator__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Card Expiration Year Indicator</label>
+        <length>4</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Card_Year__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Card Expiration Year</label>
+        <length>4</length>
+        <maskChar>asterisk</maskChar>
+        <maskType>all</maskType>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>EncryptedText</type>
+    </fields>
+    <fields>
+        <fullName>Charge_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The amount to be processed by the next transaction (authorize, charge or refund). If there are multiple charges, this field will automatically reflect the Amount of the order or opportunity minus the total amount of successful charges.</inlineHelpText>
+        <label>Charge Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Charge_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This field is the day of the month that Chargent will attempt the recurring transaction</inlineHelpText>
+        <label>Charge Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>01</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>02</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>03</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>04</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>05</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>06</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>07</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>08</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>09</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>10</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>11</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>12</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>13</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>14</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>15</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>16</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>17</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>19</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>20</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>21</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>22</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>23</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>24</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>25</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>26</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>27</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>28</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>29</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>30</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>31</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Credit_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Credit Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Currency__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Currency (Old)</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Australian Dollar</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Canadian Dollar</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Euro</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Zealand Dollar</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pound Sterling</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Russian Ruble</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Singapore Dollar</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Swiss Franc</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>US Dollar</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Japanese Yen</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Thailand Baht</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Customer_IP__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This field holds the IP address of your customer.  Currently this is only sent to Authorize.net as of Summer &apos;13.
+
+Only sends to Authorize.net. Contact chargent@appfrontier.com to inquire about applying this to other gateways.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Authorize.net customers can store the IP address here to have it sent directly to the gateway to be part of your gateway transaction record.</inlineHelpText>
+        <label>Customer IP</label>
+        <length>15</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Customer_Token__c</fullName>
+        <deprecated>false</deprecated>
+        <description>PayFlow Pro Recurring Profile ID</description>
+        <externalId>false</externalId>
+        <label>Customer Token</label>
+        <length>16</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Date_of_Birth__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Date of Birth</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Gateway__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Gateway</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>Please choose an Active Gateway record</errorMessage>
+            <filterItems>
+                <field>ChargentBase__Gateway__c.ChargentBase__Active__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>ChargentBase__Gateway__c</referenceTo>
+        <relationshipLabel>Opportunities</relationshipLabel>
+        <relationshipName>Opportunities</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Invoice_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Stores a unique invoice ID entered by the user.
+
+Only sends to Authorize.net. Contact chargent@appfrontier.com to inquire about applying this to other gateways.</description>
+        <externalId>true</externalId>
+        <inlineHelpText>Please enter the invoice number for this record.</inlineHelpText>
+        <label>Invoice Number</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Last_Recurring_Transaction__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Last Recurring Transaction</label>
+        <summarizedField>Transaction__c.Gateway_Date__c</summarizedField>
+        <summaryFilterItems>
+            <field>Transaction__c.Type__c</field>
+            <operation>equals</operation>
+            <value>Charge</value>
+        </summaryFilterItems>
+        <summaryFilterItems>
+            <field>Transaction__c.Recurring__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </summaryFilterItems>
+        <summaryFilterItems>
+            <field>Transaction__c.Response_Status__c</field>
+            <operation>equals</operation>
+            <value>Approved</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Transaction__c.Opportunity__c</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Manual_Charge__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box when you want to authorize or charge an amount different than the amount due on the opportunity or order. This will prevent the &quot;Charge Amount&quot; from being automatically calculated and updated.</inlineHelpText>
+        <label>Manual Charge</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Next_Transaction_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Use this field to double check and ensure that your recurring payment details are setup correctly.  This field DOES NOT control WHEN a charge will be done.  Rather Chargent applies the same logic here that our scheduling engine does.</inlineHelpText>
+        <label>Next Transaction Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>OrderNumber__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This field has been deprecated and replaced with &quot;Invoice Number&quot; (text 255)</inlineHelpText>
+        <label>Do Not Use (Order Number)</label>
+        <length>8</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OrderSource__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The orderSource element defines the order entry source for the type of transaction.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Order Source field defines the order entry source for this transaction.</inlineHelpText>
+        <label>Order Source</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>ecommerce</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>installment</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>mailorder</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>recurring</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>retail</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>telephone</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>recurringtel</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Prearranged Payment and Deposit</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Corporate Cash Disbursement</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Order_Information__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Stores user entered data about this Opportunity.  The contents of this field is sent to Authorize.net when transactions are initiated.
+
+Only sends to Authorize.net. Contact chargent@appfrontier.com to inquire about applying this to other gateways.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For Authorize.net only.  Enter information about this opportunity to be sent to the gateway.</inlineHelpText>
+        <label>Order Information</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>PO_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>PO Number</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payment_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>If &quot;Payment Stop&quot; is set to &quot;Count&quot; please enter the number of total payments in the series</inlineHelpText>
+        <label>Payment Count</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payment_End_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>If &quot;Payment Stop&quot; is set to &quot;Date&quot; please enter the date when the payments will stop</inlineHelpText>
+        <label>Payment End Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Frequency__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Once - Single time
+Daily - Each day
+Weekly - Every 7 days
+Monthly - Monthly same date
+Bimonthly - Every 2nd mo. same date
+Quarterly - Every 4th mo. same date
+Semiannual - Every 6th mo. same date
+Annual - Same date each year
+Biennial-  2 years</inlineHelpText>
+        <label>Payment Frequency</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Once</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>Daily</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Weekly</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Biweekly</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Monthly</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bimonthly</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Quarterly</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Semiannual</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Annual</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Biennial</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Payment_Method__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Payment Method</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Credit Card</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>Check</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Check (Paper)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cash</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Money Order</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Google Checkout</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Payment_Received__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Payment Received</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>None</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Partial</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Full</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Payment_Start_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Chargent will not attempt to charge this record until the Start Date</inlineHelpText>
+        <label>Payment Start Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Payment Status</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Recurring</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Complete</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Stopped</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Error</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Payment_Stop__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>For any payment frequency other than &quot;Once&quot; please choose the date to end the payment series, or the total number of transactions. You can also run the series until the Balance Due is $0 or choose &quot;Unending&quot;.</inlineHelpText>
+        <label>Payment Stop</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Payment_Frequency__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Date</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Count</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Balance Due</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Unending</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Daily</controllingFieldValue>
+                <controllingFieldValue>Weekly</controllingFieldValue>
+                <controllingFieldValue>Biweekly</controllingFieldValue>
+                <controllingFieldValue>Monthly</controllingFieldValue>
+                <controllingFieldValue>Bimonthly</controllingFieldValue>
+                <controllingFieldValue>Quarterly</controllingFieldValue>
+                <controllingFieldValue>Semiannual</controllingFieldValue>
+                <controllingFieldValue>Annual</controllingFieldValue>
+                <controllingFieldValue>Biennial</controllingFieldValue>
+                <valueName>Date</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Daily</controllingFieldValue>
+                <controllingFieldValue>Weekly</controllingFieldValue>
+                <controllingFieldValue>Biweekly</controllingFieldValue>
+                <controllingFieldValue>Monthly</controllingFieldValue>
+                <controllingFieldValue>Bimonthly</controllingFieldValue>
+                <controllingFieldValue>Quarterly</controllingFieldValue>
+                <controllingFieldValue>Semiannual</controllingFieldValue>
+                <controllingFieldValue>Annual</controllingFieldValue>
+                <controllingFieldValue>Biennial</controllingFieldValue>
+                <valueName>Count</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Daily</controllingFieldValue>
+                <controllingFieldValue>Weekly</controllingFieldValue>
+                <controllingFieldValue>Biweekly</controllingFieldValue>
+                <controllingFieldValue>Monthly</controllingFieldValue>
+                <controllingFieldValue>Bimonthly</controllingFieldValue>
+                <controllingFieldValue>Quarterly</controllingFieldValue>
+                <controllingFieldValue>Semiannual</controllingFieldValue>
+                <controllingFieldValue>Annual</controllingFieldValue>
+                <controllingFieldValue>Biennial</controllingFieldValue>
+                <valueName>Balance Due</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Daily</controllingFieldValue>
+                <controllingFieldValue>Weekly</controllingFieldValue>
+                <controllingFieldValue>Biweekly</controllingFieldValue>
+                <controllingFieldValue>Monthly</controllingFieldValue>
+                <controllingFieldValue>Bimonthly</controllingFieldValue>
+                <controllingFieldValue>Quarterly</controllingFieldValue>
+                <controllingFieldValue>Semiannual</controllingFieldValue>
+                <controllingFieldValue>Annual</controllingFieldValue>
+                <controllingFieldValue>Biennial</controllingFieldValue>
+                <valueName>Unending</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Shipping_Address_Line_2__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Shipping Address Line 2</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Shipping_Address__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Shipping Address</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Shipping_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Shipping Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Shipping_City__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Shipping City</label>
+        <length>64</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shipping_Company__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Shipping Company</label>
+        <length>64</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shipping_Country__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Shipping Country</label>
+        <length>64</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shipping_Duty__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Shipping Duty</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Shipping_First__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Shipping First Name</label>
+        <length>64</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shipping_Last__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Shipping Last Name</label>
+        <length>64</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shipping_State__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Shipping State</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Alabama</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Alaska</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Arizona</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Arkansas</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>California</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Colorado</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Connecticut</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Delaware</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>District of Columbia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Florida</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Georgia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Hawaii</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Idaho</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Illinois</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Indiana</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Iowa</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kansas</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kentucky</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Louisiana</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Maine</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Maryland</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Massachusetts</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Michigan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Minnesota</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mississippi</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Missouri</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Montana</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nebraska</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nevada</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Hampshire</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Jersey</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Mexico</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New York</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>North Carolina</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>North Dakota</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ohio</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Oklahoma</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Oregon</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pennsylvania</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Rhode Island</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>South Carolina</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>South Dakota</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tennessee</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Texas</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Utah</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Vermont</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Virginia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Washington</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>West Virginia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Wisconsin</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Wyoming</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Alberta</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>British Columbia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Manitoba</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Brunswick</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Newfoundland and Labrador</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nova Scotia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ontario</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Prince Edward Island</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Quebec</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Saskatchewan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Northwest Territories</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Nunavut</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Yukon</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Shipping_Zip__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Shipping Zip/Postal</label>
+        <length>10</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Tax_Exempt__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Tax Exempt</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Tax__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Tax</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Tokenization__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Tokenization must be enabled at both in your gateway&apos;s virtual terminal and in the Chargent gateway record configuration.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>A unique token provided by the Gateway which replaces the payment account information on a transaction.</inlineHelpText>
+        <label>Token</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Amount+Tax__c+Shipping_Amount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Transaction_Count_Recurring__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Total number of approved transactions created by a recurring payment schedule</inlineHelpText>
+        <label>Transaction Count Recurring</label>
+        <summaryFilterItems>
+            <field>Transaction__c.Response_Status__c</field>
+            <operation>equals</operation>
+            <value>Approved, Pre-settlement</value>
+        </summaryFilterItems>
+        <summaryFilterItems>
+            <field>Transaction__c.Recurring__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </summaryFilterItems>
+        <summaryFilterItems>
+            <field>Transaction__c.Type__c</field>
+            <operation>equals</operation>
+            <value>Charge, Batch Processing</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Transaction__c.Opportunity__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Transaction_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Transaction Count</label>
+        <summaryForeignKey>Transaction__c.Opportunity__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Transaction_Total__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Total of all Charges and Refunds (expressed in negative) with a Response of &quot;Approved&quot;</inlineHelpText>
+        <label>Transaction Total</label>
+        <summarizedField>Transaction__c.Amount__c</summarizedField>
+        <summaryFilterItems>
+            <field>Transaction__c.Response_Status__c</field>
+            <operation>equals</operation>
+            <value>Approved</value>
+        </summaryFilterItems>
+        <summaryFilterItems>
+            <field>Transaction__c.Type__c</field>
+            <operation>equals</operation>
+            <value>Charge, Refund, Credit</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Transaction__c.Opportunity__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Update_Token__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Update Token</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>UseTokenization__c</fullName>
+        <deprecated>false</deprecated>
+        <description>If TRUE then the associated Gateway record has Tokenization enabled, if FALSE the associated Gateway record does not have tokenization enabled.</description>
+        <externalId>false</externalId>
+        <formula>IF(Gateway__r.ChargentBase__Use_Tokenization__c, &apos;TRUE&apos;, &apos;FALSE&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This field simply states whether or not the associated gateway record has tokenization enabled.</inlineHelpText>
+        <label>Use Tokenization</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <listViews>
+        <fullName>Opportunities_with_Payment_Data</fullName>
+        <booleanFilter>1 OR 2 OR 3</booleanFilter>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>Charge_Amount__c</columns>
+        <columns>Card_Type__c</columns>
+        <columns>Card_Last_4__c</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Tokenization__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <filters>
+            <field>Charge_Amount__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <filters>
+            <field>Card_Last_4__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>Opportunities with Payment Data</label>
+    </listViews>
+    <listViews>
+        <fullName>Recurring_Errors</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>Charge_Amount__c</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>Next_Transaction_Date__c</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>Payment_Status__c</columns>
+        <columns>Payment_Frequency__c</columns>
+        <columns>Payment_Stop__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Payment_Status__c</field>
+            <operation>equals</operation>
+            <value>Error</value>
+        </filters>
+        <label>Recurring Errors</label>
+    </listViews>
+    <listViews>
+        <fullName>Recurring_Payments</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>Charge_Amount__c</columns>
+        <columns>Payment_Status__c</columns>
+        <columns>Payment_Frequency__c</columns>
+        <columns>Payment_Start_Date__c</columns>
+        <columns>Payment_Stop__c</columns>
+        <columns>Next_Transaction_Date__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Payment_Status__c</field>
+            <operation>equals</operation>
+            <value>Recurring</value>
+        </filters>
+        <label>Recurring Payments</label>
+    </listViews>
+    <validationRules>
+        <fullName>Customer_IP_Validation</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(NOT(ISBLANK(Customer_IP__c )) ,IF( NOT(REGEX(Customer_IP__c,&quot;^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$&quot;)),true,false),false)</errorConditionFormula>
+        <errorMessage>Invalid Customer IP</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Payment_Account_Required</fullName>
+        <active>true</active>
+        <description>When the Accounting Seed integration is on, an Account is required.</description>
+        <errorConditionFormula>IF( Gateway__r.ChargentBase__Accounting_Seed_Integration__c=TRUE,
+ISBLANK(AccountId),
+FALSE)</errorConditionFormula>
+        <errorDisplayField>AccountId</errorDisplayField>
+        <errorMessage>You must enter an Account for the Accounting Seed integration to work with Chargent payment processing for salesforce.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Payment_Count_Check</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+ISBLANK( Payment_Count__c),
+TEXT(Payment_Stop__c) = &quot;Count&quot;
+)</errorConditionFormula>
+        <errorMessage>You must enter a value for &quot;Payment Count&quot; if you wish to stop after a certain number of recurring transactions</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Payment_Count_Value_Check</fullName>
+        <active>true</active>
+        <errorConditionFormula>Payment_Count__c  &lt;= 0</errorConditionFormula>
+        <errorMessage>Payment Count should be positive numeric</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Payment_Date_Check</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+ISNULL(Payment_End_Date__c),
+TEXT(Payment_Stop__c) = &quot;Date&quot;
+)</errorConditionFormula>
+        <errorMessage>You must specify an End Date for the recurring transaction schedule</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Payment_End_Date_Check</fullName>
+        <active>true</active>
+        <errorConditionFormula>Payment_End_Date__c  &lt;  Payment_Start_Date__c</errorConditionFormula>
+        <errorMessage>Payment End Date should be greater or equal to Payment Start Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Payment_Start_Date_Check</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND( 
+TEXT(Payment_Frequency__c) != &quot;&quot;, 
+ISNULL(Payment_Start_Date__c ), 
+ISPICKVAL(Payment_Status__c,&quot;Recurring&quot;) 
+)</errorConditionFormula>
+        <errorMessage>You must choose a Start Date to begin a new recurring transaction schedule</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Payment_Status_Check</fullName>
+        <active>true</active>
+        <errorConditionFormula>OR(
+AND(
+TEXT(Payment_Frequency__c)  != &quot;&quot;,
+TEXT(Payment_Frequency__c)  != &quot;Once&quot;,
+TEXT( Payment_Status__c) = &quot;&quot;
+),
+AND(
+TEXT(Payment_Frequency__c)  = &quot;&quot;,
+TEXT( Payment_Status__c) = &quot;Recurring&quot;
+))</errorConditionFormula>
+        <errorMessage>You must choose a payment status of &quot;Recurring&quot; and a payment frequency to begin a new recurring transaction schedule</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>AstroPay_Charge</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>AstroPay Charge</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/apex.js&quot;)} 
+
+try{
+    var queryResult = sforce.connection.query(&quot;SELECT Id, ChargentSFA__Gateway__c, ChargentSFA__Gateway__r.RecordType.DeveloperName FROM Opportunity WHERE Id = &apos;{!Opportunity.Id}&apos; LIMIT 1&quot;); 
+    var currentObject = queryResult.records; 
+
+    if (currentObject.ChargentSFA__Gateway__c != null &amp;&amp; currentObject.ChargentSFA__Gateway__r.RecordType.DeveloperName == &apos;Astropay&apos;) { 
+        var astresult = sforce.apex.execute(&quot;ChargentSFA.TChargentOperations&quot;, &quot;ChargeOpportunity_Click&quot;, {OpportunityId:&quot;{!Opportunity.Id}&quot; }); 
+        astresult = astresult[0]; 
+        if (astresult.DebugString) { 
+            alert(astresult.Message+&apos;\n\n&apos;+astresult.DebugString); 
+        } else if (astresult.ReturnURL == null &amp;&amp; astresult.Message != null &amp;&amp; astresult.Reload == &apos;false&apos;) { 
+            alert(astresult.Message); 
+        } 
+        if (astresult.Message != null &amp;&amp; astresult.Reload == &apos;true&apos;) { 
+            alert(astresult.Message); 
+            window.location.reload(); 
+        } else if(astresult.ReturnURL != null &amp;&amp; astresult.ReturnURL.indexOf(&apos;https://&apos;) &gt;= 0){ 
+            window.location = astresult.ReturnURL; 
+        } 
+    } 
+    else { 
+        alert(&apos;This operation can be used only with AstroPay gateway.&apos;);
+    }
+} catch(e) {
+    var responseMessage;
+    if ((pos = e.faultstring.indexOf(&quot;FIELD_CUSTOM_VALIDATION_EXCEPTION&quot;)) &gt; -1) {
+        faultString = e.faultstring.substring(pos);
+        faultString = faultString.replace(/&amp;quot;/g, &apos;\&quot;&apos;);
+        beginpos = faultString.indexOf(&quot;, &quot;);
+        endpos = faultString.indexOf(&quot;:&quot;);
+        faultString = faultString.substring(beginpos + 2, endpos);
+        responseMessage = faultString;
+        alert(faultString );
+    } else if (e.faultstring.indexOf(&quot;CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY&quot;) &gt; -1) {
+        responseMessage = &apos;An error occurred while recording to Database your Transaction data. Please contact your Administrator.&apos;;
+        alert(responseMessage);
+    }
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Authorize</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Authorize</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/apex.js&quot;)}
+
+disableButtons();
+
+try {
+
+var result = sforce.apex.execute(&quot;ChargentSFA.TChargentOperations&quot;, &quot;AuthorizeOpportunity_Click&quot;, {OpportunityId: &quot;{!Opportunity.Id}&quot; });
+	result = result[0];
+	if (result.DebugString) {
+		alert(result.Message+&apos;\n\n&apos;+result.DebugString);
+	}
+	else {
+		alert(result.Message);
+	}
+	if (result.Reload == &quot;true&quot;) {
+		window.location.reload();
+	}
+
+} catch(e) {
+var responseMessage;
+    if ((pos = e.faultstring.indexOf(&quot;FIELD_CUSTOM_VALIDATION_EXCEPTION&quot;)) &gt; -1) {
+        faultString = e.faultstring.substring(pos);
+        faultString = faultString.replace(/&amp;quot;/g, &apos;\&quot;&apos;);
+        beginpos = faultString.indexOf(&quot;, &quot;);
+        endpos = faultString.indexOf(&quot;:&quot;);
+        faultString = faultString.substring(beginpos + 2, endpos);
+        responseMessage = faultString;
+        alert(faultString );
+    } else if (e.faultstring.indexOf(&quot;CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY&quot;) &gt; -1) {
+        responseMessage = &apos;An error occurred while recording to Database your Transaction data. Please contact your Administrator.&apos;;
+        alert(responseMessage);
+    }
+
+/*sforce.apex.execute(&quot;ChargentSFA.TChargentOperations&quot;, &quot;createTransaction&quot;, {opportunityId: &quot;{!Opportunity.Id}&quot;,
+responseMessage:  responseMessage,
+responseStatus: &quot;Error&quot;,
+transactionType: &quot;Charge&quot;});*/
+    
+}
+enableButtons();
+
+// CHARD-495
+function disableButtons() { 
+	var buttons = document.getElementsByName(&apos;chargentsfa__authorize&apos;); 
+	if (buttons != null) { 
+		for (i = 0; i &lt; buttons.length; i++) { 
+			buttons[i].setAttribute(&apos;disabled&apos;, &apos;true&apos;); 
+		} 
+	} 
+} 
+
+function enableButtons() { 
+	var buttons = document.getElementsByName(&apos;chargentsfa__authorize&apos;); 
+	if (buttons != null) { 
+		for (i = 0; i &lt; buttons.length; i++) { 
+			buttons[i].removeAttribute(&apos;disabled&apos;); 
+		} 
+	} 
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Authorize_Page</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Authorize Page</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.location.href = &apos;/apex/ChargentBase__InternalPayment?objId={!Opportunity.Id}&amp;method=Authorize&amp;retURL={!Opportunity.Id}&apos;;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Charge</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Charge</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/apex.js&quot;)}
+
+disableButtons();
+
+try {
+    var result = sforce.apex.execute(&quot;ChargentSFA.TChargentOperations&quot;, &quot;ChargeOpportunity_Click&quot;, {OpportunityId: &quot;{!Opportunity.Id}&quot; });
+    result = result[0];
+
+    if (result.DebugString) {
+	alert(result.Message+&apos;\n\n&apos;+result.DebugString);
+    }
+    else {
+        alert(result.Message);
+    }
+    if (result.Reload == &quot;true&quot;) {
+	window.location.reload();
+    }
+ 
+} catch(e) {
+    var responseMessage;
+    if ((pos = e.faultstring.indexOf(&quot;FIELD_CUSTOM_VALIDATION_EXCEPTION&quot;)) &gt; -1) {
+        faultString = e.faultstring.substring(pos);
+        faultString = faultString.replace(/&amp;quot;/g, &apos;\&quot;&apos;);
+        beginpos = faultString.indexOf(&quot;, &quot;);
+        endpos = faultString.indexOf(&quot;:&quot;);
+        faultString = faultString.substring(beginpos + 2, endpos);
+        responseMessage = faultString;
+        alert(faultString );
+    } else if (e.faultstring.indexOf(&quot;CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY&quot;) &gt; -1) {
+        responseMessage = &apos;An error occurred while recording to Database your Transaction data. Please contact your Administrator.&apos;;
+        alert(responseMessage);
+    }
+}
+enableButtons();
+
+// CHARD-495
+function disableButtons() { 
+	var buttons = document.getElementsByName(&apos;chargentsfa__charge&apos;); 
+	if (buttons != null) { 
+		for (i = 0; i &lt; buttons.length; i++) { 
+			buttons[i].setAttribute(&apos;disabled&apos;, &apos;true&apos;); 
+		} 
+	} 
+} 
+
+function enableButtons() { 
+	var buttons = document.getElementsByName(&apos;chargentsfa__charge&apos;); 
+	if (buttons != null) { 
+		for (i = 0; i &lt; buttons.length; i++) { 
+			buttons[i].removeAttribute(&apos;disabled&apos;); 
+		} 
+	} 
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Charge_Page</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Charge Page</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.location.href = &apos;/apex/ChargentBase__InternalPayment?objId={!Opportunity.Id}&amp;method=Charge&amp;retURL={!Opportunity.Id}&apos;;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Credit</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Credit</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/apex.js&quot;)} 
+
+try{ 
+var queryResult = sforce.connection.query(&quot;SELECT Id, Name,  ChargentSFA__Gateway__c, ChargentSFA__Gateway__r.RecordType.DeveloperName, ChargentSFA__Payment_Method__c, ChargentSFA__Credit_Amount__c, ChargentSFA__Charge_Amount__c, ChargentSFA__Bank_Account_Name__c, ChargentSFA__Bank_Account_Number__c, ChargentSFA__Bank_Account_Type__c, ChargentSFA__Bank_Name__c, ChargentSFA__Bank_Routing_Number__c FROM Opportunity WHERE Id = &apos;{!Opportunity.Id}&apos; LIMIT 1&quot;); 
+
+var currentObject = queryResult.records; 
+
+if (currentObject.ChargentSFA__Gateway__c != null &amp;&amp; currentObject.ChargentSFA__Gateway__r.RecordType.DeveloperName != &apos;USAePay&apos; &amp;&amp;
+currentObject.ChargentSFA__Gateway__r.RecordType.DeveloperName != &apos;Linked2Pay&apos; &amp;&amp; 
+currentObject.ChargentSFA__Gateway__r.RecordType.DeveloperName != &apos;Forte&apos; &amp;&amp;
+currentObject.ChargentSFA__Gateway__r.RecordType.DeveloperName != &apos;FatZebra&apos;) {
+alert(&apos;Credits are not yet supported for this gateway. Please contact Chargent support for more information.&apos;);
+}
+else if (currentObject.ChargentSFA__Gateway__c != null &amp;&amp; currentObject.ChargentSFA__Payment_Method__c != &apos;Check&apos;) {
+alert(&apos;Credits are only supported for ACH. Please contact Chargent support for more information.&apos;);
+}
+else if (currentObject.ChargentSFA__Gateway__c == null) {
+alert(&apos;Gateway field is empty. Please select the gateway.&apos;);
+}
+else {
+
+var amount = &apos;&apos;; 
+var aname = &apos;&apos;; 
+var anumber = &apos;&apos;;
+var atype = &apos;&apos;; 
+var bname = &apos;&apos;;
+var bnumber = &apos;&apos;;
+if (currentObject != null) { 
+amount = currentObject.ChargentSFA__Credit_Amount__c;
+aname = currentObject.ChargentSFA__Bank_Account_Name__c;
+anumber = currentObject.ChargentSFA__Bank_Account_Number__c;
+atype = currentObject.ChargentSFA__Bank_Account_Type__c;
+bname = currentObject.ChargentSFA__Bank_Name__c;
+bnumber = currentObject.ChargentSFA__Bank_Routing_Number__c;
+} 
+
+
+var CHD = new Object(); 
+CHD.ObjectId = &quot;{!Opportunity.Id}&quot;; 
+CHD.ChargeAmount = Number(amount).toFixed(2); 
+CHD.BankRoutingNumber = bnumber; 
+CHD.BankAccountNumber = anumber; 
+CHD.BankAccountType = atype; 
+CHD.BankName = bname; 
+CHD.BankAccountName = aname; 
+CHD.CustomTransactionType = &quot;ACH_Credit&quot;; 
+
+var result = sforce.apex.execute(&quot;ChargentSFA.TChargentOperations&quot;, &quot;ChargeOpportunity_ClickJSON&quot;, {InputParams: JSON.stringify(CHD) }); 
+
+result = result[0]; 
+//console.log(result); 
+if (result.DebugString) { 
+alert(result.Message+&apos;\n\n&apos;+result.DebugString); 
+} 
+else { 
+alert(result.Message); 
+} 
+if (result.Reload == &quot;true&quot;) { 
+window.location.reload(); 
+} 
+}
+
+} catch(e) { 
+var responseMessage; 
+if ((pos = e.faultstring.indexOf(&quot;FIELD_CUSTOM_VALIDATION_EXCEPTION&quot;)) &gt; -1) { 
+faultString = e.faultstring.substring(pos); 
+faultString = faultString.replace(/&amp;quot;/g, &apos;\&quot;&apos;); 
+beginpos = faultString.indexOf(&quot;, &quot;); 
+endpos = faultString.indexOf(&quot;:&quot;); 
+faultString = faultString.substring(beginpos + 2, endpos); 
+responseMessage = faultString; 
+alert(faultString ); 
+} else if (e.faultstring.indexOf(&quot;CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY&quot;) &gt; -1) { 
+responseMessage = &apos;An error occurred while recording to Database your Transaction data. Please contact your Administrator.&apos;; 
+alert(responseMessage); 
+} 
+
+
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Payment</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Payment Console</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&apos;/soap/ajax/31.0/apex.js&apos;)} 
+{!REQUIRESCRIPT(&apos;/soap/ajax/31.0/connection.js&apos;)}
+{!REQUIRESCRIPT(&apos;/support/console/22.0/integration.js&apos;)} 
+{!REQUIRESCRIPT(&apos;/js/functions.js&apos;)} 
+{!REQUIRESCRIPT(&apos;/resource/ChargentBase__jQuery/jquery-ui/js/jquery-1.9.1.js&apos;)} 
+{!REQUIRESCRIPT(&apos;/resource/ChargentBase__jQuery/jquery-ui/js/jquery-ui-1.10.3.custom.js&apos;)} 
+{!REQUIRESCRIPT(&apos;/resource/ChargentBase__jQuery/jquery-ui/js/jquery-ui-1.10.3.custom.min.js&apos;)} 
+
+var sd;
+$(document).ready(function(){
+	$(&apos;input[value=&quot;Credit Card&quot;]&apos;).on(&apos;click&apos;, function(){
+		var h = $(&quot;.internal-content&quot;).height();
+		$(&quot;#iframeContentId&quot;).height(h);
+
+	});
+
+	$(&apos;input[value=&quot;Check&quot;]&apos;).on(&apos;click&apos;, function(){
+		var h = $(&quot;.internal-content&quot;).height();
+		h=h+30;
+		$(&quot;#iframeContentId&quot;).height(h);
+	});
+
+});
+
+var iframesize;
+var isscroll;
+&lt;!--
+if (document.documentElement.clientHeight &gt; 833) {
+  iframesize = 833;
+  isscroll = &apos;no&apos;;
+} else {
+  iframesize = document.documentElement.clientHeight - 100;
+  isscroll = &apos;yes&apos;;
+}
+--&gt;
+
+// IF BANK OR CAHS TRANSFER =&gt; isscroll = &apos;yes&apos;; CHARD-177
+var currentobj = sforce.connection.query(&quot;SELECT Id, ChargentSFA__Gateway__c FROM Opportunity WHERE Id=&apos;{!Opportunity.Id}&apos; LIMIT 1&quot;).getArray(&quot;records&quot;)[0];
+
+if (currentobj.ChargentSFA__Gateway__c != null) {
+  var currentgateway = sforce.connection.query(&quot;SELECT Id, ChargentBase__Available_Payment_Methods__c FROM ChargentBase__Gateway__c WHERE Id=&apos;&quot; + currentobj.ChargentSFA__Gateway__c + &quot;&apos; LIMIT 1&quot;).getArray(&quot;records&quot;)[0];
+
+  if (currentgateway.ChargentBase__Available_Payment_Methods__c != null) {
+    if (currentgateway.ChargentBase__Available_Payment_Methods__c.indexOf(&apos;Bank Transfer&apos;) != -1 || currentgateway.ChargentBase__Available_Payment_Methods__c.indexOf(&apos;Cash Transfer&apos;) != -1) {
+      isscroll = &apos;yes&apos;;
+    }
+  }
+}
+// END OF CHECK
+
+function createPaymentDialog() {
+                sd = new SimpleDialog(&quot;PaymentDialog&quot;, true); 
+                sd.setWidth(455);
+		sd.setTitle(&apos;&lt;a title=&quot;Close&quot; tabindex=&quot;0&quot; onclick=&quot;window.parent.sd.cancel(); parent.location.reload();&quot; href=&quot;javascript:void(0)&quot; class=&quot;dialogClose&quot;&gt;Close&lt;/a&gt;&lt;h2 id=&quot;title&quot;&gt;Payment Console&lt;/h2&gt;&apos;);
+		sd.createDialog();	
+		window.parent.sd = sd;
+                var iframe_url;
+                if (sforce.console != undefined) {
+                  if (sforce.console.isInConsole()) {
+                    iframe_url = &apos;{!URLFOR(&quot;/apex/chargentbase__internalpayment&quot;, null,  [objId=Opportunity.Id])}&apos;; 
+                  } else {
+                     iframe_url = &apos;{!URLFOR(&quot;/apex/chargentbase__internalpayment&quot;)}&apos; + &apos;?objId=&apos; + &apos;{!Opportunity.Id}&apos;;
+                  }
+                } else {
+                  iframe_url = &apos;{!URLFOR(&quot;/apex/chargentbase__internalpayment&quot;)}&apos; + &apos;?objId=&apos; + &apos;{!Opportunity.Id}&apos;;
+                }
+
+		sd.setContentInnerHTML(&apos;&lt;iframe id=&quot;iframeContentId&quot; src=&quot;&apos; + iframe_url + &apos;&quot; frameborder=&quot;0&quot;  height=&quot;&apos; + iframesize + &apos;&quot; width=&quot;430&quot; marginheight=&quot;0&quot; marginwidth=&quot;0&quot; align=&quot;center&quot; scrolling=&quot;yes&quot; style=&quot;overflow-y: auto; overflow-x: hidden !important;&quot;  /&gt;&apos;);
+}
+
+function setElements() {
+ try{
+  document.getElementById(&quot;PaymentDialogContent&quot;).style.padding = &quot;20px&quot;;
+  document.getElementById(&quot;PaymentDialogContent&quot;).style.overflowY = &quot;hidden&quot;;
+  document.getElementById(&quot;PaymentDialogContent&quot;).style.overflowX = &quot;hidden&quot;;
+  document.getElementsByClassName(&quot;middle&quot;)[0].style.background = &apos;#aaa&apos;;
+  document.getElementsByClassName(&quot;middle&quot;)[1].style.background = &apos;#aaa&apos;;
+  document.getElementsByClassName(&quot;middle&quot;)[1].style.borderBottomRightRadius= &apos;10px&apos;;
+  document.getElementsByClassName(&quot;middle&quot;)[1].style.borderBottomLeftRadius= &apos;10px&apos;;
+  document.getElementsByClassName(&quot;bottomRight&quot;)[1].style.display = &apos;none&apos;;
+  document.getElementById(&apos;PaymentDialog&apos;).style.overflow = &quot;auto&quot;;
+  } catch(e) {}
+}
+
+function showPaymentDialog(){	
+	if (window.parent.sd == undefined) {
+		createPaymentDialog();
+		sd.show();	
+	} else {
+		window.parent.sd.show();
+	}	
+
+   setElements();
+}  
+
+showPaymentDialog();</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Refund</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Refund</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/apex.js&quot;)}
+
+disableButtons();
+
+try {
+
+var result = sforce.apex.execute(&quot;ChargentSFA.TChargentOperations&quot;, &quot;RefundOpportunity_Click&quot;, {OpportunityId: &quot;{!Opportunity.Id}&quot; });
+	result = result[0];
+	if (result.DebugString) {
+		alert(result.Message+&apos;\n\n&apos;+result.DebugString);
+	}
+	else {
+		alert(result.Message);
+	}
+	if (result.Reload == &quot;true&quot;) {
+		window.location.reload();
+	}
+
+} catch(e) {
+var responseMessage;
+    if ((pos = e.faultstring.indexOf(&quot;FIELD_CUSTOM_VALIDATION_EXCEPTION&quot;)) &gt; -1) {
+        faultString = e.faultstring.substring(pos);
+        faultString = faultString.replace(/&amp;quot;/g, &apos;\&quot;&apos;);
+        beginpos = faultString.indexOf(&quot;, &quot;);
+        endpos = faultString.indexOf(&quot;:&quot;);
+        faultString = faultString.substring(beginpos + 2, endpos);
+        responseMessage = faultString;
+        alert(faultString );
+    } else if (e.faultstring.indexOf(&quot;CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY&quot;) &gt; -1) {
+        responseMessage = &apos;An error occurred while recording to Database your Transaction data. Please contact your Administrator.&apos;;
+        alert(responseMessage);
+    }
+
+/*sforce.apex.execute(&quot;ChargentSFA.TChargentOperations&quot;, &quot;createTransaction&quot;, {opportunityId: &quot;{!Opportunity.Id}&quot;,
+responseMessage:  responseMessage,
+responseStatus: &quot;Error&quot;,
+transactionType: &quot;Charge&quot;});*/
+    
+}
+enableButtons();
+
+// CHARD-495
+function disableButtons() { 
+	var buttons = document.getElementsByName(&apos;chargentsfa__refund&apos;); 
+	if (buttons != null) { 
+		for (i = 0; i &lt; buttons.length; i++) { 
+			buttons[i].setAttribute(&apos;disabled&apos;, &apos;true&apos;); 
+		} 
+	} 
+} 
+
+function enableButtons() { 
+	var buttons = document.getElementsByName(&apos;chargentsfa__refund&apos;); 
+	if (buttons != null) { 
+		for (i = 0; i &lt; buttons.length; i++) { 
+			buttons[i].removeAttribute(&apos;disabled&apos;); 
+		} 
+	} 
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Refund_Page</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Refund Page</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.location.href = &apos;/apex/ChargentBase__InternalPayment?objId={!Opportunity.Id}&amp;method=Refund&amp;retURL={!Opportunity.Id}&apos;;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Send_Pay_Request</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Send Pay Request</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&apos;/soap/ajax/31.0/apex.js&apos;)} 
+{!REQUIRESCRIPT(&apos;/soap/ajax/31.0/connection.js&apos;)}
+{!REQUIRESCRIPT(&apos;/support/console/22.0/integration.js&apos;)}
+{!REQUIRESCRIPT(&apos;/js/functions.js&apos;)} 
+{!REQUIRESCRIPT(&apos;/resource/ChargentBase__jQuery/jquery-ui/js/jquery-1.9.1.js&apos;)} 
+{!REQUIRESCRIPT(&apos;/resource/ChargentBase__jQuery/jquery-ui/js/jquery-ui-1.10.3.custom.js&apos;)} 
+{!REQUIRESCRIPT(&apos;/resource/ChargentBase__jQuery/jquery-ui/js/jquery-ui-1.10.3.custom.min.js&apos;)} 
+
+function createPaymentDialog() {
+sd = new SimpleDialog(&quot;PaymentDialog&quot;, true); 
+sd.setWidth(455);
+sd.setTitle(&apos;&lt;a title=&quot;Close&quot; tabindex=&quot;0&quot; onclick=&quot;window.parent.sd.cancel(); parent.location.reload();&quot; href=&quot;javascript:void(0)&quot; class=&quot;dialogClose&quot;&gt;Close&lt;/a&gt;&lt;h2 id=&quot;title&quot;&gt;Send Payment Request&lt;/h2&gt;&apos;);
+sd.createDialog();	
+window.parent.sd = sd;
+var iframe_url;
+if (sforce.console != undefined) {
+  if (sforce.console.isInConsole()) {
+     iframe_url = &apos;{!URLFOR(&quot;/apex/ChargentBase__PaymentRequestModal&quot;, null,  [objId=Opportunity.Id])}&apos;; 
+  } else {
+     iframe_url = &apos;{!URLFOR(&quot;/apex/ChargentBase__PaymentRequestModal&quot;)}&apos; + &apos;?objId=&apos; + &apos;{!Opportunity.Id}&apos;;
+  }
+} else {
+   iframe_url = &apos;{!URLFOR(&quot;/apex/ChargentBase__PaymentRequestModal&quot;)}&apos; + &apos;?objId=&apos; + &apos;{!Opportunity.Id}&apos;;
+}
+
+sd.setContentInnerHTML(&apos;&lt;iframe id=&quot;iframeContentId&quot; src=&quot;&apos; + iframe_url + &apos;&quot; frameborder=&quot;0&quot; height=&quot;260&quot; width=&quot;410&quot; marginheight=&quot;0&quot; marginwidth=&quot;0&quot; align=&quot;center&quot; scrolling=&quot;no&quot; style=&quot;overflow-y: hidden !important; overflow-x: hidden !important;&quot; /&gt;&apos;);
+}
+
+function setElements() {
+try{
+document.getElementById(&quot;PaymentDialogContent&quot;).style.padding = &quot;20px&quot;;
+document.getElementById(&quot;PaymentDialogContent&quot;).style.overflowY = &quot;hidden&quot;;
+document.getElementById(&quot;PaymentDialogContent&quot;).style.overflowX = &quot;hidden&quot;;
+document.getElementsByClassName(&quot;middle&quot;)[0].style.background = &apos;#aaa&apos;;
+document.getElementsByClassName(&quot;middle&quot;)[1].style.background = &apos;#aaa&apos;;
+document.getElementsByClassName(&quot;middle&quot;)[1].style.borderBottomRightRadius= &apos;10px&apos;;
+document.getElementsByClassName(&quot;middle&quot;)[1].style.borderBottomLeftRadius= &apos;10px&apos;;
+document.getElementsByClassName(&quot;bottomRight&quot;)[1].style.display = &apos;none&apos;;
+document.getElementById(&apos;PaymentDialog&apos;).style.overflow = &quot;auto&quot;;
+} catch(e) {}
+}
+
+function showPaymentDialog(){	
+if (window.parent.sd == undefined) {
+createPaymentDialog();
+sd.show();	
+} else {
+window.parent.sd.show();
+}	
+
+setElements();
+} 
+
+showPaymentDialog();</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Void</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Void</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/apex.js&quot;)}
+
+disableButtons();
+
+try {
+
+var result = sforce.apex.execute(&quot;ChargentSFA.TChargentOperations&quot;, &quot;VoidOpportunity_Click&quot;, {OpportunityId: &quot;{!Opportunity.Id}&quot; });
+	result = result[0];
+	if (result.DebugString) {
+		alert(result.Message+&apos;\n\n&apos;+result.DebugString);
+	}
+	else {
+		alert(result.Message);
+	}
+	if (result.Reload == &quot;true&quot;) {
+		window.location.reload();
+	}
+
+} catch(e) {
+var responseMessage;
+    if ((pos = e.faultstring.indexOf(&quot;FIELD_CUSTOM_VALIDATION_EXCEPTION&quot;)) &gt; -1) {
+        faultString = e.faultstring.substring(pos);
+        faultString = faultString.replace(/&amp;quot;/g, &apos;\&quot;&apos;);
+        beginpos = faultString.indexOf(&quot;, &quot;);
+        endpos = faultString.indexOf(&quot;:&quot;);
+        faultString = faultString.substring(beginpos + 2, endpos);
+        responseMessage = faultString;
+        alert(faultString );
+    } else if (e.faultstring.indexOf(&quot;CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY&quot;) &gt; -1) {
+        responseMessage = &apos;An error occurred while recording to Database your Transaction data. Please contact your Administrator.&apos;;
+        alert(responseMessage);
+    }
+
+/*sforce.apex.execute(&quot;ChargentSFA.TChargentOperations&quot;, &quot;createTransaction&quot;, {opportunityId: &quot;{!Opportunity.Id}&quot;,
+responseMessage:  responseMessage,
+responseStatus: &quot;Error&quot;,
+transactionType: &quot;Charge&quot;});*/
+    
+}
+enableButtons();
+
+// CHARD-495
+function disableButtons() { 
+	var buttons = document.getElementsByName(&apos;chargentsfa__void&apos;); 
+	if (buttons != null) { 
+		for (i = 0; i &lt; buttons.length; i++) { 
+			buttons[i].setAttribute(&apos;disabled&apos;, &apos;true&apos;); 
+		} 
+	} 
+} 
+
+function enableButtons() { 
+	var buttons = document.getElementsByName(&apos;chargentsfa__void&apos;); 
+	if (buttons != null) { 
+		for (i = 0; i &lt; buttons.length; i++) { 
+			buttons[i].removeAttribute(&apos;disabled&apos;); 
+		} 
+	} 
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Void_Page</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Void Page</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.location.href = &apos;/apex/ChargentBase__InternalPayment?objId={!Opportunity.Id}&amp;method=Void&amp;retURL={!Opportunity.Id}&apos;;</url>
+    </webLinks>
+</CustomObject>

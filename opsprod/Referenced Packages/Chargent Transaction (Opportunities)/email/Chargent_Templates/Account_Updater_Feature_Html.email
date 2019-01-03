@@ -1,0 +1,10 @@
+Hello {!Email_Notification__c.First_Name__c} <br/>
+<br/>
+<b>Your credit card will expire soon.</b> <br/>
+<br/>
+Please click the link below to use our secure Account Updater online form. <br/>
+<br/>
+{!Email_Notification__c.Account_Updater_Link_Formatted__c}<br/>
+<br/>
+Thanks,<br/>
+{!Organization.Name}

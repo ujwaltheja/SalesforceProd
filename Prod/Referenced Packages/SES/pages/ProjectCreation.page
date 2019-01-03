@@ -1,0 +1,459 @@
+<apex:page id="ProjectCreation" controller="ses.ProjectCreation" TabStyle="ses__Task_Name__c">
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" /> 
+<script type="text/javascript" src="/soap/ajax/24.0/connection.js"></script>
+<script type="text/javascript" src="/soap/ajax/24.0/apex.js" ></script> 
+
+    <style> 
+        
+        .searchbox{
+        	width: 400px
+        }
+        	
+        input [type=file]{
+        	background-color: white
+        }
+        
+        a Label{
+            display:none;border:none;width: 400px;text-decoration:none;font-style:normal
+        }
+        
+        a:hover Label,a:active Label{display:inline;background:#ffffff;
+            border:1px solid #cccccc;
+            color:#6c6c6c;width: 400px;text-decoration:none;font-style:normal
+        }
+         
+        a.tooltip:link div label,a.tooltip:visited div label{
+            border:none;width:0px;text-decoration:none;font-style:normal
+            display:none;
+            padding:2px 3px;
+            margin-left:8px;width: 400px;text-decoration:none;
+            !immedaiate: true;
+        }
+        
+        a.tooltip:hover div label{
+            display:inline;font-style:normal
+            background:#ffffff;
+            border:1px solid #cccccc;
+            color:#6c6c6c;width: 400px;text-decoration:none;
+        }
+
+    .NewLine{
+        margin-bottom: 2em;
+    }
+    .SmallLine{
+        margin-bottom: 1em;
+    }
+    .spaces{
+        padding-left: 20px;
+    }
+    .boldlabel {
+        font-weight: bold
+    }
+    
+    .leftalign{
+    	margin-left: 10px !IMPORTANT;
+    	float: left;
+    }
+    .smallleftalign{
+    	margin-left: 10px;
+    	float: left;
+	}
+    	
+    .flt{
+    	float: left;
+    }
+    </style> 
+  
+    <apex:Form >
+        <apex:PageBlock > 
+            <a class="tooltip" style="text-decoration:none;font-style:normal">
+            <img src="/s.gif" alt="" class="helpOrb" title="" />
+            <div style="width: 400px;position:absolute;z-index: 1;font-size: 13px">
+                <label>Creating new tasks from existing Tasks select a 'Task Name' , 'Sub Task' or 'Lower Task', then select a task from one of the 2 tables at the bottom of the screen by pressing 'Use'. Now press the appropriate 'Create Task' button.</label>
+            </div>
+            </a>
+
+            <a class="tooltip" style="text-decoration:none;font-style:normal">
+            <img src="/s.gif" alt="" class="helpOrb" title="" />
+            <div style="width: 400px;position:absolute;z-index: 1;font-size: 13px">
+                <label>Creating new tasks from existing Tasks in 'Select Tasks And Functions' section. Select an existing using one of the 6 lookups, then select the type of record to create in Section 'Create New Task' from 'Task Name' , 'Sub Task' or 'Lower Task'. Now press the 'Create New Record' button.</label>
+            </div>
+            </a>
+
+            <a class="tooltip" style="text-decoration:none;font-style:normal">
+            <img src="/s.gif" alt="" class="helpOrb" title="" />
+            <div style="width: 400px;position:absolute;z-index: 1;font-size: 13px !important">
+                <label>Create new tasks enter a Task Name, press 'Task Name', after creating a Task Name record, a new 'Sub Task' record can be created, followed by any type of Task.</label>
+            </div>
+            </a>
+        
+            <a class="tooltip" style="text-decoration:none;font-style:normal">
+            <img src="/s.gif" alt="" class="helpOrb" title="" />
+            <div style="width: 400px;position:absolute;z-index: 1;font-size: 13px !important">
+                <label>Search for Private and Global Tasks by entering keywords and/or search for Tasks by Category of the Task.</label>
+            </div>
+            </a>
+
+			<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.ProjectCreation__c}');" >  
+				<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+			</apex:commandLink>-->
+
+
+            <apex:outputPanel id="taskType"  >
+                 <apex:pagemessages /> 
+                <apex:outputPanel layout="block" styleclass="NewLine" />
+                <apex:outputPanel id="projectcreation"  >
+	                <apex:pageBlockSection columns="4" >
+	                <apex:pageBlockSectionItem >
+	                     <apex:outputLabel styleclass="boldlabel" value="New Project" />
+	                     <apex:commandButton id="Proj" styleclass="btnPrimary publishersharebutton btn" action="{!createNewTaskFunction}"  value="Create A New Project" rerender="projectcreation" >
+	                        <apex:param name="newTaskType" assignTo="{!newTaskType}" value="Proj" />
+	                    </apex:commandButton>
+	                </apex:pageBlockSectionItem>
+	                </apex:pageBlockSection>
+	                    <apex:outputPanel rendered="{!displayNewObject}" > 
+	                        <apex:pageBlockSection > 
+	                            <apex:repeat value="{!accessibleFields}" var="fprj">
+	                                <apex:inputField value="{!obj[fprj]}" />
+	                            </apex:repeat>
+	                        </apex:pageBlockSection>
+	                        <apex:outputPanel layout="block" styleclass="spaces" />
+	
+	                        <apex:pageBlockSection columns="4" >
+	                        <apex:pageBlockSectionItem >
+	                            <apex:outputLabel value="" />
+	                            <apex:commandButton id="insertProj" styleclass="btnPrimary publishersharebutton btn" action="{!createNewProj}"  value="Insert New Project" rerender="taskType" />
+	                        </apex:pageBlockSectionItem>
+	                        </apex:pageBlockSection>
+	                        <apex:outputPanel layout="block" styleclass="NewLine" />                    
+	                    </apex:outputPanel>
+				</apex:outputPanel>
+
+                <apex:outputPanel layout="block" styleclass="NewLine" />
+                 <apex:outputLabel styleclass="boldlabel" value="Select A Project" />
+                 <apex:selectList value="{!selectedproject}" size="1" >
+                     <apex:SelectOptions value="{!allProjects}"></apex:SelectOptions> 
+                     <apex:actionSupport action="{!displayTaskType}" event="onchange"  rerender="taskType" />
+                 </apex:selectList>
+            
+                <apex:outputPanel styleclass="spaces" />
+                <apex:commandButton id="CloseProject" styleclass="btnPrimary publishersharebutton btn" action="{!projectStatusChange}"  value="Close Project" rerender="taskType" >
+                    <apex:param name="prjStatus" assignTo="{!prjStatus}" value="Closed" />
+                </apex:commandButton> 
+                    
+                <apex:outputPanel styleclass="spaces" />
+                <apex:commandButton id="CompleteProject" styleclass="btnPrimary publishersharebutton btn" action="{!projectStatusChange}"  value="Completed Project" rerender="taskType" >
+                    <apex:param name="prjStatus" assignTo="{!prjStatus}" value="Completed" />
+                </apex:commandButton> 
+
+                <apex:outputPanel layout="block" styleclass="NewLine" />
+                <apex:outputPanel id="TaskArea" rendered="{!showTask}" >
+                    <apex:pageBlockSection columns="2" title="Search For Tasks" >
+                    	<apex:pageBlockSectionItem >
+                    		<apex:outputLabel styleclass="boldlabel" value="Enter keywords" />
+                    		<apex:outputPanel >
+                    			<apex:inputText id="keywords" value="{!searchkeywords}" styleclass="searchbox" />
+								<apex:outputLabel value="" />  
+							</apex:outputPanel> 		
+                    	</apex:pageBlockSectionItem>
+                    	<apex:pageBlockSectionItem >
+                    		<apex:commandButton id="import" styleclass="btnPrimary publishersharebutton btn" status="RefreshMatchesStatus" action="{!searchForTasks}"  value="Search" rerender="taskType" />
+                    		<apex:actionStatus startText="calculating....." id="RefreshMatchesStatus" />
+                    	</apex:pageBlockSectionItem>
+
+                    	<apex:pageBlockSectionItem >
+                    		<apex:outputLabel styleclass="boldlabel" value="Search By Category" />
+                    		<apex:outputPanel id="RefreshCategory">
+								<apex:inputField value="{!searchCategory.ses__Category__c}" style="margin-right: 50px" >
+									<apex:actionSupport action="{!searchForTaskCategory}" event="onchange" status="RefreshCategory RefreshMatchesStatus"  rerender="taskType" />
+								</apex:inputField>
+								<!--<apex:inputField value="{!searchCategory.ses__Sub_Category__c}" >
+									<apex:actionSupport action="{!searchForTaskCategory}" event="onchange" status="RefreshMatchesStatus"  rerender="taskType" />
+								</apex:inputField>-->
+								<!-- <apex:selectList value="{!selectedCategory}" size="1" >
+			                     	<apex:SelectOptions value="{!allCategories}"></apex:SelectOptions> 
+			                     	<apex:actionSupport action="{!searchForTaskCategory}" event="onchange" status="RefreshMatchesStatus"  rerender="taskType" /> 
+			                 	</apex:selectList> -->
+     						</apex:outputPanel> 		
+                    	</apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+
+                   <!--  <apex:pageBlockSection columns="2" title="New Tasks" >  
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Enter Task Description" />
+                            <apex:inputTextArea id="Description" value="{!taskDescription}"  />
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>-->
+                    
+                    <apex:commandButton id="TaskName" styleclass="btnPrimary publishersharebutton btn" action="{!createNewTaskFunction}"  value="Create New Task Name" rerender="TaskArea" >
+                        <apex:param name="newTaskType" assignTo="{!newTaskType}" value="TaskName" />
+                    </apex:commandButton> 
+                    
+                    <apex:outputPanel styleclass="spaces" />
+                    
+                    <apex:commandButton id="SubTaskName" styleclass="btnPrimary publishersharebutton btn" action="{!createNewTaskFunction}" value="Create New Sub Task" rerender="TaskArea" rendered="{!displaySubTaskName}" >
+                        <apex:param name="newTaskType" assignTo="{!newTaskType}" value="SubTask" />
+                    </apex:commandButton> 
+    
+                    <apex:outputPanel styleclass="spaces" />
+                    
+                    <apex:commandButton id="LowerTaskName" styleclass="btnPrimary publishersharebutton btn" action="{!createNewTaskFunction}" value="Create New Lower Task" rerender="TaskArea" rendered="{!displayLowerTaskName}" >
+                        <apex:param name="newTaskType" assignTo="{!newTaskType}" value="LowerTask" />
+                    </apex:commandButton> 
+
+                    <apex:outputPanel rendered="{!displayNewObject}" > 
+                    <apex:pageBlockSection > 
+                     <apex:repeat value="{!accessibleFields}" var="f">
+                        <apex:inputField value="{!obj[f]}" />
+	                    <!-- <apex:pageblockTable >
+	                        <apex:column >
+	                            <apex:facet name="header">{!$ObjectType[objectType].fields[f].Label}</apex:facet>
+	                            <apex:outputlabel value="{!$ObjectType[objectType].fields[f].Label}" />
+	                        </apex:column>
+	                        <apex:column >
+	                            <apex:facet name="header">{!$ObjectType[objectType].fields[f].Label}</apex:facet>
+	                            <apex:inputField value="{!obj[f]}" />
+	                        </apex:column>
+	                      --> 
+                    </apex:repeat> 
+                    </apex:pageBlockSection>
+                    
+                    <!-- display link to new created record -->
+                    <apex:outputPanel rendered="{!displayNewCreatedObject}" > 
+                    	<apex:pageBlockSection title="New Record"> 
+                    		<apex:outputLink target="_blank" value="/{!newCreatedRecordID}" >Link To New Record</apex:outputLink>
+                    	</apex:pageBlockSection> 
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel layout="block" styleclass="NewLine" />
+                    <apex:commandButton id="cancelRecord" styleclass="btnPrimary publishersharebutton btn" action="{!cancelRecord}" immediate="true"  value="Cancel Record" rerender="TaskArea" />
+                    <apex:outputPanel styleclass="spaces" />
+                    <apex:commandButton id="insertRec" styleclass="btnPrimary publishersharebutton btn" action="{!createNewRecord}"  value="Create New Record" rerender="TaskArea" />
+                    <apex:outputPanel styleclass="spaces" />
+                    <apex:commandButton id="updateRecord" styleclass="btnPrimary publishersharebutton btn" action="{!updateRecord}"  value="Update Record" rerender="TaskArea" />
+                    <apex:outputPanel styleclass="spaces" />
+                    <!-- <apex:commandButton id="cloneRec" styleclass="btnPrimary publishersharebutton btn" action="{!cloneRecord}"  value="Clone Record" rerender="TaskArea" />
+                          -->       
+                    </apex:outputPanel>
+                
+                
+                	<apex:inputHidden value="{!selectedTask}" id="selectedTask"/>
+                
+                
+                     <apex:outputPanel layout="block" styleclass="NewLine" />
+                     <apex:outputPanel layout="block" styleclass="NewLine" />
+                     <apex:outputLabel styleclass="boldlabel" value="Select Tasks And Functions" />
+                     <apex:outputPanel layout="block" styleclass="NewLine" />
+                     <apex:outputPanel id="functionSelection">
+                        <apex:pageBlockSection Columns="2">
+                        	<apex:pageBlockSectionItem >
+		                        
+			                        <apex:outputLabel value="Task Name" /> 
+			                        <apex:outputPanel layout="block" styleclass="flt">
+				                        <apex:inputField id="tkname" value="{!newSubTask.ses__Parent_Task__c}" >
+				                        	<apex:actionsupport event="onchange" action="{!setTaskandFunction}" rerender="TaskArea"/>
+				                        </apex:inputField> 		
+				                        <apex:outputPanel layout="block" styleclass="SmallLine" />	                         
+			                    	</apex:outputPanel>
+			                </apex:pageBlockSectionItem>
+                        	<apex:pageBlockSectionItem >
+		                        
+			                        <apex:outputLabel value="Global Function" /> 
+				                        <apex:outputPanel layout="block"  styleclass="flt">
+				                        <apex:inputField id="gfunc" value="{!newGloSubTask.ses__Parent_Task__c}" >
+				                        	<apex:actionsupport event="onchange" action="{!setTaskandFunction}" rerender="TaskArea"/>
+				                        </apex:inputField> 
+			                         <apex:outputPanel layout="block" styleclass="SmallLine" />
+			                    </apex:outputPanel>
+			                </apex:pageBlockSectionItem>
+			                
+                        	<apex:pageBlockSectionItem >
+		                        
+			                        <apex:outputLabel value="Sub Task" /> 
+			                        <apex:outputPanel layout="block"  styleclass="flt">
+			                        	<apex:inputField id="lowertk" value="{!newLowerTask.ses__Sub_Task__c}">
+				                        	<apex:actionsupport event="onchange" action="{!setTaskandFunction}" rerender="TaskArea"/>
+				                        </apex:inputField> 
+			                         	<apex:outputPanel layout="block" styleclass="SmallLine" />
+			                         	</apex:outputPanel>
+			                    
+			                </apex:pageBlockSectionItem>
+			                
+                        	<apex:pageBlockSectionItem >
+		                        
+			                        <apex:outputLabel value="Global Sub Task" /> 
+				                        <apex:outputPanel layout="block" styleclass="flt">
+					                        <apex:inputField id="gsubfunc" value="{!newGloLowerTask.ses__Global_Sub_Task__c}" >
+					                        	<apex:actionsupport event="onchange" action="{!setTaskandFunction}" rerender="TaskArea"/>
+					                        </apex:inputField> 
+				                         	<apex:outputPanel layout="block" styleclass="SmallLine" />
+			                    		</apex:outputPanel>
+			                </apex:pageBlockSectionItem>
+                        	<apex:pageBlockSectionItem >
+		                        
+			                        <apex:outputLabel value="Lower Task" /> 
+			                        <apex:outputPanel layout="block" styleclass="flt">
+				                        <apex:inputField id="subtk" value="{!newSubTask.ses__Lower_Level_Sub_Task__c}" >
+					                        	<apex:actionsupport event="onchange" action="{!setTaskandFunction}" rerender="TaskArea"/>
+					                        </apex:inputField> 
+				                         <apex:outputPanel layout="block" styleclass="NewLine" />
+			                    	</apex:outputPanel>
+			                </apex:pageBlockSectionItem>
+                        	<apex:pageBlockSectionItem >
+		                        
+			                        <apex:outputLabel value="Global Lower Task" /> 
+				                        <apex:outputPanel layout="block" styleclass="flt">
+					                        <apex:inputField id="glowfunc" value="{!newGloSubTask.ses__Global_Lower_Task__c}" >
+					                        	<apex:actionsupport event="onchange" action="{!setTaskandFunction}" rerender="TaskArea"/>
+					                        </apex:inputField> 
+				                         	<apex:outputPanel layout="block" styleclass="SmallLine" />
+				                    	</apex:outputPanel>
+			                </apex:pageBlockSectionItem>
+			            </apex:pageBlockSection>
+
+                         <apex:outputPanel layout="block" styleclass="NewLine" />
+                         <apex:outputPanel layout="block" styleclass="NewLine" />
+                         <apex:outputLabel styleclass="boldlabel" value="Tasks And Functions Of This Org" />
+                         <apex:outputPanel layout="block" styleclass="NewLine" />
+                        
+                        
+                        <apex:outputPanel id="PFunctions" >
+                            <apex:pageBlockTable title="Private Functions" value="{!myCurrentPrivateFunctions}" var="PrivateFunc">
+                                <apex:column headerValue="ID" title="ID" value="{!PrivateFunc.taskID}" />                                 
+                                <apex:column headerValue="Caption" title="Caption" value="{!PrivateFunc.caption}" />    
+                                <apex:column headerValue="Description" title="Description" value="{!PrivateFunc.description}" />    
+                                <apex:column headerValue="Link" title="Link" >  
+                                    <apex:outputLink target="_blank" value="/{!URLFOR(PrivateFunc.classID)}" rendered="{!NOT(ISNULL(PrivateFunc.classID))}" >Open</apex:outputLink>
+                                </apex:column>
+                                <apex:column headerValue="Use" title="Use" >
+                                     <apex:commandLink value="Use" onclick="displayTaskFunctionSelection('{!PrivateFunc.taskID}')" />
+                                    <!-- <apex:commandLink value="Use"  >
+                                    	<apex:actionsupport event="onclick" action="{!displayTaskFunctionSelection}">
+                                        	<apex:param name="selectedTask" assignTo="{!selectedTask}" value="{!PrivateFunc.taskID}" />
+                                        </apex:actionsupport>
+                                    </apex:commandLink> -->
+                                </apex:column>  
+                            </apex:pageBlockTable>
+                            <apex:outputPanel layout="block" styleclass="NewLine" /> 
+                            <apex:commandButton id="first" styleclass="btnPrimary publishersharebutton btn" action="{!returnPrivateFunctionsFirst}"  value="<<" rerender="PFunctions" />
+                            <apex:outputPanel styleclass="spaces" />
+                            <apex:commandButton id="dec" styleclass="btnPrimary publishersharebutton btn" action="{!returnPrivateFunctionsDecrease}"  value="<" rerender="PFunctions" />
+                            <apex:outputPanel styleclass="spaces" />
+                            <apex:commandButton id="inc" styleclass="btnPrimary publishersharebutton btn" action="{!returnPrivateFunctionsIncrease}"  value=">" rerender="PFunctions"  />
+                            <apex:outputPanel styleclass="spaces" />
+                            <apex:commandButton id="last" styleclass="btnPrimary publishersharebutton btn" action="{!returnPrivateFunctionsLast}"  value=">>" rerender="PFunctions"  />
+                            <apex:outputPanel layout="block" styleclass="NewLine" /> 
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel layout="block" styleclass="NewLine" />
+                         <apex:outputLabel styleclass="boldlabel" value="Tasks And Functions Of SES Member Orgs" />
+                        <apex:outputPanel layout="block" styleclass="NewLine" />
+                        <apex:outputPanel id="GlobalSESFuncs" >
+                            <apex:pageBlockTable title="Global Functions" value="{!displayCurrentGlobalFunctions}" var="GlobalFunc">
+                                <apex:column headerValue="ID" title="ID" value="{!GlobalFunc.taskID}" />                                 
+                                <apex:column headerValue="Caption" title="Caption" value="{!GlobalFunc.caption}" /> 
+                                <apex:column headerValue="Description" title="Description" value="{!GlobalFunc.description}" /> 
+                                <apex:column headerValue="Link" title="Link" >  
+                                    <apex:outputLink target="_blank" value="/{!URLFOR(GlobalFunc.classID)}" rendered="{!NOT(ISNULL(GlobalFunc.classID))}" >Open</apex:outputLink>                                    
+                                </apex:column>
+                                <apex:column headerValue="Use" title="Use" >
+                                     <apex:commandLink value="Use" onclick="displayTaskFunctionSelection('{!GlobalFunc.taskID}')" />
+                                    <!--                                     	<apex:actionsupport event="onclick" action="{!displayTaskFunctionSelection}">
+                                        	<apex:param name="selectedTask" assignTo="{!selectedTask}" value="{!GlobalFunc.taskID}" />
+                                        </apex:actionsupport>
+                                    <apex:commandlink value="Use" onclick="displayTaskFunctionSelection('{!GlobalFunc.taskID}')" >
+                                        <!-- <apex:param assignTo="{!selectedTask}" value="" /> 
+                                    </apex:commandlink> -->
+                                </apex:column>  
+                            </apex:pageBlockTable> 
+    
+                            <apex:outputPanel layout="block" styleclass="NewLine" /> 
+                            <apex:commandButton id="Gfirst" styleclass="btnPrimary publishersharebutton btn" action="{!returnGlobalFunctionsFirst}"  value="<<" rerender="GlobalSESFuncs" />
+                            <apex:outputPanel styleclass="spaces" />
+                            <apex:commandButton id="Gdec" styleclass="btnPrimary publishersharebutton btn" action="{!returnGlobalFunctionsDecrease}"  value="<" rerender="GlobalSESFuncs" />
+                            <apex:outputPanel styleclass="spaces" />
+                            <apex:commandButton id="Ginc" styleclass="btnPrimary publishersharebutton btn" action="{!returnGlobalFunctionsIncrease}"  value=">" rerender="GlobalSESFuncs"  />
+                            <apex:outputPanel styleclass="spaces" />
+                            <apex:commandButton id="Glast" styleclass="btnPrimary publishersharebutton btn" action="{!returnGlobalFunctionsLast}"  value=">>" rerender="GlobalSESFuncs"  />
+<script> 
+
+	function displayTaskFunctionSelection(funcid){
+		document.getElementById('{!$Component.selectedTask}').value = funcid;
+	}
+</script>
+                            
+                            <apex:outputPanel layout="block" styleclass="NewLine" /> 
+                        </apex:outputPanel>
+                        <apex:pageBlockSection columns="2" title="Create New Task" >
+	                        <apex:pageBlockSectionItem >
+	                            <apex:outputPanel >
+		                            <apex:outputLabel value="Enter Task Name" />
+		                            <apex:inputText id="taskname" value="{!taskname}"  /><!-- could be Task_Name__c, Sub_Task__c, or Lower_Level_Sub_Task__c, when pressing following buttons this identifies type of record to craete  -->
+		                        </apex:outputPanel>		                         
+	                        </apex:pageBlockSectionItem>
+	                    	<apex:pageBlockSectionItem >
+	                    	</apex:pageBlockSectionItem>
+	                    	<apex:pageBlockSectionItem >
+		                    	<apex:outputPanel >
+			                    	<apex:selectRadio value="{!selectedTaskType}">
+				                        <apex:selectOptions value="{!tasktype}"/>
+				                    </apex:selectRadio>
+		                        	<apex:commandButton id="insertRec2" styleclass="btnPrimary publishersharebutton btn" action="{!displayTaskFunctionSelection}"  value="Create New Records" rerender="taskType,ReLink" />
+		                        </apex:outputPanel>
+		                    </apex:pageBlockSectionItem>
+		                </apex:pageBlockSection>
+
+			            <apex:outputPanel id="ReLink" rendered="{!displayNewCreatedObject}"><!--   -->
+			                    <apex:pageBlockSection columns="2" title="New Created Task" >
+			                    	<apex:pageBlockSectionItem >
+			                    		<apex:outputLink target="_blank" value="/{!selectedproject}" >Link To Project</apex:outputLink>
+			                    	</apex:pageBlockSectionItem>
+		                    		<apex:outputPanel rendered="{!IF(selectedTaskType=='TaskName',true,false)}" >
+			                    		<apex:pageBlockSectionItem >
+			                    			<apex:outputLink target="_blank" value="/{!newTk.ID}" >Link To Task</apex:outputLink>
+			                    		</apex:pageBlockSectionItem>
+		                    		</apex:outputPanel>
+		                    		
+			                    	<apex:outputPanel rendered="{!IF(selectedTaskType=='SubTask',true,false)}"><!--  -->
+				                    	<apex:pageBlockSectionItem >
+				                    		<apex:outputLabel styleclass="boldlabel" value="Task Name" />
+				                    		<apex:outputPanel layout="block" >
+					                    		<apex:inputField value="{!newSubTk.ses__Parent_Task__c}" />
+						                    		<apex:outputPanel layout="block" styleclass="NewLine" />
+					                    	</apex:outputPanel>
+					                 	</apex:pageBlockSectionItem>
+					                 	<apex:pageBlockSectionItem >	
+					                 		<apex:outputLabel styleclass="boldlabel" value="Sub Task" />
+					                 		<apex:outputPanel layout="block" >
+						                 		<apex:inputField value="{!newSubTk.ses__Lower_Level_Sub_Task__c}" />
+						                    		
+						                    </apex:outputPanel>
+						                </apex:pageBlockSectionItem>
+						                <apex:outputLink target="_blank" value="/{!newSubTk.ID}" >Link To Task</apex:outputLink>
+						             </apex:outputPanel>	
+						                
+					                <apex:outputPanel rendered="{!IF(selectedTaskType=='LowerTask',true,false)}"><!--  -->
+			                    		<apex:pageBlockSectionItem >
+				                    		<apex:outputLabel styleclass="boldlabel" value="Sub Task" />
+				                    		<apex:outputPanel layout="block" >
+					                    		<apex:inputField value="{!newLowerTk.ses__Sub_Task__c}" />
+					                    		<apex:outputPanel layout="block" styleclass="NewLine" />
+					                    	</apex:outputPanel>
+					                    </apex:pageBlockSectionItem>
+					                    <apex:outputLink target="_blank" value="/{!newLowerTk.ID}" >Link To Task</apex:outputLink>
+			                    	</apex:outputPanel>
+						            		                    		
+			                    	
+						</apex:pageBlockSection>
+                        <apex:outputPanel rendered="{!IF(selectedTaskType!='TaskName',true,false)}" >
+                        	<apex:commandButton id="updRec" styleclass="btnPrimary publishersharebutton btn" action="{!updateNewRecord}"  value="Update Record" rerender="taskType" />
+                        </apex:outputPanel>
+			            </apex:outputPanel> 
+                    </apex:outputPanel>
+                </apex:outputPanel>
+             </apex:outputPanel>
+             
+        </apex:PageBlock>
+
+    </apex:Form>
+</apex:page>

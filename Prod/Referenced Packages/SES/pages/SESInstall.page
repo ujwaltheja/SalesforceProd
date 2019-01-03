@@ -1,0 +1,253 @@
+<apex:page controller="ses.SESMenu" >
+<apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" />
+
+                   <style type="text/css">
+						.panl{
+							background: darkblue;
+							width: 150px;
+							margin-bottom: 10px;
+						}
+						.rich-panelbar{
+							background: darkblue;
+							width: 150px;
+							margin-bottom: 10px;
+						}
+						.rich-panelbar-b{
+							background: darkblue;
+							width: 150px;
+							margin-bottom: 10px;
+						}
+						.rich-panelbar-interior{
+							background: darkblue;
+							width: 150px;
+							margin-bottom: 10px;
+						}
+						.rich-panelbar-header{
+							cursor: none;
+						}
+					
+					    .boldlabel {
+					        font-weight: bold
+					    }
+					    .NewLine{
+					        margin-bottom: 2em;
+					    }
+
+                        /* menu styles */
+                        #jsddmX{
+                                       width: 400px !important
+                        }
+                        
+                                       
+                        #jsddmX
+                        {              
+                        		margin: 0;
+                                margin-right: 400px;
+                                padding: 0;
+                                padding-right: 40px;
+                                width: 400px
+                        }
+                        
+                                       #jsddmX li 
+                                       {              float: left;
+                                                      list-style: none;
+                                                      font: 12px Tahoma, Arial;
+                                                      width: 400px
+                                        }
+                        
+                                       #jsddmX li a
+                                       {              
+                                       		display: block;
+                                           background: darkblue;
+                                           padding: 5px 20px;
+                                           text-decoration: none;
+                                           border-right: 1px solid white;
+                                           width: 400px;
+                                           color: white;
+                                           white-space: nowrap;
+                                       }
+                        
+                                       #jsddmX li a:hover
+                                       {              
+                                       		background: darkblue; width: 200px;
+                                       
+                                       }
+                                                      
+                                                      #jsddmX li ul
+                                                      {              margin: 0 200;
+                                                                     padding: 0;
+                                                                     position: absolute;
+                                                                     visibility: hidden;
+                                                                     border-top: 1px solid white
+                                                       }
+                                                      
+                                                                     #jsddmX li ul li
+                                                                     {              float: none;
+                                                                                    display: inline;
+                                                                                    width: 400px
+                                                                     }
+                                                                     
+                                                                     #jsddmX li ul li a
+                                                                     {              width: 400px;
+                                                                                    background: darkblue;
+                                                                                    color: white
+                                                                     }
+                                                                     
+                                                                     #jsddmX li ul li a:hover
+                                                                     {              background: #8EA344;
+                                                                                    width: 200px;
+                                                                     }
+                     </style>
+                     <script type="text/javascript">
+                             var timeout         = 500;
+                             var closetimer                   = 0;
+                             var ddmenuitem      = 0;
+                             
+                             function jsddmX_open()
+                             {              jsddmX_canceltimer();
+                                            jsddmX_close();
+                                            ddmenuitem = $(this).find('ul').eq(0).css('visibility', 'visible');                                                            
+                             }
+                             
+                             function jsddmX_close()
+                             {              if(ddmenuitem) ddmenuitem.css('visibility', 'hidden');}
+                             
+                             function jsddmX_timer()
+                             {              closetimer = window.setTimeout(jsddmX_close, timeout);}
+                             
+                             function jsddmX_canceltimer()
+                             {              if(closetimer)
+                                            {              window.clearTimeout(closetimer);
+                                                           closetimer = null;}}
+                             
+                             $(document).ready(function()
+                             {              $('#jsddmX > li').bind('mouseover', jsddmX_open);
+                                            $('#jsddmX > li').bind('mouseout',  jsddmX_timer);});
+                             
+                             document.onclick = jsddmX_close;
+                             
+                             function openImgLarge(thisimg){
+                                window.open(thisimg,"lookup", 500, 500,"width=900,height=500,,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=yes", true);
+                     }
+                                             
+                </script>
+<apex:pageblock >
+		<apex:sectionHeader title="Help Videos" />
+           <apex:pageblocksection title="" collapsible="false">                                
+               <apex:pageblocksectionItem >
+               		<apex:outputPanel >
+               		 	<div id="all">
+		                	<apex:Form >
+		                       <ul id="jsddmX"  style="background: darkblue; width: 200px;width: 400px;margin-right: 40px;">
+		                            <li style="background: darkblue;height:20px; font-size: 10pt;color: white;width: 150px;margin-right: 40px;">
+			                             <div style="padding-left: 30px">
+			                             Help Videos
+			                              <div style="position: relative;left:80px;top: -15px;">
+			                              	<apex:image value="{!URLFOR($Resource.ses__SESImages,'helpses.png')}" style="width:15px;height:15px" />
+			                              </div>                                             
+			                             </div>                                                    
+		                                <ul style="position: relative; top: -15px; width: 400px;margin-right: 40px;">
+		                                      <apex:repeat value="{!allHelpVideoMenus}"  var="hlp" >
+		                                       <li style="width: 400px;margin-right: 40px;">
+		                                       <apex:commandLink style="width: 400px;margin-right: 40px;" onclick="openImgLarge('/apex/ShowPopUp?q={!hlp.videoLink}&m=TRUE');" >{!hlp.helperName}</apex:commandLink></li>
+		                                   </apex:repeat>
+		                                </ul>
+		                            </li>
+		                       </ul>
+		                   </apex:Form>
+		            	</div>
+						<apex:outputpanel >
+							<apex:outputpanel layout="block" style="margin-top: 200px">
+								<apex:outputPanel layout="block" styleclass="NewLine" />
+								<apex:outputPanel layout="block" styleclass="NewLine" />
+								<apex:outputPanel layout="block" styleclass="NewLine" />
+								<apex:outputLabel styleclass="boldlabel">If you have problems accessing Help Manuals</apex:outputLabel>
+								<apex:outputPanel layout="block" styleclass="NewLine" />
+								<apex:repeat value="{!allHelpPDFMenus}" var="hlp">
+									<apex:outputLink value="{!hlp.videoLink}" target="_blank" >{!hlp.helperName}</apex:outputLink>
+									<apex:outputPanel layout="block" styleclass="NewLine" />
+								</apex:repeat>
+							</apex:outputpanel>
+						</apex:outputpanel>
+		            </apex:outputPanel>
+
+				</apex:pageblocksectionItem>
+				<apex:pageblocksectionItem >
+					<apex:outputpanel >
+						<b><apex:outputLabel value="Setup Tasks"  /></b>
+						<apex:panelBar styleclass="panl" style="width: 200px">
+							<apex:panelBarItem label="Salesforce Connection" />
+							<apex:panelBarItem label="Send Invitation" />
+							<apex:panelBarItem label="Setup" />
+						</apex:panelBar>
+						<b><apex:outputLabel value="Task Creation"  /></b>
+						<apex:panelBar styleclass="panl" style="width: 200px">
+							<apex:panelBarItem label="New Epics Projects and Tasks" />
+							<apex:panelBarItem label="Create Tasks From Cases" />
+							<apex:panelBarItem label="Create Linked Tasks From Cases" />
+							<apex:panelBarItem label="Main Project Management Screen" />
+							<apex:panelBarItem label="Main Project Management Screen continued" />
+							<apex:panelBarItem label="Import Tasks" />
+						</apex:panelBar>
+						<b><apex:outputLabel value="Matching Functions"  /></b>
+						<apex:panelBar styleclass="panl" style="width: 200px">
+							<apex:panelBarItem label="Task Matching" />
+							<apex:panelBarItem label="Advanced Task Matching" />
+							<apex:panelBarItem label="Quick Task Matching" />
+							<apex:panelBarItem label="Focus On Keywords" />
+						</apex:panelBar>
+						<b><apex:outputLabel value="Download From SES"  /></b>
+						<apex:panelBar styleclass="panl" style="width: 200px">
+							<apex:panelBarItem label="Download SES Global Code Examples" />
+							<apex:panelBarItem label="Refresh Functions From SES Gloabl" />
+						</apex:panelBar>
+						<b><apex:outputLabel value="Refresh Private"  /></b>
+						<apex:panelBar styleclass="panl" style="width: 200px">
+							<apex:panelBarItem label="Refresh Functions From Private Scope" />
+						</apex:panelBar>
+						<b><apex:outputLabel value="Transfer To SES"  /></b>
+						<apex:panelBar styleclass="panl" style="width: 200px">
+							<apex:panelBarItem label="Transfer Private Functions To SES" />
+							<apex:panelBarItem label="Transfer Private Tasks To SES" />
+							<apex:panelBarItem label="Transfer Global Functions And Tasks To Global Group Companies" />
+						</apex:panelBar>
+					</apex:outputpanel>
+				</apex:pageblocksectionItem>
+			</apex:pageblocksection>
+	</apex:pageblock>
+			
+
+<!--  <apex:includescript value="{!URLFOR($Resource.SESjs)}" /> 
+    <style> 
+    .SmallLine{
+        margin-bottom: 1em;
+    }
+    .NewLine{
+        margin-bottom: 2em;
+    }
+    .LargeNewLine{
+        margin-bottom: 3em;
+    }
+    .spaces{
+        padding-left: 20px;
+    }
+    .boldlabel {
+        font-weight: bold
+    }
+    .uline{
+    	text-decoration: underline;
+    }
+    </style> 
+<apex:PageBlock > 
+<apex:form >
+	<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.SESInstall__c}');" >  
+		<apex:image value="{!URLFOR($Resource.ses__SESImages,'helpses.png')}" styleclass="helpOrb" />
+	</apex:commandLink>-->
+<!--  </apex:form>
+    <apex:pageBlockSection columns="1" title="Install Setup" >
+    	<apex:pageBlockSectionItem >
+    		<c:SESInstall />
+    	</apex:pageBlockSectionItem>
+    </apex:pageBlockSection>
+</apex:PageBlock>-->
+</apex:page>

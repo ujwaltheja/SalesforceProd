@@ -1,0 +1,4 @@
+<apex:page sidebar="false" readOnly="true" docType="html-5.0" title="Data Source Object" showHeader="{!$Setup.Preferences__c.Show_SF_Header_Skuid_Core__c}" tabStyle="Skuid_Settings__tab" controller="skuid.SkuidSettingsController">
+	<c:page page="Settings_DataSourceObjectDetail"/>
+	<script>skuid.remote.set("skuid.SkuidSettingsController");</script>
+</apex:page>

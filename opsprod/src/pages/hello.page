@@ -1,0 +1,14 @@
+<apex:page sidebar="false" showHeader="false" standardController="Account">
+    <apex:pageBlock title="Contacts">
+        <apex:form >
+            <apex:dataList value="{!account.contacts}" var="contact">
+            <apex:commandLink reRender="contactDetails">
+                {!contact.name}
+                <apex:param name="cid" value="{!contact.id}"/>
+            </apex:commandLink>
+            </apex:dataList>
+            
+        </apex:form>
+        <apex:outputLink value="{!URLFOR($Action.Account.New)}">Create</apex:outputLink>
+    </apex:pageBlock>
+</apex:page>

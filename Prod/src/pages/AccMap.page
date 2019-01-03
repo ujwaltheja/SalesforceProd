@@ -1,0 +1,78 @@
+<apex:page controller="AddressRemoter">
+
+<head>
+<style type="text/css">
+  html { height: 100% }
+  body { height: 100%; margin: 0; padding: 0 }
+  #map-canvas { width:800px;height:600px; }
+</style>
+<!--<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script> -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpz4RjMF0WsJQtlWab4KBZFK7xtCIHPTg "></script>
+<script>
+var map;
+
+function initialize() {
+    var mapOptions = {
+        center: new google.maps.LatLng(37.784173, -122.401557),
+        zoom: 15
+    };
+    map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+    loadAddress();
+}
+
+
+
+function loadAddress() {
+    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.AddressRemoter.findAll}',
+        function(result, event){
+            if (event.status) {
+                for (var i=0; i<result.length; i++) {
+                    var id = result[i].Id;
+                    var name = result[i].Name;
+                    var address = result[i].BillingStreet+","+result[i].BillingCity+","+result[i].BillingState+","+result[i].BillingPostalCode+","+result[i].BillingCountry;
+                    //var address = result[i].BillingPostalCode;
+                    //var lng = result[i].Location__Longitude__s;
+                    var geocoder = new google.maps.Geocoder();
+                    //var address = "new york";
+                    
+                    geocoder.geocode( { 'address': address}, function(results, status) {
+                    
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        //var lati = results[0].geometry.location.latitude;
+                        //var long = results[0].geometry.location.longitude;
+                        //alert(latitude);
+                       	callback(results[0]);
+                        } 
+                    }); 
+                    addMarker(id, name, result);
+                }
+            } else {
+                alert(event.message);
+            }
+        },
+        {escape: true}
+    );
+}
+
+function addMarker(id, name, result) {
+    var lat = result.geometry.location.lat;
+    var long = result.geometry.location.lng;
+    var marker = new google.maps.Marker({
+            position: new google.maps.setLatLng(lat, long),
+            map: map,
+            title: name
+    });
+    google.maps.event.addListener(marker, 'click', function(event) {
+        window.top.location = '/' + id;
+    });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
+</head>
+<body>
+  <div id="map-canvas"/>
+</body>
+
+</apex:page>

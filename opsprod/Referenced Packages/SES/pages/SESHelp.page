@@ -1,0 +1,488 @@
+<apex:page id="SESHelp" controller="ses.SESMenu" >
+<apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" />
+
+    <style> 
+    .SmallLine{ 
+        margin-bottom: 1em;
+    }
+    .NewLine{
+        margin-bottom: 2em;
+    }
+    .LargeNewLine{
+        margin-bottom: 3em;
+    }
+    .spaces{
+        padding-left: 20px;
+    }
+    .boldlabel {
+        font-weight: bold
+    }
+    .uline{
+    	text-decoration: underline;
+    }
+    </style> 
+
+<apex:PageBlock > 
+    <apex:sectionHeader title="Help Videos" />
+    <apex:pageblocksection title="" columns="1" collapsible="false"> 
+    	<apex:pageBlockSectionItem >
+    		<apex:outputPanel >
+			                              <div id="all">
+                                             <style type="text/css">
+                                             /* menu styles */
+                                             #jsddmX{
+                                                            width: 400px !important
+                                             }
+                                             
+                                                            
+                                             #jsddmX
+                                             {              margin: 0;
+                                                            margin-right: 400px;
+                                                            padding: 0;
+                                                            padding-right: 40px;
+                                                            width: 400px
+                                                            }
+                                             
+                                                            #jsddmX li 
+                                                            {              float: left;
+                                                                           list-style: none;
+                                                                           font: 12px Tahoma, Arial;
+                                                                           width: 400px
+                                                                           }
+                                             
+                                                            #jsddmX li a
+                                                            {              display: block;
+                                                                           background: darkblue;
+                                                                           padding: 5px 20px;
+                                                                           text-decoration: none;
+                                                                           border-right: 1px solid white;
+                                                                           width: 400px;
+                                                                           color: white;
+                                                                           white-space: nowrap;
+                                                                           }
+                                             
+                                                            #jsddmX li a:hover
+                                                            {              background: darkblue; width: 200px;}
+                                                                           
+                                                                           #jsddmX li ul
+                                                                           {              margin: 0 200;
+                                                                                          padding: 0;
+                                                                                          position: absolute;
+                                                                                          visibility: hidden;
+                                                                                          border-top: 1px solid white}
+                                                                           
+                                                                                          #jsddmX li ul li
+                                                                                          {              float: none;
+                                                                                                         display: inline;
+                                                                                                         width: 400px
+                                                                                                         }
+                                                                                          
+                                                                                          #jsddmX li ul li a
+                                                                                          {              width: 400px;
+                                                                                                         background: darkblue;
+                                                                                                         color: white}
+                                                                                          
+                                                                                          #jsddmX li ul li a:hover
+                                                                                          {              background: #8EA344;
+                                                                                                         width: 200px;
+                                                                                          }
+                                             </style>
+                                             <script type="text/javascript">
+                                             var timeout         = 500;
+                                             var closetimer                   = 0;
+                                             var ddmenuitem      = 0;
+                                             
+                                             function jsddmX_open()
+                                             {              jsddmX_canceltimer();
+                                                            jsddmX_close();
+                                                            ddmenuitem = $(this).find('ul').eq(0).css('visibility', 'visible');                                                            
+                                             }
+                                             
+                                             function jsddmX_close()
+                                             {              if(ddmenuitem) ddmenuitem.css('visibility', 'hidden');}
+                                             
+                                             function jsddmX_timer()
+                                             {              closetimer = window.setTimeout(jsddmX_close, timeout);}
+                                             
+                                             function jsddmX_canceltimer()
+                                             {              if(closetimer)
+                                                            {              window.clearTimeout(closetimer);
+                                                                           closetimer = null;}}
+                                             
+                                             $(document).ready(function()
+                                             {              $('#jsddmX > li').bind('mouseover', jsddmX_open);
+                                                            $('#jsddmX > li').bind('mouseout',  jsddmX_timer);});
+                                             
+                                             document.onclick = jsddmX_close;
+                                             
+                                             function openImgLarge(thisimg){
+			                                             window.open(thisimg,"lookup", 500, 500,"width=900,height=500,,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=yes", true);
+			                                  }
+                                             
+                              </script>
+				<apex:Form >
+                                                            <ul id="jsddmX"  style="background: darkblue; width: 200px;width: 400px;margin-right: 40px;">
+                                             <li style="background: darkblue;height:20px; font-size: 10pt;color: white;width: 150px;margin-right: 40px;">
+	                                             <div style="padding-left: 30px">
+	                                             Help Tutorials
+		                                             <div style="position: relative;left:80px;top: -15px;">
+		                                             	<apex:image value="{!URLFOR($Resource.ses__SESImages,'helpses.png')}" style="width:15px;height:15px" />
+		                                             </div>                                             
+	                                             </div>
+                                                                                                        
+                                                            <ul style="position: relative; top: -15px; width: 400px;margin-right: 40px;">
+                                                                  <apex:repeat value="{!allHelpPDFMenus}"  var="hlp" >
+	                                                                  <li style="width: 400px;margin-right: 40px;">
+	                                                                  <apex:commandLink style="width: 400px;margin-right: 40px;" onclick="openImgLarge('/apex/ShowPopUp?q={!hlp.videoLink}&m=TRUE');" >{!hlp.helperName}</apex:commandLink></li>
+	                                                              </apex:repeat>
+                                                            </ul>
+                                             </li>
+                              </ul>
+				</apex:Form>
+                              </div>
+
+						<apex:outputpanel >
+							<apex:outputpanel layout="block" style="margin-top: 200px">
+								<apex:outputPanel layout="block" styleclass="NewLine" />
+								<apex:outputLabel styleclass="boldlabel">If you have problems accessing Help Manuals</apex:outputLabel>
+								<apex:outputPanel layout="block" styleclass="NewLine" />
+								<apex:repeat value="{!allHelpPDFMenus}" var="hlp">
+									<apex:outputLink value="{!hlp.videoLink}" target="_blank" >{!hlp.helperName}</apex:outputLink>
+									<apex:outputPanel layout="block" styleclass="NewLine" />
+								</apex:repeat>
+							</apex:outputpanel>
+						</apex:outputpanel>
+				 
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Setup Remote Site Settings</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >To use Download Keywords you must add <b>'https://na10.salesforce.com'</b> to Remote Site Settings.<br />
+				Your Salesforce Org instance must also have an entry, such as if your instance was CS1 you must enter <b>'https://cs1-api.salesforce.com'</b>.<br />
+				You also have to have an entry for <b>'https://na12.salesforce.com'</b>.<br /> 
+				Ask your administrator to do this</apex:outputLabel>		
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">What's Coming Next</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Keep an eye on <b>What's Coming Next</b> section on the Menu page for Free upgrades</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">How to use SES tags</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >SES tags are the basis of SES and allow SES to understand the codebase that make up your functions. SES tags are split up into separate categories</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >//SES Caption            -     This is a short description defining the function</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >//SES Description        -     This is a more detailed description defining the function</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >//SES Actions            -     Individual action that make up the individual parts of the function</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >//SES Scope              -     Private or Global. For Global the function will be uploaded to SES Global</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >//SES Call Functions     -     Functions that this function calls</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >SES tags can be entered into functions manually and when SES creates new functions the Task Caption, Task Description etc recorded in the objects are copied into the new functions</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Improve speed of SES</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >
+					After entering SES tags in a function on the next line enter 
+				</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >//SES comment stop</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >This will skip checking for any more SES tags in this function, until it finds the next function, thus making SES run much faster</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">SES Menu</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Use SES Menu to navigate around SES</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Function Search</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Note: No more than 1000 classes in the private org can be searched on. The system excludes any classes in managed packages.</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Classes To Include</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >If an error occurs when searching for functions in your private org to match Tasks. This could be because there are too many classes to search all at once. You can Limit the classes searched to specific classes by adding classes into Classes To Include.</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Classes To Exclude From Searches</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >If an error occurs when searching for functions in your private org to match Tasks. This could be because there are too many classes to search all at once. You can exclude any classes from your search which will greatly increase the performance of SES and also prevent crashes occurring. If you have included classes first, the exclude list will remove any classes that have been included.</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>		
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Important Keyword</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Keywords specified in SES tags are giving greater importance in selecting the correct function, so its important to enter business keywords etc when setting up SES</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">NonKeyword</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Likewise Non-Keyword are important so that words are eliminated from selecting the correct function</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">SES Algorithm</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >The SES algorithm is a unique patented sentence meaning decipher invented by SES</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel ></apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">SES Auto-Matching Screen</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >You can also upload code, Fields and Objects to SES by selecting a function in the "Upload To SES Global" section. If you also want to upload Fields of an object select an object from the drop down. Fields of the object are listed in a table, select any of the fields that you know your code you are also uploading to SES references. Press 'Include Fields' which will display a summary of the selected fields. Now press 'Update and Upload'. The code, and xml of the object and fields are sent to SES as Attachments.</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >Creating new SES functions are made through this screen. This will match all Tasks, including Tasks lower in the hierarchy. </apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >Organization Private        -   Searches for functions just in this Salesforce environment</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >Group Organization Search   -   Searches for functions in this Salesforce environment and in environments identified in this group</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >Global Search               -   Searches for functions in all Salesforce environments that share functions with SES</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Focus On Keywords</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >If you have problems searching for a function to match a Task, you can use 'Focus On Keywords'. Select specific keywords from your task caption or description
+				and manually select the private function you think most closely matches your Task. Now, any time you want to re-use this Task it will be linked to your selected function. 
+				This can only be used at the moment with Private Functions.</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Remove This Class And Method</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Deletes the contents in Function Class, Function Method and Document Relating To Function for the main Task only</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Remove All Class And Method Values</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Deletes the contents in Function Class, Function Method and Document Relating To Function for the main Task and all Tasks lower in the hierarchy</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Retrieve Class And Method</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Values removed by the either of the 2 buttons described above are retrieved</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Deactivate Field on Tasks</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >If there are many records in a project SES may not be able to match all Tasks. SES best practice is to divide such projects into multiple runs of the matching Tasks, by deactivating some Task records, run SES matching, then re-activate the records and run SES matching again. Note, this will not ignore the previous Task Matching Records, if any exist.</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel ></apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Deactivate Previous Matches Field on Tasks</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Deactivates matching Tasks, by not using any previous Task Matching Records and deactivating the matching algorithm for the Task</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Global Transfered</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Identifies that the task has been transfered to SES Global and so the Task is not uploaded to SES Global again</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Document Relating To Function Field</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >This is the ID referencing the Document created holding code that fulfils the Tasks of the main Task and all Tasks lower in the hierarchy</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Private Functions</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Holds details of all functions in the private Salesforce environment</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Global Objects</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Global Function, Global Sub Tasks, Global Lower Tasks represent Tasks and functions originating from SES</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Classes To Download Object</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Lists all the functions downloaded from SES Global</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Transfer Private Functions To SES</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Transfers only private functions to SES Global</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel ></apex:outputLabel>
+				<apex:outputLabel >You can also upload Custom Fields and Objects to SES by selecting an object in the "Upload Objects to SES Global" section. Fields of the object are listed in a table, select any of the fields that you know your code you are also uploading to SES references. Press 'Include Fields' which will display a summary of the selected fields. Now press Transfer. The code, and xml of the object and fields are sent to SES as Attachments.</apex:outputLabel>
+				<apex:outputLabel ></apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLink id="TransferPrivateTasks" styleclass="boldlabel">Transfer Private Tasks To SES</apex:outputLink>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Transfers private functions and Tasks to SES Global</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >You can also upload Custom Fields and Objects to SES by selecting an object in the "Upload Objects to SES Global" section. Fields of the object are listed in a table, select any of the fields that you know your code you are also uploading to SES references. Press 'Include Fields' which will display a summary of the selected fields. Now press Transfer. The code, and xml of the object and fields are sent to SES as Attachments.</apex:outputLabel>
+				<apex:outputLabel ></apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Transfer Global Functions And Tasks To Global Group Companies</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >After functions have been uploaded to SES Global with either of the 2 pages above, this page uploads Global Group Company information which details the companies that can only use the functions and tasks that have been uploaded.</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Create Tasks From Cases</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >There are various ways to create Tasks, which is the first thing needed before matching Tasks with functions. If you use Cases to manage initial requirements gathering for your company this page is ideal to convert Cases to Tasks</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Main Project Management Screen</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >This is the main screen to create Tasks. Using this screen you can</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >Create Tasks manually at any hierarchy level</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >Create Tasks by copying Tasks from any level</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Function In Use</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Identifies that this Global Function is used in this Salesforce environment. This information is sent to SES Global. The creator of functions that are used the most is granted an award by SES.
+				Each function owner is notified each month of how many times their functions have been used in the month.</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Downloading Code From SES</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Classes are downloaded from SES Global to Documents, only if a function in the class is identified as a match with the Task and the class hasn't been downloaded before, or if 
+				the class has been changed in SES Global since it was last downloaded</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel ></apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Downloading Task Records From SES</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Global Function, Global Sub Tasks, Global Lower Tasks records are downloaded from SES only once a day and only records that hasn't been downloaded before</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel ></apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Contact Us</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >Email Support : support@selfevolvingsoftware.com</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel >Website : <apex:outputLink target="_blank" value="http://www.selfevolvingsoftware.com">www.selfevolvingsoftware.com</apex:outputLink></apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+		<apex:outputPanel layout="block" styleclass="LargeNewLine" />
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel">Future Upgrades</apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel >SES will let you know when new upgrades will be avialble to install by email, but you can also go to the What's Coming Next section on the main menu to install new upgrades</apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+    	<apex:pageBlockSectionItem >
+			<apex:outputPanel >
+				<apex:outputLabel styleclass="boldlabel"></apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+				<apex:outputLabel ></apex:outputLabel>
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel ></apex:outputLabel>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+
+	</apex:pageBlockSection>
+</apex:PageBlock>
+</apex:page>

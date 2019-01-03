@@ -1,0 +1,674 @@
+<apex:page id="SESMenu" controller="ses.SESMenu" TabStyle="ses__Task_Name__c" sidebar="false">
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" />
+
+<script src="http://code.jquery.com/jquery-1.9.0.js"></script>
+<apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" />
+<apex:includeScript value="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js" /> 
+<apex:includeScript value="http://code.jquery.com/ui/1.10.4/jquery-ui.js"/>
+<apex:stylesheet value="//ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery.ui.theme.css"/>
+<apex:stylesheet value="//ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery.ui.base.css"/>
+
+<script>
+        $j = jQuery.noConflict();
+		$j(function() {
+     
+
+        $j( "#dialogSelectScope" ).dialog({
+          autoOpen: false,
+          height: 320,
+          width: 700,
+          modal: true,
+          buttons: {
+            Download: function() {
+	                $j("[id*='selectedScope']").val($j('#ThisSelectedScope').val());
+	           
+	                refreshFromGlobal();
+	                $j( this ).dialog( "close" );				                
+            },
+            Cancel: function() {
+              $j( this ).dialog( "close" );
+            }
+          },
+          close: function() {
+          }
+        });
+     
+     });
+        
+ </script>       
+
+<style>
+ 
+    .NewLine{ 
+        margin-bottom: 2em;
+    }
+    .spaces{
+        padding-left: 200px;
+    }
+
+	.btnHeight
+	{
+	height: 40px
+	}  
+	
+	.firstbtn{
+		margin-left: 120px !IMPORTANT; 
+	}
+    .noSecondHeader{
+    	color: white !important;
+    }
+	
+</style>
+
+<apex:Form >
+  <div id="dialogSelectScope" >
+        <apex:actionRegion >
+            <table border="0" width="98%" cellpadding="7">
+                <tr>
+                    <td valign="top">
+                        <div> </div>
+                        <apex:pageblock >
+                        	<apex:sectionHeader title="Select A Global Scope To Refresh Functions" />
+                        	<apex:outputPanel layout="block" styleclass="NewLine" />
+                            <apex:pageblocksection title="" collapsible="false">                                
+                                <apex:pageblocksectionItem >
+	                                <label>Select The Scope</label>
+		                            <select name="ThisSelectedScope" id="ThisSelectedScope" >
+			                              <option value=""></option>
+			                              <option value="{!globalScope}">{!globalScope}</option>
+			                              <option value="{!globalOrgScope}">{!globalOrgScope}</option>
+		                          	</select>
+                                </apex:pageblocksectionItem>
+                            </apex:pageblocksection>
+                        </apex:pageblock>
+                    </td>
+                </tr>
+            </table>
+        </apex:actionRegion>
+    </div>
+                            
+    <apex:actionFunction action="{!refreshFromGlobal}" rerender="Results" name="refreshFromGlobal" />
+    <apex:inputText value="{!selectedScope}" id="selectedScope" style="display:none;"/>
+
+<apex:PageBlock >
+	<apex:outputPanel id="Results">
+		<apex:Pagemessages />
+	</apex:outputPanel>
+	
+    <apex:outputPanel layout="block" styleclass="NewLine" />
+    <apex:outputPanel >
+	<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.SESMenu__c}');" >  
+		<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+	</apex:commandLink>-->
+
+    <apex:pageBlockSection title="SES Tools" columns="1">
+        <apex:pageBlockSectionItem >
+            <apex:outputPanel id="SESTools">
+             	<apex:actionRegion >
+		             <apex:outputLabel value="Select a Task" /> <apex:selectList value="{!currentTask}" size="1"  >
+		                 <apex:SelectOptions value="{!taskOptions}"></apex:SelectOptions> 
+		                 <apex:actionsupport event="onchange" rerender="SESTools" />
+		             </apex:selectList>
+		           <!--  <apex:inputField id="ThisTaskName" value="{!Sub_Task__c.Parent_Task__c}" >
+		            	<apex:actionsupport action="{!}" name="currentTask" rerender="SESTools" assignTo="{!currentTask}" />
+		            </apex:inputField>	
+		            
+		            <a style="font-weight:bold" href="javascript: window.open('{!$Page.BuildTaskMatches}?id=thistaskname')" >Click</a> --> 
+		            
+			            <apex:outputLink target="_blank" rendered="{!IF(OR(currentTask == 'None',currentTask == null),false,true)}" Value="{!$Page.ses__BuildTaskMatches}?id={!currentTask}" id="BuildTaskMatches" style="margin-left: 50px;" styleclass="btnPrimary publishersharebutton btn" >
+			            SES Auto Match Project Tasks
+			            </apex:outputLink>
+	            </apex:actionRegion>
+	        </apex:outputPanel>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+     </apex:pageBlockSection>
+     <apex:pageBlockSection columns="2">
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESInstall" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!$Page.ses__SESInstall}" >
+            Help Videos
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        	<apex:outputLink target="_blank" id="Increaselimits3" styleclass="btnPrimary publishersharebutton btn" value="{!$Page.ses__SESHelp}" >
+            SES Help and Tutorials
+            </apex:outputLink>        	
+            <!-- <apex:outputLink target="_blank" id="HelpVideos" styleclass="btnPrimary publishersharebutton btn" value="{!$Page.HelpVideos}" >
+            Help Videos
+            </apex:outputLink> -->
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        	<apex:outputLink target="_blank" id="QuickEntry" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!$Page.ses__QuickEntry}" >
+            Quick Entry Task Matching
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        	<apex:outputLink target="_blank" id="Snippets" styleclass="btnPrimary publishersharebutton btn" value="{!$Page.ses__Snippets}" >
+            	Snippets
+            </apex:outputLink>      	
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+        <!-- <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Searches" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.ses__Request_Function__c.List,$ObjectType.ses__Request_Function__c)}" >
+            Request Functions
+            </apex:outputLink>
+        </apex:pageBlockSectionItem> -->
+
+        
+        <apex:pageBlockSectionItem >
+        	<a onclick="$j('#dialogSelectScope').dialog('open');" class="btnPrimary publishersharebutton btn firstbtn" style="cursor: pointer" >Refresh Functions From SES Gloabl</a>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        	<apex:commandLink target="_blank" id="SESTasksToGlobalTransfer" rerender="Results" styleclass="btnPrimary publishersharebutton btn" action="{!refreshFromPrivateScope}" value="Refresh Functions From Private Scope" />
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESPrivateToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!$Page.ses__SESPrivateToGlobalTransfer}" >
+            Transfer Private Functions To SES
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESTasksToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn" value="{!$Page.ses__SESTasksToGlobalTransfer}" >
+            Transfer Private Tasks To SES
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESPrivateToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn btnHeight firstbtn" value="{!$Page.ses__TransferPrivateToGlobalTaskOrg}" >
+            Transfer Global Functions And Tasks To Global Group Companies
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="ProjectCreation" styleclass="btnPrimary publishersharebutton btn btnHeight" value="{!$Page.ses__ProjectCreation}" >
+            Main Project Management Screen 
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="CreateTaskFromCase" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!$Page.ses__CreateTaskFromCase}" >
+            Create Tasks From Cases
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        	<apex:outputLink target="_blank" id="ImportTasks" styleclass="btnPrimary publishersharebutton btn btnHeight" value="{!$Page.ses__ImportTasks}" >
+            Import Tasks
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        
+        <apex:pageBlockSectionItem >
+        	<apex:outputLink target="_blank" id="DownloadClasses" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.ClassesToDownload__c.List,$ObjectType.ClassesToDownload__c)}" >
+            Classes Downloaded From SES
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Increaselimits1" styleclass="btnPrimary publishersharebutton btn btnHeight" value="{!$Page.ses__IncreaseSESLimits}" >
+            Increase SES Limits
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Increaselimits2" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!$Page.ses__PreventDownloadOfClasses}" >
+            Prevent Download Of Classes
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Increaselimits3" styleclass="btnPrimary publishersharebutton btn btnHeight" value="{!$Page.ses__SESGlobalCodeReviewer}" >
+            See Examples Of Functions In SES Global
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Increaselimits4" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!$Page.ses__WhatsComingNext}" >
+            What's Coming Next
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="KnownIssuesPg" styleclass="btnPrimary publishersharebutton btn btnHeight" value="{!$Page.ses__KnownIssues}" >
+            Known Issues
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+    </apex:pageBlockSection>
+    </apex:outputPanel>
+    	
+    <apex:pageBlockSection title="New Setup Records" columns="2">
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESTasksToGlobalTransfer" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.ImportantKeyword__c.New)}" >
+            New Important Keywords 
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESPrivateToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.NonKeywords__c.New)}" >
+            New Non-Keywords
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+ 
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+        	<apex:outputLink target="_blank" id="DownloadKeywords" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR('/apex/DownloadKeywords?type=Keywords')}" >
+            Download Keywords
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        	<apex:outputLink target="_blank" id="DownloadKeywords" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR('/apex/DownloadKeywords?type=Non-Keywords')}" >
+            Download Non Keywords
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESTasksToGlobalTransfer" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.SES_Security__c.New)}" >
+            New SES Security
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESPrivateToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.My_Profile__c.New)}" >
+            New My Profile
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESTasksToGlobalTransfer" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR('/0BM/e')}" >
+            New Connections
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESLimits" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.SES_Limit__c.New)}" >
+            New SES API, Data and File Storage Limits
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+			<apex:outputLink target="_blank" Value="{!$Page.ses__UpdateCustomSettings}" id="UpdateCustomSettings" styleclass="btnPrimary publishersharebutton btn firstbtn" >
+            Update Required Custom Settings
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Searches" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.Exclude_Class__c.New)}" >
+            New Classes To Exclude From Searches
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+			<apex:outputLink target="_blank" Value="{!$Page.ses__IncludeClassesInSearch}" id="IncludeClassesInSearch" styleclass="btnPrimary publishersharebutton btn firstbtn" >
+            Include and Remove Classes In Search
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SnippetsTypes" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.Snippet_Type__c.List,$ObjectType.Snippet_Type__c)}" > 
+            Snippets Types
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>        
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    </apex:pageBlockSection>
+
+    <apex:pageBlockSection title="Set-up View" columns="2">
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESTasksToGlobalTransfer" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.ImportantKeyword__c.List,$ObjectType.ImportantKeyword__c)}" >
+            Important Keywords View
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESPrivateToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.NonKeywords__c.List,$ObjectType.NonKeywords__c)}" > 
+            Non-Keywords View
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>        
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="KeywordSuggest" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.Keyword_Suggest__c.List,$ObjectType.Keyword_Suggest__c)}" >
+            Keyword Suggest View
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+			<apex:outputLink target="_blank" id="Searches" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.Exclude_Class__c.List,$ObjectType.Exclude_Class__c)}" >
+            Classes To Exclude From Download
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>        
+    
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESTasksToGlobalTransfer" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.SES_Security__c.List,$ObjectType.SES_Security__c)}" >
+            SES Security View
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESPrivateToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.My_Profile__c.List,$ObjectType.My_Profile__c)}" > 
+            My Profile View
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>        
+    
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESTasksToGlobalTransfer" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR('/0BM')}" >
+            Connections View
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESLimitsChange" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.SES_Limit__c.List,$ObjectType.SES_Limit__c)}" >
+            SES API, Data and File Storage Limits
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+			<apex:outputLink target="_blank" Value="{!$Page.ses__UpdateCustomSettings}" id="UpdateCustomSettingsView" styleclass="btnPrimary publishersharebutton btn firstbtn" >
+            Required Custom Settings
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Searches" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.Exclude_Class__c.List,$ObjectType.Exclude_Class__c)}" >
+            View Classes To Exclude From Searches
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Searches" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.Category__c.List,$ObjectType.Category__c)}" >
+            New Categories
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Searches" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.ClassesToDownload__c.List,$ObjectType.ClassesToDownload__c)}" >
+            Classes Downloaded
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+		<!-- <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Searches" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.ses__Include_Class__c.List,$ObjectType.ses__Include_Class__c)}" >
+            Private Classes To Only Use In Matching
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>  -->
+    
+    </apex:pageBlockSection>
+    <apex:pageBlockSection title="Global Records" columns="2">
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="GlobalFunction" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.Global_Function__c.List,$ObjectType.Global_Function__c)}" >
+            Global Function
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="GlobalSubTask" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.Global_Sub_Task__c.List,$ObjectType.Global_Sub_Task__c)}" >
+            Global Sub Task
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="GlobalLowerTask" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.Global_Lower_Task__c.List,$ObjectType.Global_Lower_Task__c)}" >
+            Global Lower Task
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Searches" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.Private_Function_Custom_Object_and_Field__c.List,$ObjectType.Private_Function_Custom_Object_and_Field__c)}" >
+            Objects And Fields Uploaded To SES
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="GlobalLowerTask" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.Global_Task_Limited_Org__c.List,$ObjectType.Global_Task_Limited_Org__c)}" >
+            Global Organisation IDs
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+	</apex:pageBlockSection>
+	    
+    <apex:pageBlockSection title="New Private Records" columns="2">
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="iteration" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.Iteration__c.New)}" >
+            New Iterations
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESPrivateToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.Project__c.New)}" >
+            New Projects
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESTasksToGlobalTransfer" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.Task_Name__c.New)}" >
+            New Task Name
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESPrivateToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.Private_Function__c.New)}" >
+            New Private Function
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESPrivateToGlobalTransfer" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.Sub_Task__c.New)}" >
+            New Sub Task
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESTasksToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.Lower_Level_Sub_Task__c.New)}" >
+            New Lower Task
+            </apex:outputLink>
+        </apex:pageBlockSectionItem> 
+    
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    </apex:pageBlockSection>
+
+    <apex:pageBlockSection title="Record View" columns="2">
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Iterationsvw" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.Iteration__c.List,$ObjectType.Iteration__c)}" > 
+            Iterations View
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>        
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESPrivateToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.Project__c.Tab,$ObjectType.Project__c)}" > 
+            Projects View
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>        
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESTasksToGlobalTransfer" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.Task_Name__c.List,$ObjectType.Task_Name__c)}" >
+            Task Name View
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESPrivateToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.Private_Function__c.List,$ObjectType.Private_Function__c)}" > 
+            Private Function View
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>        
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESPrivateToGlobalTransfer" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.Sub_Task__c.List,$ObjectType.Sub_Task__c)}" > 
+            Sub Task View
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>        
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="SESTasksToGlobalTransfer" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.Lower_Level_Sub_Task__c.List,$ObjectType.Lower_Level_Sub_Task__c)}" >
+            Lower Task View
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+    
+        <!-- <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Searches" style="margin-left: 150px;" styleclass="btnPrimary publishersharebutton btn firstbtn" value="{!URLFOR($Action.ses__SES_Tag__c.List,$ObjectType.ses__SES_Tag__c)}" >
+            SES Tags
+            </apex:outputLink>
+        </apex:pageBlockSectionItem> 
+        
+        <apex:pageBlockSectionItem >
+            <apex:outputLink target="_blank" id="Searches" styleclass="btnPrimary publishersharebutton btn" value="{!URLFOR($Action.ses__Apex_Class__c.List,$ObjectType.ses__Apex_Class__c)}" >
+            Private Apex Classes And Functions
+            </apex:outputLink>
+        </apex:pageBlockSectionItem>
+        -->
+
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        </apex:pageBlockSectionItem>
+    </apex:pageBlockSection>
+    
+    <apex:outputPanel layout="block" styleclass="NewLine" />
+
+</apex:PageBlock>
+</apex:Form>
+<script>
+function gettask(){
+	var tkid = '{!$Component.ThisTaskName}';
+	            var thistaskname = document.getElementById(tkid).value;
+	alert(thistaskname);
+}
+</script>
+</apex:page>

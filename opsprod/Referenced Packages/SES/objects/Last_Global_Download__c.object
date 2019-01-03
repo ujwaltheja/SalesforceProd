@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>LastDatetime__c</fullName>
+        <deprecated>false</deprecated>
+        <description>last time Global_Function__c,Global_Sub_Task__c,Global_Lower_Task__c,Global_Task_Action__c,Global_Task_Argument__c,Global_Task_Limited_Org__c was downloaded to private server</description>
+        <externalId>false</externalId>
+        <inlineHelpText>last time Global_Function__c,Global_Sub_Task__c,Global_Lower_Task__c,Global_Task_Action__c,Global_Task_Argument__c,Global_Task_Limited_Org__c was downloaded to private server</inlineHelpText>
+        <label>LastDatetime</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <label>Last Global Download</label>
+    <visibility>Public</visibility>
+</CustomObject>

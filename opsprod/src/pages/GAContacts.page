@@ -1,0 +1,6 @@
+<apex:page standardController="Contact">
+    <head>
+        <script src="https://track.gaconnector.com/gaconnector.js" type="text/javascript"></script>
+		<script type="text/javascript">gaconnector2.track("ce9b0be3305782213e9e568f36313948");</script>
+    </head>
+</apex:page>

@@ -1,0 +1,5 @@
+<apex:page >
+
+  <img id="theImage" value="{!$Resource.TestImage}" width="220" height="55" alt="Description of image here"/>
+
+</apex:page>

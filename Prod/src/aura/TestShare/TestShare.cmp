@@ -1,0 +1,8 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" Controller="ShareApexController" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="share" type="PartnerNetworkRecordConnection[]" />
+        <ui:outputText value="{!share.ConnectionId}" />
+        <ui:outputText value="{!share.Status}" />
+        <ui:outputText value="{!share.StartDate}" />
+</aura:component>

@@ -1,0 +1,6 @@
+<apex:page showHeader="{!$Setup.Preferences__c.Show_SF_Header_Skuid_Core__c}" sidebar="false" readOnly="true" docType="html-5.0" title="Feedback Manager" tabStyle="Skuid_Settings__tab">
+    <head>
+        <title>Feedback</title>
+    </head>
+    <c:page page="FeedbackManager"/>
+</apex:page>

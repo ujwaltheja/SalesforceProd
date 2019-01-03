@@ -1,0 +1,127 @@
+<apex:page sidebar="false" title="Reference Utility - Code Robot" controller="CodeRobot.crReferenceUtilityController">
+	<head>
+        <apex:includeScript value="{!URLFOR($Resource.CodeRobot__cb_dtbl, 'src-min-noconflict/ace.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.CodeRobot__cb_dtbl, 'jQuery-2.2.4/jquery-2.2.4.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.CodeRobot__cb_dtbl, 'Bootstrap-3.3.7/js/bootstrap.min.js')}"/>
+        
+        <apex:stylesheet value="{!URLFOR($Resource.CodeRobot__cb_dtbl, 'cb_bs_css.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.CodeRobot__cb_dtbl, 'Bootstrap-3.3.7/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!$Resource.CodeRobot__common_css}"/>
+		<script>
+			//src editor
+        	var editor;
+			$(document).ready(function() {
+				//init editor
+				initEditor();
+				//init code gen for util class
+				initUtilCode();
+				//init all the tooltips
+	            $('body').tooltip({
+				    selector: '[data-toggle=tooltip]',
+				    trigger : 'hover'
+				});
+			});
+			
+			function initUtilCode()
+			{
+				Visualforce.remoting.Manager.invokeAction(
+	                '{!$RemoteAction.crReferenceUtilityController.generateUtilCode}',
+	                function(result, event)
+	                {
+	                    if(event.status) 
+	                    {
+	                        if(result)
+	                        {
+	                            editor.insert(result);
+	                            editor.scrollToLine(1, true, true, function () {});
+	                            editor.gotoLine(1, 1, true);
+	                        }
+	                    }
+	                }, 
+	                {escape: false, timeout: 120000}
+	            );
+			}
+			//sets the editor options
+	        function initEditor()
+	        {
+	            editor = ace.edit("editor");
+	            editor.setTheme("ace/theme/eclipse");
+	            editor.getSession().setMode("ace/mode/java");
+	            //editor.setReadOnly(true);
+	            editor.setShowPrintMargin(false);
+	            
+	        }
+	        //copies the contents of the editor to clipboard
+	        function copyToClipboard(theBtn)
+	        {
+	        	//original tooltip text
+				var origText = $(theBtn).attr('data-original-title');
+				
+				try
+				{
+		        	var sel = editor.selection.toJSON(); // save selection
+					editor.selectAll();
+					editor.focus();
+					var successful = document.execCommand('copy');
+					editor.selection.fromJSON(sel); // restore selection
+					var msg = successful ? 'Copied!' : 'Cannot copy!';
+					$(theBtn).attr('data-original-title', msg).tooltip('show');
+				}
+				catch(err)
+				{
+					alert('Could not copy text. Please select all and manually copy!');
+				}
+				
+				//set original text back
+				$(theBtn).attr('data-original-title', origText);
+				
+	        }
+	        function openApexClasses()
+	        {
+	            window.open("/01p");
+	        }
+		</script>
+		<style>
+			.top-buffer { 
+            	margin-top:20px; 
+            }
+            #editor { 
+                min-height: 768px;
+                width: 100%;
+            }
+		</style>
+	</head>
+	<body style="font-size:75%">
+		<div class="bs">
+			<div class="container-fluid">
+				<div class="row top-buffer">
+					<div class="col-xs-12">
+						<h2 style="color:grey">Code Robot - Reference Utility Class</h2>
+					</div>
+				</div>
+				<div class="row top-buffer">
+					<div class="col-xs-12">
+						<div class="well">
+							<div class="row ">
+								<div class="col-xs-12 text-right">
+									<button type="button" class="btn btn-primary" onclick="copyToClipboard(this)" data-toggle="tooltip" title="Copy code to clipboard">
+										<span class="glyphicon glyphicon-copy" style="font-size:17px" aria-hidden="true"></span>
+									</button>
+									<span class="button-space"/>
+	                                <button type="button" class="btn btn-primary" onclick="openApexClasses()" data-toggle="tooltip" title="Open Apex Classes Window">
+										<span class="glyphicon glyphicon-list-alt" style="font-size:17px" aria-hidden="true"></span>
+									</button>
+								</div>
+							</div>
+							<div class="row top-buffer">
+								<div class="col-xs-12">
+									<div id="editor"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</apex:page>

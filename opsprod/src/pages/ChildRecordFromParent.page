@@ -1,0 +1,22 @@
+<apex:page standardController="Account" extensions="AccExtension">
+
+<apex:pageBlock >
+<apex:form >
+<apex:pageBlockSection >
+  <apex:outputField value="{!Account.Name}"/>
+  <apex:outputField value="{!Account.AccountNumber}"/>
+  <apex:outputField value="{!Account.Phone}"/>
+  <apex:outputField value="{!Account.Type}"/>
+  <apex:outputField value="{!Account.Rating}"/>
+  <apex:outputField value="{!Account.SLA__c}"/>
+  <apex:inlineEditSupport />
+
+  <apex:inputField value="{!Con.lastname}"/>
+  <apex:inputField value="{!Con.firstname}"/>
+  <apex:inputField value="{!Con.email}"/>
+  <apex:inputField value="{!Con.phone}"/>
+ <apex:commandButton value="Save" Action="{!Save}"/>
+</apex:pageBlockSection>
+</apex:form>
+</apex:pageBlock>
+</apex:page>

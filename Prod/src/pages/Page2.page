@@ -1,0 +1,15 @@
+<apex:page docType="html-5.0"  controller="mycon" action="{!checkAndRedirect}">
+    <apex:form >
+        <apex:pageBlock >
+           <!-- <apex:pageBlockSection>
+                Date3: <apex:input type="date" value="{!date3}"/>
+                Date4: <apex:input type="date" value="{!date4}"/>
+            </apex:pageBlockSection>-->
+            <apex:pageBlockTable value="{!contacts}" var="c">
+                    
+                    <apex:column value="{!c.LastName}"/>
+                    
+                </apex:pageBlockTable>
+        </apex:pageBlock> 
+    </apex:form>
+</apex:page>

@@ -1,0 +1,18 @@
+<apex:page standardController="Bank_Branch__c" sidebar="false" extensions="Bankbranchext">
+   <apex:sectionHeader title="Bank Branch Edit" subtitle="New Bank Branch"/>
+
+    <apex:form >
+        <apex:pageBlock title="Bank Branch Details" mode="detail">
+                                   
+            <apex:pageBlockSection title="Information" columns="2" showHeader="false">
+                <apex:outputField value="{!Bank_Branch__c.Name}" />
+                <apex:outputField value="{!Bank_Branch__c.Branch_Name__c}" />
+                <apex:outputField value="{!Bank_Branch__c.Branch_City__c}" />
+                <apex:outputField value="{!Bank_Branch__c.Branch_Country__c}" />
+                <apex:pageBlockSectionItem />
+            </apex:pageBlockSection>            
+            
+        </apex:pageBlock>
+    </apex:form>
+     
+</apex:page>

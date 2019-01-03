@@ -1,0 +1,149 @@
+<apex:page standardController="Bootstrap_Object__c" docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+
+<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />
+     
+<apex:includeScript value="https://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.min.js"/>
+     
+    <head>
+        <title> Jquery Form Validation1</title>
+        <style>
+         .container{
+            margin:0px auto;
+            background:#eee;
+            width:50%;
+            }
+           .form-area{
+             padding:1%;
+             border:1px solid #003;
+           
+            }
+            .form-element{
+             margin-bottom:10px;
+             padding:10px;
+            }
+            .form-element input{
+             padding:10px;
+             width:90%;
+            }
+            .submit{
+             padding:10px;
+             background:#900;
+             color:#fff;
+             border-width:opx;
+             margin-left:40%;
+            }
+            .error{
+              font-weight:bold;
+              color:#900;
+            
+            }
+            td.a {
+            width: 30%;           
+             padding: 15px;
+            text-align: left;
+           //  border: 1px solid black;
+            }
+            
+            td.b {
+            width: 50%;
+             padding: 5px;
+            text-align: left;
+          //   border: 1px solid black;
+            }
+            table {
+            width: 80%;
+            
+            }
+
+            
+       
+        </style>
+        
+    </head>
+    <body>
+        <div class="container">
+            <div class="form-area">
+                   <apex:form id="CustomerForm">
+                    <div class="form-element">
+                     <table>
+                      <tr>
+                       <td class="a"> Customer Name </td>
+                       <td class="b" > <apex:inputField value="{!Bootstrap_Object__c.name}"   html-placeHolder="Customer Name" id="customerName" /></td>
+                      </tr>
+                     
+                      <tr>
+                       <td class="a"> Age </td>
+                       <td class="b" > <apex:inputField value="{!Bootstrap_Object__c.Age__c}"  html-placeHolder="Customer Age" id="Age__c"  label="Age"/></td>
+                      </tr>
+                      
+                      <tr>
+                       <td class="a"> Email </td>
+                       <td class="b" > <apex:inputField value="{!Bootstrap_Object__c.Contact_Email__c}"  html-placeHolder="Customer Email" id="Contact_Emai__c" /></td>
+                      </tr>
+                      
+                       <tr>
+                       <td class="a"> Phone Number</td>
+                       <td class="b" > <apex:inputField value="{!Bootstrap_Object__c.Phone_Number__c}"  html-placeHolder="Phone Number" id="Phone_Number__c" /></td>
+                      </tr>
+                      
+                     
+                     </table>      
+                           
+                   
+                    
+                 <!--   <label for="Contact_Emai__c" class="error" id="Contact_Emai_error"></label> -->
+                    </div>
+                    <apex:commandButton action="{!save}" value="Save Form" id="submit" styleClass="submit" />
+                    
+                    </apex:form>
+            </div>
+           
+            
+        </div>
+    <script type="text/javascript"> 
+       
+           
+         $('[id$=CustomerForm]').validate();             
+              errorclass: "myerrorclass";
+              
+               $('[id$=customerName]').rules("add",{
+                required: true,
+                minlength: 5,
+                maxlength: 50,               
+                messages:{
+                  required:"<br/>Required Customer Name",
+                  minlength: jQuery.validator.format("<br/>Please etner at least 5 characters are necessary"),
+               }                           
+            }); 
+            
+           
+            $('[id$=Age__c]').rules("add",{
+                required: true,
+                minlength: 2,
+                maxlength: 2,  
+               range: [18, 99],             
+                messages:{
+                  required:"<br/>Required input",
+                  minlength: jQuery.validator.format("<br/>Please, at least 2 characters are necessary"),
+               }                           
+            }); 
+            
+              $('[id$=Contact_Emai__c]').rules("add",{
+                required: true,
+               email:true,              
+                messages:{
+                  required:"<br/>Required Email",
+                  email: jQuery.validator.format("<br/>Please enter valid email id"),
+               }                           
+            }); 
+            
+            $('[id$=Phone_Number__c]').rules("add",{
+               required: true,                           
+                messages:{
+                  required:"<br/>Required Phone",                 
+               }                           
+            }); 
+      
+    </script>
+    </body>
+</apex:page>

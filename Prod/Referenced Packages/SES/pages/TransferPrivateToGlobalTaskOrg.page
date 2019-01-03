@@ -1,0 +1,293 @@
+<apex:page id="TransferPrivateToGlobalTaskOrg" controller="ses.TransferPrivateToGlobalTaskOrg" TabStyle="ses__Task_Name__c" >
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" />
+<script src="http://code.jquery.com/jquery-1.9.0.js"></script>
+<apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" />
+<apex:includeScript value="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js" /> 
+<apex:includeScript value="http://code.jquery.com/ui/1.10.4/jquery-ui.js"/>
+<apex:stylesheet value="//ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery.ui.theme.css"/>
+<apex:stylesheet value="//ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery.ui.base.css"/>
+
+     <script>
+    
+        $j = jQuery.noConflict();
+
+        $j(function() {
+     
+
+        $j( "#dialogSharedOrganisations" ).dialog({
+          autoOpen: false,
+          height: 250,
+          width: 350,
+          modal: true,
+          buttons: {
+            Close: function() {
+              $j( this ).dialog( "close" );
+            }
+          },
+          close: function() {
+          }
+        });
+	});
+	
+	function showdialog(rm, val){
+		//only 10 records shown on page 
+		try {
+			var el = document.querySelectorAll('[id^="dialogSharedOrganisations"]')
+			for (var i = 0; i < el.length; i++) {			
+				console.debug('dialogSharedOrganisations' + i + '.0');
+				el[i].style.display = 'none';				
+			}
+			
+			/*or alternatibe
+			for (var i = 0;i<=1;i++){
+				var el = "dialogSharedOrganisations" + i + ".0";
+				document.getElementById(el).style.display = 'none';
+			}*/
+		}catch(err) {}
+	
+		document.getElementById(rm).style.display = val;
+		document.getElementById(rm).style.left = '1000px';
+	}
+
+	</script>
+<style>
+    .rightspace{
+        margin-right: 20px !important;
+    }
+    .scrollNavig{
+    	width: 1100px; height: 50px; overflow: auto;
+    }
+    .noSecondHeader{
+    	color: white !important;
+    }
+</style>
+	<apex:form id="form">
+							     
+		<apex:pageBlock title="" id="pageBlock">
+		<apex:sectionHeader title="Transfer Global Functions And Tasks To Global Group Companies"/>
+		<apex:outputPanel id="ExistingRecords">
+			<apex:pagemessages />
+			<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.TransferPrivateToGlobalTaskOrg__c}');" >  
+				<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+			</apex:commandLink>-->
+
+			<apex:pageBlockSection title="Search For Functions in Global Scope" >
+				<apex:outputLabel value="Select The Object To Search"/>
+				<apex:selectList value="{!selectedObject}" size="1" >
+	                 <apex:SelectOptions value="{!allGlobalObjects}"></apex:SelectOptions> 
+	             </apex:selectList>
+	
+				<apex:outputLabel value="Search"/>
+				<apex:inputText value="{!searchEntry}" />
+				<apex:commandButton action="{!find}" styleclass="btnPrimary publishersharebutton btn" value="Submit Search" />
+			</apex:pageBlockSection>
+			
+			<apex:outputPanel id="results"  >
+				<apex:outputPanel rendered="{!displayGlobalFunctions}">
+					<apex:pageBlockSection >					     
+					    	<apex:pageblockTable value="{!allOfTheseFunctions}" var="GFunc" id="theTable" rowClasses="odd,even"> 
+							<apex:column >
+								<apex:facet name="header">Link</apex:facet>
+								<apex:outputLink value="/{!GFunc.gfunction.id}" target="_blank">Link</apex:outputLink>
+							</apex:column>      
+							<apex:column >
+								<apex:facet name="header">Current Shared Organisations</apex:facet>
+								<a onclick="showdialog('dialogSharedOrganisations{!GFunc.counter}', 'block'); " style="text-decoration: none; cursor: pointer" >Show</a>
+								<div id="dialogSharedOrganisations{!GFunc.counter}"  style="display: none;top: 300px;z-index: 2;position: absolute;height:300px;overflow: auto">
+							        <table border="0" width="98%" cellpadding="7">
+							            <tr>
+							                <td valign="top">
+							                    <div style="font-size:1.6em;">
+							                        <strong>Current Shared Organisations</strong>
+							                    </div>
+							                    <div></div>
+							                    <p />
+							                    <label>Organisations IDs</label><br />
+												<apex:repeat value="{!groupOrganizationMap[GFunc.gfunction.id]}" var="orgs" >
+							                    	<apex:outputText value="{!orgs}" rendered="{!(orgs != '')}"/>
+							                    	<br />
+							                    </apex:repeat>
+							                </td> 
+							            </tr>
+							        </table>
+				                </div> 
+							</apex:column>       
+							<apex:column >
+								<apex:facet name="header">Class</apex:facet>
+								<apex:outputText value="{!GFunc.gfunction.ses__Function_Class__c}"/>
+							</apex:column>      
+							<apex:column >
+
+								<apex:facet name="header">Transfer</apex:facet>
+								<apex:inputCheckBox value="{!GFunc.transferRec}" />
+							</apex:column>
+							
+						</apex:pageblockTable>	
+					</apex:pageBlockSection>	
+				</apex:outputPanel>	
+	
+				<apex:outputPanel rendered="{!displayGlobalSubFunctions}">
+					<apex:pageBlockSection columns="1" >
+					     <apex:pageBlockTable value="{!allOfTheseFunctions}" var="GSubFunc" id="theTable" rowClasses="odd,even">
+							<apex:column >
+								<apex:facet name="header">Link</apex:facet>
+								<apex:outputLink value="/{!GSubFunc.gsfunction.id}" target="_blank">Link</apex:outputLink>
+							</apex:column>      
+							<apex:column >
+								<apex:facet name="header">Current Shared Organisations</apex:facet>
+								<a onclick="showdialog('dialogSharedOrganisations{!GSubFunc.counter}', 'block'); " style="text-decoration: none; cursor: pointer" >Show</a>
+								<div id="dialogSharedOrganisations{!GSubFunc.counter}"  style="display: none;top: 300px;z-index: 2;position: absolute;height:300px;overflow: auto">
+							        <table border="0" width="98%" cellpadding="7">
+							            <tr>
+							                <td valign="top">
+							                    <div style="font-size:1.6em;">
+							                        <strong>Current Shared Organisations</strong>
+							                    </div>
+							                    <div></div>
+							                    <p />
+							                    <label>Organisations IDs</label><br />
+												<apex:repeat value="{!groupOrganizationMap[GSubFunc.gfunction.id]}" var="orgs" >
+							                    	<apex:outputText value="{!orgs}" rendered="{!(orgs != '')}"/>
+							                    	<br />
+							                    </apex:repeat>
+							                </td> 
+							            </tr>
+							        </table>
+				                </div> 
+							</apex:column>       
+							<apex:column >
+								<apex:facet name="header">Class</apex:facet>
+								<apex:outputText value="{!GSubFunc.gsfunction.ses__Function_Class__c}"/>
+							</apex:column>      
+							<apex:column >
+								<apex:facet name="header">Transfer</apex:facet>
+								<apex:inputcheckbox value="{!GSubFunc.transferRec}"/>
+							</apex:column>      
+						</apex:pageBlockTable>	
+					</apex:pageBlockSection>	
+				</apex:outputPanel>	
+	
+				<apex:outputPanel rendered="{!displayGlobalLowerFunctions}">
+					<apex:pageBlockSection columns="1" >
+					     <apex:pageBlockTable value="{!allOfTheseFunctions}" var="GLowFunc" id="theTable" rowClasses="odd,even">
+							<apex:column >
+								<apex:facet name="header">Link</apex:facet>
+								<apex:outputLink value="/{!GLowFunc.glfunction.id}" target="_blank">Link</apex:outputLink>
+							</apex:column>      
+							<apex:column >
+								<apex:facet name="header">Current Shared Organisations</apex:facet>
+								<a onclick="showdialog('dialogSharedOrganisations{!GLowFunc.counter}', 'block'); " style="text-decoration: none; cursor: pointer" >Show</a>
+								<div id="dialogSharedOrganisations{!GLowFunc.counter}"  style="display: none;top: 300px;z-index: 2;position: absolute;height:300px;overflow: auto">
+							        <table border="0" width="98%" cellpadding="7">
+							            <tr>
+							                <td valign="top">
+							                    <div style="font-size:1.6em;">
+							                        <strong>Current Shared Organisations</strong>
+							                    </div>
+							                    <div></div>
+							                    <p />
+							                    <label>Organisations IDs</label><br />
+												<apex:repeat value="{!groupOrganizationMap[GLowFunc.gfunction.id]}" var="orgs" >
+							                    	<apex:outputText value="{!orgs}" rendered="{!(orgs != '')}"/>
+							                    	<br />
+							                    </apex:repeat>
+							                </td> 
+							            </tr>
+							        </table>
+				                </div> 
+							</apex:column>       
+							<apex:column >
+								<apex:facet name="header">Class</apex:facet>
+								<apex:outputText value="{!GLowFunc.glfunction.ses__Function_Class__c}"/>
+							</apex:column>      
+							<apex:column >
+								<apex:facet name="header">Transfer</apex:facet>
+								<apex:inputcheckbox value="{!GLowFunc.transferRec}"/>
+							</apex:column>      
+						</apex:pageBlockTable>	
+					</apex:pageBlockSection>	
+				</apex:outputPanel>	
+			</apex:outputPanel>
+			
+				 <apex:outputPanel rendered="{!displayGlobalFunctions || displayGlobalLowerFunctions || displayGlobalSubFunctions}"> 
+				      <apex:commandbutton styleclass="rightspace btnPrimary publishersharebutton btn" action="{!moveToPage}" rerender="results" value="First" >
+				      	<apex:param name="selectedPageFunc" assignTo="{!selectedPageFunc}" value="1" />
+
+				      </apex:commandbutton> 
+				      <apex:commandbutton styleclass="rightspace btnPrimary publishersharebutton btn" action="{!moveToPage}" rerender="results" value="Previous" >
+				      	<apex:param name="selectedPageFunc" assignTo="{!selectedPageFunc}" value="{!selectedPageFunc-1}" />
+				      </apex:commandbutton> 
+				      <apex:commandbutton styleclass="rightspace btnPrimary publishersharebutton btn" action="{!moveToPage}" rerender="results" value="Next" >
+				      	<apex:param name="selectedPageFunc" assignTo="{!selectedPageFunc}" value="{!selectedPageFunc+1}" />
+				      </apex:commandbutton>       
+				     <apex:commandbutton styleclass="rightspace btnPrimary publishersharebutton btn" action="{!moveToPage}" rerender="results" value="Last" >
+				   	    <apex:param name="selectedPageFunc" assignTo="{!selectedPageFunc}" value="{!numberOfPagesToDisplayFunc}" />
+				   	 </apex:commandbutton> 
+				     <br />
+				     <apex:outputPanel layout="block" styleclass="scrollNavig">
+				      <apex:repeat value="{!funcStatusPagesToDisplay}" var="pgs" >
+				         <apex:commandLink styleclass="rightspace" id="funcLink" action="{!moveToPage}" rerender="results" >{!pgs}
+				             <apex:param name="selectedPagefunc" assignTo="{!selectedPagefunc}" value="{!pgs}" />
+				         </apex:commandLink> 
+				      </apex:repeat>
+				      <br />
+				      <!-- <apex:outputPanel id="SaveAsGroupOrganization" rendered="{!displayGroupOrganization}">
+				      		<apex:pagemessages />
+				      </apex:outputPanel>-->
+				      
+				      <apex:outputLabel value="Enter Salesforce Organization Ids ()"/><apex:inputText value="{!OrgIDsEntry}" />
+				      <!-- <apex:commandbutton value="Save As Group Organization" styleclass="btnPrimary publishersharebutton btn" rerender="SaveAsGroupOrganization" action="{!createGroupOrgID}" />
+				      
+				      <apex:outputLabel value="Select A Group Organization"/>
+					  <apex:inputField value="{!groupOrganizationAcc.ses__Group_Org_ID__c}" /> -->
+
+				      <apex:commandbutton value="Transfer Records" styleclass="btnPrimary publishersharebutton btn" rerender="ExistingRecords" action="{!transfer}" />
+			     </apex:outputPanel>
+				  
+			   	<!--  
+			   	<div id="dialogSharedOrganisations" style="display: none;z-index: 2;position: absolute">
+        <table border="0" width="98%" cellpadding="7">
+            <tr>
+                <td valign="top">
+                    <div style="font-size:1.6em;">
+                        <strong>Current Shared Organisations</strong>
+                    </div>
+                    <div> </div>
+                    <p />
+                    <label>Organisations IDs</label>
+                    {!GFunc.gfunction.id}
+                     <!--<apex:repeat value="{!groupOrganizationMap[GFunc.gfunction.id]}" var="orgs" >
+                    	<apex:outputText value="{!orgs}"/>
+                    </apex:repeat> 
+
+                </td> 
+            </tr>
+        </table>
+    </div>
+			   	
+			   	
+			   	<br />			   	 
+                      <apex:outputPanel id="ExistingRecords">
+	                      <apex:pageBlockSection title="Add New Salesforce Orgs To Share Functions With">
+		                      <table cellspacing="0" style="width:100%">                      
+		                          <apex:repeat value="{!internalSalesforceOrgs}" var="EachOrg">
+		                              <tr>
+		                                  <td class="fixedpricelborder">
+		                                      <apex:outputLabel >Salesforce Org ID:</apex:outputLabel>
+		                                      <apex:inputText value="{!EachOrg.thisSalesforceOrg}"/>                                                                                                                          
+		                                  </td>  
+		                              </tr>                                                   
+		                          </apex:repeat>
+		                      </table>      
+		                      <apex:commandButton styleclass="btnPrimary publishersharebutton btn" id="AddNewOrg" action="{!AddNewOrg}" rerender="ExistingRecords" value="Add New Org"   />                                      					   	 				   	 			
+			   	 		</apex:pageBlockSection>
+			   	 	</apex:outputPanel>
+			   	 <br /> -->
+			   	 
+			 	</apex:outputPanel>
+		</apex:outputPanel>
+
+		</apex:pageBlock>
+		
+	</apex:form>
+</apex:page>

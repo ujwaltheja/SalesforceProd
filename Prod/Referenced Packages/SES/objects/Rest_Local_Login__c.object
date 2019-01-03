@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>Allows Rest to connect to this private org to get current object model</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>password__c</fullName>
+        <deprecated>false</deprecated>
+        <description>this password must be the current password set for this user</description>
+        <externalId>false</externalId>
+        <inlineHelpText>this password must be the current password set for this user</inlineHelpText>
+        <label>password</label>
+        <length>30</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>username__c</fullName>
+        <deprecated>false</deprecated>
+        <description>this user must be sys admin, be active, password never expires and have api enabled</description>
+        <externalId>false</externalId>
+        <inlineHelpText>this user must be sys admin, be active, password never expires and have api enabled</inlineHelpText>
+        <label>username</label>
+        <length>80</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Rest Local Login</label>
+    <visibility>Public</visibility>
+</CustomObject>

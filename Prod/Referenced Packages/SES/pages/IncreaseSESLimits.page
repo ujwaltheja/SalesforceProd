@@ -1,0 +1,108 @@
+<apex:page id="IncreaseSESLimits" controller="ses.IncreaseSESLimits">
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" /> 
+<script>
+	window.onload = function (){
+		if ({!setDMLOnLoad}) setdml();
+	}
+</script>
+    <style>
+        a Label{
+            display:none;border:none;width: 400px;text-decoration:none;font-style:normal
+        }
+        
+        a:hover Label,a:active Label{display:inline;background:#ffffff;
+            border:1px solid #cccccc;
+            color:#6c6c6c;width: 400px;text-decoration:none;font-style:normal
+        }
+        
+        a.tooltip:link div label,a.tooltip:visited div label{
+            border:none;width:0px;text-decoration:none;font-style:normal
+            display:none;
+            padding:2px 3px;
+            margin-left:8px;width: 400px;text-decoration:none;
+            !immedaiate: true;
+        }
+        
+        a.tooltip:hover div label{
+            display:inline;font-style:normal
+            background:#ffffff;
+            border:1px solid #cccccc;
+            color:#6c6c6c;width: 400px;text-decoration:none;
+        }
+
+	 	.spaces{
+	 		padding-left: 20px;
+	 	}
+		.NewLine{
+	        margin-bottom: 2em;
+	    }
+    </style>
+
+	<apex:Form >
+		<apex:actionFunction name="setdml" action="{!setDML}" />
+		<apex:outputPanel id="results" >	 
+			<apex:PageBlock > 
+				<apex:pagemessages />
+				<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.IncreaseSESLimits__c}');" >  
+					<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+				</apex:commandLink>-->
+
+				<apex:pageBlockSection columns="1" title="SES Limits" >
+					<apex:pageBlockSectionItem >
+						<apex:outputPanel >
+							<apex:outputLabel value="The calculation of the API request limit based on user licenses is designed to allow sufficient capacity for your organization based on your number of users. If you need a higher limit and you don't want to purchase additional user licenses or upgrade to Unlimited Edition, you can purchase additional API calls. For more information, contact SES by entering the desired limit below. An email will be sent directly to SES and your SES representative will contact you."  />
+							<apex:outputPanel layout="block" styleclass="NewLine" /> 
+							
+							<apex:pageBlockSection >
+								<apex:pageBlockSectionItem >
+									<apex:outputLabel value="Increase Your API Limit" />
+								</apex:pageBlockSectionItem>
+								<apex:pageBlockSectionItem >
+									<apex:inputText styleclass="spaces" value="{!increaseAPI}" />
+								</apex:pageBlockSectionItem>
+							</apex:pageBlockSection>
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+	
+					<apex:pageBlockSectionItem >
+						<apex:outputPanel >
+							<apex:outputLabel value="When your organization has reached its storage limit, you will not be able to create any new data or upload new files. To reduce your storage usage, try to delete any outdated leads or contacts and remove any unnecessary attachments. In Salesforce CRM Content, delete files to reduce your storage limit.
+									To increase your storage limit, you can purchase additional storage space, or in Professional, Enterprise, and Unlimited Editions, you can also add user licenses. For more information, contact SES by entering the desired limit below. An email will be sent directly to SES and your SES representative will contact you." />								
+							<apex:outputPanel layout="block" styleclass="NewLine" /> 
+							<apex:pageBlockSection >
+								<apex:pageBlockSectionItem >
+									<apex:outputLabel value="Increase Your Data Limit" />
+								</apex:pageBlockSectionItem>
+								<apex:pageBlockSectionItem >
+									<apex:outputPanel >
+										<apex:inputText styleclass="spaces" value="{!dml}" /> Mb's
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+							</apex:pageBlockSection>
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >
+						<apex:outputPanel >
+							<apex:pageBlockSection >
+								<apex:pageBlockSectionItem >
+									<apex:outputLabel value="Increase Your File Limit" />
+								</apex:pageBlockSectionItem>
+								<apex:pageBlockSectionItem >
+									<apex:outputPanel >
+										<apex:inputText styleclass="spaces" value="{!increaseFile}" /> Mb's
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+							</apex:pageBlockSection>
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >
+						<apex:commandButton id="RefreshMatches" styleclass="btnPrimary publishersharebutton btn" action="{!submitLimits}"  value="Submit New Limits" rerender="results" />
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+			
+			</apex:PageBlock>
+		</apex:outputPanel>
+	</apex:Form>
+</apex:page>

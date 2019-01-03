@@ -1,0 +1,3 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+    <iframe src="{! 'https://lexu-dev-ed--c.visualforce.com/apex/NewMap?Id=' + v.recordId }" width="100%" height="360px;" frameBorder="0"/>
+</aura:component>

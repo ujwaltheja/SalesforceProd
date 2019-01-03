@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>If SF instance changes dont need to do any package updates</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>value__c</fullName>
+        <defaultValue>&quot;https://na12-api.salesforce.com&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>value</label>
+        <length>40</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Salesforce Instance Endpoint</label>
+    <visibility>Public</visibility>
+</CustomObject>

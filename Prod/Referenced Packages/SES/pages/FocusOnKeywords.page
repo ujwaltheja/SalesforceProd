@@ -1,0 +1,55 @@
+<apex:page id="FocusOnKeywords" controller="ses.FocusOnKeywords">
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" />
+
+<style>
+	.NewLine{
+        margin-bottom: 2em;
+    }
+	.SmallLine{
+        margin-bottom: 1em;
+    }
+</style>
+    
+    <apex:Form >
+		<apex:PageBlock >
+			<apex:outputPanel id="FocusResults">
+				<apex:pagemessages /> 
+				<apex:SectionHeader title="Focus On Keywords Search Matching" />
+
+				<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.FocusOnKeywords__c}');" >  
+					<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+				</apex:commandLink>-->
+
+				<apex:outputPanel layout="block" styleclass="NewLine" /> 
+				<apex:outputLabel style="text-decoration: underline;font-size: 14pt;font-style: it" value="Help" />
+				<apex:outputPanel layout="block" styleclass="SmallLine" />
+				<apex:outputLabel style="font-size: 12pt;color: red" value="If you have problems searching for a function to match a Task, you can use 'Focus On Keywords'. Select specific keywords from your task caption or description
+				and manually select the private function you think most closely matches your Task. Now, any time you want to re-use this Task it will be linked to your selected function. 
+				This can only be used at the moment with Private Functions."  />
+				<apex:outputPanel layout="block" styleclass="NewLine" /> 
+				<apex:pageBlockTable title="Focus On Keywords To Search" value="{!allSearchWords}" var="thiswrd"> 
+					<apex:column headerValue="Include" title="Include" >
+						<apex:inputcheckBox value="{!thiswrd.selected}" />	
+					</apex:column>
+					<apex:column headerValue="Keyword" title="Keyword" value="{!thiswrd.wrd}" />
+				</apex:pageBlockTable>
+				<apex:outputPanel layout="block" styleclass="NewLine" /> 
+				<apex:commandButton id="findMatches" styleclass="btnPrimary publishersharebutton btn" action="{!findMatches}"  value="Find Matches" rerender="FocusResults" />
+				<apex:outputPanel layout="block" styleclass="NewLine" /> 
+				
+				<apex:pageBlockTable title="Private Functions" value="{!allPrivFunctions}" rendered="{!displayPrivFunctions}" var="thisfunc"> 
+					<apex:column headerValue="Use This Function" title="Use This Function" >
+						<apex:commandLink id="useit" styleclass="btnPrimary publishersharebutton btn" action="{!updateTask}"  value="Select" >
+								<apex:param name="selectedPrivFunc" assignTo="{!selectedPrivFunc}" value="{!thisfunc.priv.id}" />
+						</apex:commandLink>	
+					</apex:column>
+					<apex:column headerValue="Caption" title="Caption" value="{!thisfunc.priv.ses__Function_Caption__c}" />
+					<apex:column headerValue="Class" title="Class" value="{!thisfunc.priv.ses__Function_Class__c}" />
+					<apex:column headerValue="Show Class" title="Show Class" >
+						<apex:commandLink id="classlink" target="_blank" styleclass="btnPrimary publishersharebutton btn" action="{!URLFOR('/' + thisfunc.classID)}" value="Open"  />
+					</apex:column>
+				</apex:pageBlockTable>
+			</apex:outputPanel>
+		</apex:PageBlock>
+	</apex:Form>
+</apex:page>

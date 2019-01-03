@@ -1,0 +1,5 @@
+<apex:page id="ShowPopUp" showheader="false" sidebar="false" controller="ses.ShowPopUp" >
+<apex:pageblock >
+	<apex:iframe width="100%" height="500" src="{!showLink}" scrolling="true" />
+</apex:pageblock>
+</apex:page>

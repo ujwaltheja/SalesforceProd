@@ -1,0 +1,5 @@
+<apex:page sidebar="false" renderAs="PDF">
+
+    <h1> Welcome to Salesforce family! </h1>
+    
+</apex:page>

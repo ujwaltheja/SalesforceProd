@@ -1,0 +1,11 @@
+<apex:page standardController="Account" recordSetVar="accounts" sidebar="false" title="Example" docType="html-5.0">
+    <apex:form forceSSL="true" id="myForm" title="My Form">
+        <apex:pageBlock id="myPageBlock">
+            <apex:pageblockSection id="myPageBlockSection">
+                <apex:pageBlockSectionItem id="myPageBlockItem">
+                   Account Name <apex:inputField label="Account" required="true" value="{!account.name}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageblockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

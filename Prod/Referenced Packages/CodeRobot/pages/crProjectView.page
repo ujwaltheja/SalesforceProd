@@ -1,0 +1,2591 @@
+<apex:page sidebar="false" standardController="CodeRobot__CR_Project__c" title="Project View - Code Robot" extensions="CodeRobot.crProjectViewController" applyBodyTag="false">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <head>
+        <apex:includeScript value="{!URLFOR($Resource.CodeRobot__cb_dtbl, 'datatables.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.CodeRobot__cb_dtbl, 'src-min-noconflict/ace.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.CodeRobot__cb_dtbl, 'patternfly-treeview/js/bootstrap-treeview.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.CodeRobot__jqueryui, 'jquery-ui-1.12.1.custom/jquery-ui.js')}"/>
+        
+        <apex:stylesheet value="{!URLFOR($Resource.CodeRobot__cb_dtbl, 'cb_bs_css.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.CodeRobot__cb_dtbl, 'DataTables-1.10.13/css/dataTables.bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.CodeRobot__cb_dtbl, 'Bootstrap-3.3.7/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.CodeRobot__cb_dtbl, 'patternfly-treeview/css/bootstrap-treeview.css')}"/>
+        <apex:slds rendered="{!$User.UIThemeDisplayed == 'Theme4d'}"/>
+        
+        <apex:includeScript value="{!$Resource.CodeRobot__common_js}"/> 
+        <apex:stylesheet value="{!$Resource.CodeRobot__common_css}"/>
+        <apex:includeScript value="{!$Resource.CodeRobot__resizable_js}"/> 
+        <apex:stylesheet value="{!$Resource.CodeRobot__resizable_css}"/>
+        
+        <script>
+        var projectTree;
+        var projectContentsMap;
+        var LOOKUP_REL = 'Lookup';
+        var PARENT_CHILD_REL = 'Parent-Child';
+        var contentsPlaceholder = "{!URLFOR($Resource.cb_dtbl, 'customImg/cropped-eye20x20.png')}"; 
+        var headerPlaceholder = "{!URLFOR($Resource.cb_dtbl, 'customImg/cropped-eye32x32.png')}"; 
+        var placeholderIconUrl = "{!URLFOR($Resource.cb_dtbl, 'customImg/cropped-eye20x20.png')}"; 
+        var SHOW_STACK_TRACE = true;
+        
+        var userTheme = '';
+        
+        //src editor
+        var editor;
+        
+        //custom sorting for checkbox elements
+        $.fn.dataTable.ext.order['dom-checkbox'] = function  ( settings, col )
+        {
+            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+                return $('input', td).prop('checked') ? '1' : '0';
+            } );
+        };
+        //custom sorting for checkbox glyphicons
+        $.fn.dataTable.ext.order['listview-checkbox'] = function  ( settings, col )
+        {
+            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+                return $('span', td).hasClass('glyphicon-check') ? '1' : '0';
+            } );
+        };
+        
+        $(document).ready(function() {
+            //check CRUD in crPermissions.component
+            checkCRUD();
+            
+        });
+        function initPage()
+        {
+            initEditor();
+            
+            //remove invalid project records
+            deleteInvalidRecords('', 'init', false);
+            
+            initPageElements();
+            initListViewObjs();
+            //init all the tooltips
+            $('body').tooltip({
+                selector: '[data-toggle=tooltip]',
+                trigger : 'hover'
+            });
+            //$('[data-toggle=tooltip]').tooltip();
+            //function in crSetting.component
+            //getAppSetting(); -- invoked onclick of the config button
+            
+            //onclick listener for project table list
+            $("#projectList").on("click", ".glyphicon-new-window", function(event){
+                var target = $(event.target);
+                openRecordConfig(target, null);
+            });
+            /*$("#projectList").on("click", ".glyphicon-remove-circle", function(event){
+                var target = $(event.target);
+                deleteRecord(target, null);
+            });*/
+            //check remote site settings on load
+            analyzeConfig(false);
+            //open help modal in crHelp.component
+            if(!{!hideHelp})
+                $("#helpModal").modal();
+            //invokes resizable divs -- resizable.js (need to wrap resizable div columns in a grid div)
+            $('.grid').resizableGrid(); 
+            //set the user theme
+            setUserTheme();
+        }
+        //sets the theme for icons, etc. if IE 11 or below, return theme 3 due to styling issues
+        function setUserTheme()
+        {
+        	//detectIE returns false if browser is not IE
+        	var version = detectIE();
+        	if(version === false || version >= 12)
+        	{
+        		//use user's theme if other browser or Edge
+        		userTheme = '{!$User.UIThemeDisplayed}';
+        	}
+        	else if(version < 12)
+        	{
+        		//use classic theme
+        		userTheme = 'Theme3';
+        	}
+        	//remove the appropriate icon sections
+        	if(userTheme == 'Theme4d')
+        	{
+        		//lightning
+        		$(".classicIcon").remove();	
+        	}
+        	else if(userTheme == 'Theme3')
+        	{
+        		//classic
+        		$(".lightningIcon").remove();	
+        	}
+        }
+        function initListViewObjs()
+        {
+        	//show loader
+        	$("#objLoading").show();
+        	//hide object list
+        	$("#objList").hide();
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.crProjectViewController.getListViewObjects}',
+                '{!CodeRobot__CR_Project__c.Id}',
+                function(result, event)
+                {
+                    if (event.status) 
+                    {
+                        if(result != null)
+                        {
+                        	if(result.errorMsg.length == 0)
+	                 		{
+                            	populateObjList(result.lstOIW);
+                            }
+                            else if(result.errorMsg.length > 0)
+		                 	{
+		                 		displayMessage("", "pageMsgs", result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+		                 	}
+                        }
+                    }
+                }, 
+                {escape: false}
+            );
+        }
+        //inits various elements onload of page
+        function initPageElements()
+        {
+            //sets onclick listener for cancel button on new records section
+            $(".btn_cancel_new_record").on("click", function(e) {
+                $("#new_records_collapse").collapse('hide');
+            });
+            //sets onclick listener for cancel button on new related records section
+            $(".btn_cancel_new_related_record").on("click", function(e) {
+                $("#new_related_records_collapse").collapse('hide');
+                //unselect nodes
+                var selectedNodes = $('#projectView').treeview('getSelected');
+                $('#projectView').treeview('unselectNode', [ selectedNodes, { silent: true } ]);
+            });
+            //create map that holds each project content row
+            projectContentsMap = new Map();
+            
+        }
+        //populates the std and custom object list for adding new records
+        function populateObjList(result)
+        {
+            var objList = $("#objList");
+            //clear existing objList
+            objList.html("");
+            //add object options options
+            for(var i = 0; i < result.length; i++)
+            {
+                objList.append('<a href="#listViewSection" id="' + result[i].objApiName + '" class="list-group-item">' + result[i].objLabel + ' <span class="objApiName">(' + result[i].objApiName + ')</span></a>');
+            }
+            //hide loader and show list
+            $("#objLoading").hide();
+            $("#objList").show();
+            //onclick listener for object selection
+            $('#objList > .list-group-item').on('click', function (e) {
+                //remove active class from all list group items
+                $("#objList > .list-group-item").removeClass("active");
+                //set this list group item as active
+                $(this).addClass("active");
+                //note: load must be called after "active" class added
+                $("#listViewPanel").show();
+                //remove old list view options
+                $("#listViewSelect option").remove();
+                loadObjectListView(true);
+                $("#objSelectionDiv").hide();
+                $("#listViewSelectedObj").text($(this).text());
+                return false;
+            });
+        }
+        function changeListViewObj()
+        {
+            $("#objList > .list-group-item").removeClass("active");
+            $("#listViewPanel").hide();
+            $("#objSelectionDiv").show();
+            $("#listviewTableDiv").hide()
+        }
+        function filterObjList(theInput)
+        {
+            var filterVal = $(theInput).val();
+            if(filterVal.length > 0)
+            {
+                $("#objList > a").each(function() {
+                    if ($(this).text().toLowerCase().search(filterVal.toLowerCase()) > -1) 
+                    {
+                        $(this).show();
+                    }
+                    else {
+                        $(this).hide();
+                    }
+                });
+            }
+            else
+            {
+                //show full list
+                $('#objList > a').show();
+            }
+        }
+        function loadObjectListView(loadSelList)
+        {
+            //clear any existing message
+            clearMessage("listview_msgs");
+            
+            $("#listViewLoading").show();
+            if(loadSelList)
+                $("#listViewSelectDiv").hide();
+            else
+                $("#listviewTableDiv").hide();
+                
+            var listViewId = $("#listViewSelect").val() == null ? "" : $("#listViewSelect").val();
+            var objName = $("#objList > .list-group-item.active").attr("id");
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.crProjectViewController.getListViewRecords}',
+                objName, listViewId,
+                function(result, event)
+                {
+                    if(event.status) 
+                    {
+                        if(result != null)
+                        {
+                            //load select list only if object selection occurs
+                            if(loadSelList)
+                                populateSelectListOptions('listViewSelect', result.mapOptionTypeToOptions['{!JSENCODE(LIST_VIEW_OPTIONS)}']);
+                            $("#listViewLoading").hide();
+                            $("#listViewSelectDiv").show(); 
+                            $("#listviewTableDiv").show();
+                            createListViewTable(result, 'tbl_listView', 'recordTblChkBox');
+                            if(result.errorMsg.length > 0)
+                            {
+                                displayMessage("listview", "listview_msgs", result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+                            }
+                        }
+                    }
+                }, 
+                {escape: true}
+            );
+        }
+        function createListViewTable(result, tblId, chkboxClsName)
+        {
+            var theTbl = $("#" + tblId);
+            if($.fn.DataTable.isDataTable("#" + tblId))
+            {
+                //destroy existing datatable to rebuild -- fyi: destroy first and clear html in that order
+                $("#" + tblId).DataTable().destroy();
+                //clear existing table values
+                $("#" + tblId).html('');
+            }
+            var colBoolType = [];
+            if(result.lstColumns.length > 0)
+            {
+                //set the table columns
+                var headerTr = "<tr>";
+                //select all checkbox
+                headerTr += '<th><input type="checkbox" class="' + chkboxClsName + '_select_all" data-table-id=' + tblId + '></th>';
+                for(var i = 0; i < result.lstColumns.length; i++)
+                {
+                    headerTr += '<th>' + result.lstColumns[i].label + '</th>';
+                    if(result.lstColumns[i].type == "boolean")
+                    {
+                        //keep track of which columns are checkboxes for custom sorting of glypicon checkboxes
+                        //index + 1 to accommodate for the checkbox (selection) column at index 0
+                        colBoolType.push(i + 1);
+                    }
+                }
+                headerTr += "</tr>";
+                //add header to thead and tfoot
+                theTbl.append("<thead>" + headerTr + "</thead>");
+                theTbl.append("<tfoot>" + headerTr + "</tfoot>");
+            }
+            var tbodyEl = "<tbody>";
+            if(result.lstRecords.length > 0)
+            {
+                //TODO: better abstraction
+                if(chkboxClsName == 'lookupTblChkBox')
+                {
+                    for(var i = 0; i < result.lstRecords.length; i++)
+                    {
+                        tbodyEl += '<tr>';
+                        tbodyEl += '<td><input type="checkbox" class="' + chkboxClsName + '" id="' + getObjProp(result.lstRecords[i].theSObject, 'Id') + '" data-ref-fld="' + result.lstRecords[i].lstFields[0].fieldNameOrPath + '"></td>';
+                        tbodyEl += '<td><a href="/' + getObjProp(result.lstRecords[i].theSObject, 'Id') + '" class="recordName" target="_blank">' + result.lstRecords[i].recordName +'</a></td>';
+                        tbodyEl += '<td>' + result.lstRecords[i].objType +'</td>';
+                        var fields = '';
+                        for(var j = 0; j < result.lstRecords[i].lstFields.length; j++)
+                        {
+                            fields += (fields == '' ? '' : ', ') + result.lstRecords[i].lstFields[j].label;
+                        }
+                        tbodyEl += '<td>' + fields + '</td>';
+                        tbodyEl += '</tr>';
+                    }
+                }
+                else
+                {
+                    for(var i = 0; i < result.lstRecords.length; i++)
+                    {
+                        tbodyEl += '<tr>';
+                        tbodyEl += '<td><input type="checkbox" class="' + chkboxClsName + '" id="' + getObjProp(result.lstRecords[i].theSObject, 'Id');
+                        //add the reference field api name to a custom data attribute if present
+                        if(result.lstRecords[i].lstFields[0] != undefined)
+                        {
+                            tbodyEl += '" data-ref-fld="' + result.lstRecords[i].lstFields[0].fieldNameOrPath + '"></td>';
+                        }
+                        else
+                        {
+                            tbodyEl += '"></td>';
+                        }
+                        for(var j = 0; j < result.lstColumns.length; j++)
+                        {
+                            //TODO: better flow for null field values
+                            if(result.lstColumns[j].type == "datetime" || result.lstColumns[j].type == "date")
+                            {
+                                //need to display localized date/datetime stored in map
+                                if(result.lstRecords[i].mapfieldAPINameToValue[result.lstColumns[j].fieldNameOrPath] != undefined)
+                                {
+                                    tbodyEl += '<td>' + result.lstRecords[i].mapfieldAPINameToValue[result.lstColumns[j].fieldNameOrPath] +'</td>';
+                                }
+                                else
+                                {
+                                    tbodyEl += '<td></td>';
+                                }
+                                
+                            }   
+                            else if(result.lstColumns[j].type == "reference")
+                            {
+                            	if(result.lstColumns[j].fieldNameOrPath == 'UserOrGroupId')
+                            	{
+                            		//special handling for this field
+                            		tbodyEl += '<td><a href="/' + result.lstRecords[i].theSObject[result.lstColumns[j].fieldNameOrPath] + '" class="recordName" target="_blank">' + result.lstRecords[i].mapfieldAPINameToValue[result.lstColumns[j].fieldNameOrPath] + '</a></td>'; //result.lstRecords[i].theSObject[path[0]][path[1]] +'</a></td>';
+                            	}
+                            	else
+                            	{
+                            		//need to drill deeper to get value as well as create a link to the obj -- references have a path i.e. Owner.Alias
+	                                //splitting yields root property at index 0, and field name at index 1 -- also available for references is the ID value
+	                                var path = result.lstColumns[j].fieldNameOrPath.split(".");
+	                                //can be undefined for records with empty lookup
+	                                if(getObjProp(result.lstRecords[i].theSObject, path[0]) != undefined)
+	                                {
+	                                    if(result.lstRecords[i].theSObject[path[0]].Id != undefined)
+	                                    {
+	                                    	tbodyEl += '<td><a href="/' + result.lstRecords[i].theSObject[path[0]].Id + '" class="recordName" target="_blank">' + getObjProp(getObjProp(result.lstRecords[i].theSObject, path[0]), path[1]); //result.lstRecords[i].theSObject[path[0]][path[1]] +'</a></td>';
+	                                	}
+	                                	else
+	                                	{
+	                                		//if the id is undefined, just display the value
+	                                		tbodyEl += '<td><a href="/' + result.lstRecords[i].theSObject[path[0]] + '" class="recordName" target="_blank">' + getObjProp(result.lstRecords[i].theSObject, path[0]); //result.lstRecords[i].theSObject[path[0]][path[1]] +'</a></td>';
+	                                	}
+	                                }
+	                                else
+	                                {
+	                                    tbodyEl += '<td></td>';
+	                                }
+                            	}
+                            }
+                            else if(result.lstColumns[j].type == "boolean")
+                            {
+                                if(result.lstRecords[i].theSObject[result.lstColumns[j].fieldNameOrPath])
+                                {
+                                    tbodyEl += '<td><span class="glyphicon glyphicon-check"/></td>';
+                                }
+                                else
+                                {
+                                    tbodyEl += '<td><span class="glyphicon glyphicon-unchecked"/></td>';
+                                }
+                            }
+                            else if(result.lstColumns[j].isNameField)
+                            {
+                                tbodyEl += '<td><a href="/' + result.lstRecords[i].theSObject.Id + '" class="recordName" target="_blank">' + result.lstRecords[i].theSObject[result.lstColumns[j].fieldNameOrPath] +'</a></td>';
+                            }
+                            else
+                            {
+                                var val = result.lstRecords[i].theSObject[result.lstColumns[j].fieldNameOrPath];
+                                if(val == undefined)
+                                {
+                                    tbodyEl += '<td></td>';
+                                }
+                                else
+                                {
+                                    tbodyEl += '<td>' + val +'</td>';
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            tbodyEl += "</tbody>";
+            theTbl.append(tbodyEl);
+            //init the table
+            var theDataTbl = $("#" + tblId).DataTable({
+                    "dom": '<"top"f>t<r><ilp><"clear">', //'<<t><<i><f>><lp>>'  //options to move elements around table - https://datatables.net/reference/option/dom
+                    "language": {
+                        "emptyTable": "No records found"                        //display message when there are no rows in the table
+                    },
+                    "columnDefs": [{
+                        "targets": 0,
+                        "searchable": false,
+                        //"orderable": false,
+                        "className": "dt-body-center",
+                        "orderDataType" : "dom-checkbox"
+                     },
+                     {
+                        "targets": colBoolType,
+                        "searchable": false,
+                        //"orderable": false,
+                        "className": "dt-body-center",
+                        "orderDataType" : "listview-checkbox"
+                     }],
+                     "scrollX": true,
+                     "fnDrawCallback": function( settings ) {
+						//called whenever the table is drawn
+						//re-evaluates the check all checkbos status
+						var allChecked = true;
+						$("." + chkboxClsName).each(function() {
+						        if (!$(this).is(':checked')) {
+						            allChecked = false;
+						        }
+						});
+						$("." + chkboxClsName + "_select_all").prop('checked', allChecked);
+			        },
+            });
+            //columns are drawn misaligned -- adjust after instantiating
+            theDataTbl.columns.adjust().draw();
+            
+            //attach select all listener
+            $("." + chkboxClsName + "_select_all").click(function (e) {
+                //check all table checkboxes
+                var theTbl = $("#" + $(this).attr("data-table-id")).DataTable();
+                //$(':checkbox', theTbl.rows().nodes()).prop('checked', this.checked);
+                $('.' + chkboxClsName).prop('checked', this.checked);
+                //also check the other check all checkbox if available
+                $("." + $(this).attr("class")).prop('checked', this.checked);
+                // This is to stop datatable to sort the column on checking the checkbox
+                e.stopPropagation();
+            });
+        }
+        
+        
+        function buildProjectView(level)
+        {
+            //remoteaction to get project view
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.crProjectViewController.getProjectContent}',
+                '{!CodeRobot__CR_Project__c.Id}', level, userTheme,
+                function(result, event)
+                {
+                    if(event.status) 
+                    {
+                        if(result != null)
+                        {
+                            if(result.errorMsg == '')
+	                        {
+	                        	buildProjectViewTable(result.lstOPR, level);
+	                        }
+	                        else
+	                        {
+	                        	displayMessage('', 'pageMsgs', result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+	                        }
+                        }
+                    }
+                    else 
+                    {
+                        displayMessage('', 'pageMsgs', event.message, 'alert-danger', false, '', {!isDebug});
+                    }
+                }, 
+                {escape: false}
+            );
+        }
+        function buildProjectList(buildType, theBtn)
+        {
+        	//remoteaction to get project view
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.crProjectViewController.getProjectContent}',
+                '{!CodeRobot__CR_Project__c.Id}', null, userTheme,
+                function(result, event)
+                {
+                    if(event.status) 
+                    {
+                        if(result != null)
+                        {
+                        	if(result.errorMsg == '')
+                            {
+                        		buildListTable(result.lstOPR, buildType, theBtn);
+                            }
+                            else
+                            {
+                            	displayMessage('', 'pageMsgs', result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+                            	
+                            }
+                        }
+                    }
+                    else 
+                    {
+                        displayMessage('', 'pageMsgs', event.message, 'alert-danger', false, '', {!isDebug});
+                    }
+                }, 
+                {escape: false}
+            );
+        }
+        function buildListTable(result, buildType, theBtn)
+        {
+        	var theTbl = $("#tbl_project_list");
+        	if($.fn.DataTable.isDataTable("#tbl_project_list"))
+            {
+                //destroy existing datatable to rebuild -- fyi: destroy first and clear html in that order
+                $("#tbl_project_list").DataTable().destroy();
+                //clear existing table values
+                $("#tbl_project_list").html('');
+            }
+                        	
+            var headerTr = 	"<tr>";
+            headerTr +=			"<td style='font-weight: bold;'>Name</td>";
+            headerTr +=			"<td style='font-weight: bold;'>Object Type</td>";
+            headerTr +=			"<td style='font-weight: bold;'>Actions</td>";
+            headerTr +=		"</tr>";
+            //add header to thead and tfoot
+            theTbl.append("<thead>" + headerTr + "</thead>");
+            theTbl.append("<tfoot>" + headerTr + "</tfoot>");
+	                
+            var tbodyEl = "<tbody>";
+            for(var i = 0; i < result.length; i++)
+            {
+               tbodyEl += getProjectListRow(result, i);
+			}
+            tbodyEl += "</tbody>";
+            theTbl.append(tbodyEl);
+            
+            $("#tbl_project_list").DataTable({
+                "dom": '<"top"f>t<r><"clear">', //options to move elements around table - https://datatables.net/reference/option/dom
+                "language": {
+                    "emptyTable": "No records found"                        //display message when there are no rows in the table
+                },
+                "scrollX": true,
+                "paging": false,
+                "columns": [
+                    null,
+                    null,
+                    { "orderable": false }
+                ]
+           });
+           if(buildType == 'add')
+           {
+           		hideModal('progressModal');
+	            toggleLoadingButton(theBtn, "hide");
+           }
+           else if(buildType == 'delete')
+           {
+           		hideModal("deleteModal");
+	            resetModal("deleteModal", "deleteMsgs");
+           }
+        }
+        function getProjectListRow(result, i)
+        {
+        	var objIconUrl;// = result[i].objTabInfo == undefined ? contentsPlaceholder : result[i].objTabInfo.theIconDesc.url;
+        	if(result[i].objTabInfo !== undefined)
+	        {
+	        	if(result[i].objTabInfo.theIconDesc !== undefined)
+	        	{
+	        		objIconUrl = result[i].objTabInfo.theIconDesc.url;
+	        	}
+	        }
+	        if(objIconUrl == undefined)
+	        {
+	        	objIconUrl = contentsPlaceholder;
+	        }
+	        
+        	var rowHtml = '';
+            var rowIcon = '';
+            if(userTheme != 'Theme4d' || objIconUrl == contentsPlaceholder)
+	        {
+	        	rowIcon = '<img src="' + objIconUrl + '" class="tree-icon">';
+	        }
+	        else
+	        {
+	        	rowIcon = '<div class="slds-scope" style="display:inline-block;">'
+       							+ '<div class="slds-grid slds-col slds-has-flexi-truncate slds-media--center">'
+       								+ '<div style="margin-right:5px">'
+       									+ '<span class="slds-icon_container slds-icon--x-small" style="background-color:#' + result[i].objTabInfo.theColorDesc.color + ';">'
+       										+ '<img class="icon" src="' + objIconUrl + '"/>'
+       									+ '</span>'
+       								+ '</div>'
+       							+ '</div>'
+       						+ '</div>';
+	        }
+               
+  			rowHtml += '<tr id="' + getObjProp(result[i].theCPRRecord, 'Id') + '">';
+   			rowHtml +=		'<td><a href="/' + result[i].theSObject.Id + '" class="recordName" target="_blank">' + crb_htmlEscape(result[i].recordName) + '</a></td>';
+   			rowHtml +=		"<td>" + rowIcon + result[i].objType + "</td>";
+   			rowHtml +=		'<td class="text-center">';
+   			rowHtml +=			'<span class="glyphicon glyphicon-new-window" id="' + getObjProp(result[i].theCPRRecord, 'Id') + '" aria-hidden="true" title="Open Relationships Panel" data-placement="left" data-toggle="tooltip" style="cursor: pointer;"></span>';
+   			//rowHtml +=			'<span class="button-space"/>';
+   			//rowHtml +=			'<span class="glyphicon glyphicon-remove-circle" id="' + getObjProp(result[i].theCPRRecord, 'Id') + '" aria-hidden="true" title="Delete Record" data-placement="left" data-toggle="tooltip" style="cursor: pointer;"></span>';
+   			rowHtml +=		'</td>';
+   			rowHtml += "</tr>";
+   			return rowHtml;
+        }
+        function buildProjectViewTable(result, level)
+        {
+            var treeData = [];
+            if(result.length > 0)
+            { 
+                for(var i = 0; i < result.length; i++)
+                {
+                    //create root node
+                    var oneNode = createOneNode(result[i]);
+                    
+                    if(level == 0)
+                    {
+                        treeData.push(oneNode);
+                    }
+                    else
+                    {
+                        //find parent node id
+                        var parentNodeId = $("#" + getObjProp(result[i].theCPRRecord, 'Parent_CRP_Record__c')).attr("data-nodeid");
+                        //lookup section is parent node  
+                        //append the child nodes to parent
+                        var parent;
+                        if(getObjProp(result[i].theCPRRecord, 'Relationship_Type__c') == LOOKUP_REL)
+                        {
+                            parent = $('#projectView').treeview('findNodes', ['^' + parentNodeId + '.0$', 'nodeId']);
+                        }
+                        else if(getObjProp(result[i].theCPRRecord, 'Relationship_Type__c') == PARENT_CHILD_REL)
+                        {
+                            parent = $('#projectView').treeview('findNodes', ['^' + parentNodeId + '.1$', 'nodeId']);
+                        }
+                        //addNode(nodes, parentNode, index, options)
+                        $('#projectView').treeview('addNode', [ oneNode, parent, 0, { silent: true } ]);
+                        
+                    }
+                }  
+            }
+            else
+            {
+                treeData = [
+                    {
+                        text: 'No records.',
+                        selectable: false,
+                        dataAttr: {
+                            nodeType: 'placeholder'
+                        }
+                    }
+                ];
+                $("#projectView").show();
+                $("#projectLoading").hide();
+            }
+            if(!projectTree && treeData.length > 0)
+            {
+                
+                //init project treeview
+                projectTree = $('#projectView').treeview({
+                    data: treeData,         // data is not optional
+                    //levels: 1,
+                    //showCheckbox: true,
+                    //multiSelect: true,
+                    expandIcon: "glyphicon glyphicon-menu-right",
+                    collapseIcon: "glyphicon glyphicon-menu-down"
+                });
+            }
+            if(result.length > 0)
+            {
+                //call again after building first level
+                buildProjectView(level + 1);
+            }
+            else
+            {
+                //show project contents
+                $("#projectView").show();
+                $("#projectLoading").hide();
+            }
+            //automatically open the add records panel if project is empty
+            if($("[data-nodetype=placeholder]").length > 0)
+            	$("#new_records_collapse").collapse('show');
+        }
+        function createOneNode(oneRecord)
+        {
+        	var oneNode = {};
+        	//add row to the record map
+	        projectContentsMap.set(oneRecord.theCPRRecord.Id, oneRecord);
+	        //add node to the tree
+	        
+	        var objIconUrl;
+	        if(oneRecord.objTabInfo !== undefined)
+	        {
+	        	if(oneRecord.objTabInfo.theIconDesc !== undefined)
+	        	{
+	        		objIconUrl = oneRecord.objTabInfo.theIconDesc.url;
+	        	}
+	        }
+	        if(objIconUrl == undefined)
+	        {
+	        	objIconUrl = contentsPlaceholder;
+	        }
+	        if(userTheme != 'Theme4d' || objIconUrl == contentsPlaceholder)
+	        {
+	        	oneNode.text = '<img src="' + objIconUrl + '" class="tree-icon"><b>(' + oneRecord.objType + ') </b>' 
+	                            + crb_htmlEscape(oneRecord.recordName) + '<span class="glyphicon glyphicon-remove-circle delete-icon" id="' 
+	                            + oneRecord.theCPRRecord.Id + '" style="float:right"></span>';
+	        }
+	        else
+	        {
+	        	var lightingIcon = '<div class="slds-scope" style="display:inline-block;">'
+	        							+ '<div class="slds-grid slds-col slds-has-flexi-truncate slds-media--center">'
+	        								+ '<div style="margin-right:5px">'
+	        									+ '<span class="slds-icon_container slds-icon--x-small" style="background-color:#' + oneRecord.objTabInfo.theColorDesc.color + ';">'
+	        										+ '<img class="icon" src="' + objIconUrl + '"/>'
+	        									+ '</span>'
+	        								+ '</div>'
+	        								+ '<div class="slds-media__body">'
+	        									+ '<b>(' + oneRecord.objType + ') </b>' + crb_htmlEscape(oneRecord.recordName)
+	        								+ '</div>'
+	        							+ '</div>'
+	        						+ '</div>';
+	        	oneNode.text = lightingIcon + '<span class="glyphicon glyphicon-remove-circle delete-icon" id="' 
+	                            + oneRecord.theCPRRecord.Id + '" style="float:right"></span>';
+	        }
+	        
+	        oneNode.id = getObjProp(oneRecord.theCPRRecord, 'Id');
+	        oneNode.dataAttr = {
+	            level: getObjProp(oneRecord.theCPRRecord, 'Level__c')
+	        };
+	        oneNode.nodes = [];
+	        
+	        
+	        //create lookup and relationship section
+	        var lookupNode = {};
+	        lookupNode.text = '<span class="glyphicon glyphicon-th-list"></span> Lookups';
+	        lookupNode.id = getObjProp(oneRecord.theCPRRecord, 'Id') + '_lookup';
+	        lookupNode.selectable = false;
+	        lookupNode.nodes = [];
+	        
+	        oneNode.nodes.push(lookupNode);
+	        
+	        //create reference node
+	        var relationshipNode = {};
+	        relationshipNode.text = '<span class="glyphicon glyphicon-th-list"></span> Relationships';
+	        relationshipNode.id = getObjProp(oneRecord.theCPRRecord, 'Id') + '_relationship';
+	        relationshipNode.selectable = false;
+	        relationshipNode.nodes = [];
+	        
+	        oneNode.nodes.push(relationshipNode);
+	        
+	        return oneNode;
+        }
+        //creates the record header for config section or delete modal
+        function createRecordHeader(elementType, oneProjRecord)
+        {
+        	if(oneProjRecord)
+        	{
+        		var d = userTheme;
+        		var objIconUrl;
+		        if(oneProjRecord.objTabInfo !== undefined)
+		        {
+		        	if(oneProjRecord.objTabInfo.theIconDesc !== undefined)
+		        	{
+		        		objIconUrl = oneProjRecord.objTabInfo.theIconDesc.url;
+		        	}
+		        }
+		        if(objIconUrl == undefined)
+		        {
+		        	objIconUrl = contentsPlaceholder;
+		        }
+	        	//set the header for the related record collapsible
+				if(oneProjRecord.objTabInfo != undefined)
+				{
+					
+					if(userTheme != 'Theme4d')
+					{
+						$("#" + elementType + "_record_icon_td").html('<img src="' + objIconUrl + '" style="margin-top: 5px;margin-right:5px;"/>');
+					}
+					else
+					{
+						$("#lds_" + elementType + "_icon_container_span").html('<img class="icon" src="' + objIconUrl + '"/>');
+						$("#lds_" + elementType + "_icon_container_span").css("background-color", "#" + oneProjRecord.objTabInfo.theColorDesc.color);
+					}
+				}
+				else
+				{
+					if(userTheme != 'Theme4d')
+					{
+						$("#" + elementType + "_record_icon_td").html('<img src="' + headerPlaceholder + '" style="margin-top: 5px;margin-right:5px;height:32px;width:32px;"/>');
+					}
+					else
+					{
+						$("#lds_" + elementType + "_icon_container_span").html('<img class="icon" src="' + headerPlaceholder + '"/>');
+						$("#lds_" + elementType + "_icon_container_span").css("background-color", "white");
+					}
+				}
+				if(userTheme != 'Theme4d')
+				{
+					$("#" + elementType + "_record_obj_name_td").text(oneProjRecord.objType);
+					$("#" + elementType + "_rec_name_td").text(oneProjRecord.recordName);
+				}
+				else
+				{
+					//lightning experience
+					$("#lds_" + elementType + "_record_obj_name_p").text(oneProjRecord.objType);
+					$("#lds_" + elementType + "_rec_name_span").text(oneProjRecord.recordName);
+				}
+			}
+        }
+        //opens the related record div -- called from a click event set in patternfly-treeview\bootstrap-treeview.js
+        function openRecordConfig(target, node)
+        {
+            $("#lookupLoading").show();
+            $("#lookupTableDiv").hide();
+            $("#relationshipLoading").show();
+            $("#relationshipTableDiv").hide();
+            $("#relationshipSelectDiv").hide();
+            $("#relationshipListviewSelectRow").hide();
+            
+            clearMessage("relationship_msgs");
+            clearMessage("lookup_msgs");
+            clearMessage("recordMsgs");
+            
+            var oneProjRecord = projectContentsMap.get(target.context.id);
+            if(oneProjRecord)
+            {
+                //set the header for the related record collapsible
+                createRecordHeader("related", oneProjRecord);
+                
+                if($("#new_related_records_collapse").hasClass("in")
+                    && $("#related_crp_rec_id_hidden").val() == getObjProp(oneProjRecord.theCPRRecord, 'Id'))
+                {
+                    //already open for the record -- expect to close
+                    $("#new_related_records_collapse").collapse('hide');
+                    $('#projectView').treeview('unselectNode', [ node, { silent: true } ]);
+                }
+                else
+                {
+                	//unselect other node -- only valid for selecting in the tree view
+                	var selectedNodes = $('#projectView').treeview('getSelected');
+                	if(node != null)
+                	{
+	                	$('#projectView').treeview('unselectNode', [ selectedNodes, { silent: true } ]);
+	                	$('#projectView').treeview('selectNode', [ node, { silent: true } ]);
+                	}
+                    //set the hidden field for the selected value
+                    $("#related_sobject_rec_id_hidden").val(getObjProp(oneProjRecord.theSObject, 'Id'));
+                    //set the hidden field for the crp record id
+                    $("#related_crp_rec_id_hidden").val(getObjProp(oneProjRecord.theCPRRecord, 'Id'));
+                    //set the hidden field for the node id in tree
+                    var nodeId = target.context.dataset.nodeid;
+                    if(nodeId == undefined)
+                    {
+                    	//find the nodeid from the tree view
+                    	nodeId = $("#" + target.context.id).attr("data-nodeid");
+                    	
+                    }
+                    $("#related_rec_nodeid_hidden").val(nodeId);
+                    //check to see if record exists
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.crProjectViewController.checkRecordExists}',
+                        oneProjRecord.theSObject.Id,
+                        function(result, event)
+                        {
+                            if(event.status) 
+                            {
+                                if(!result)
+                                {
+                                	//display message
+                                	displayMessage('', 'recordMsgs', 'This record no longer exists in your org and has been automatically removed. Please refresh your page.', 'alert-danger', false, '', {!isDebug});
+                                }
+                            }
+                        }, 
+                        {escape: true}
+                    );
+                    //get look up table data
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.crProjectViewController.getLookupRecordsByParentId}',
+                        oneProjRecord.theSObject.Id, '{!CodeRobot__CR_Project__c.Id}',
+                        function(result, event)
+                        {
+                            if(event.status) 
+                            {
+                                if(result != null)
+                                {
+                                	if(result.errorMsg == '')
+                                    {
+	                                    $("#lookupLoading").hide();
+	                                    $("#lookupTableDiv").show();
+	                                    //createRelatedTable(result, 'tbl_lookup_records');
+	                                    createListViewTable(result, 'tbl_lookup_records', 'lookupTblChkBox');
+	                                }
+	                                else
+                                    {
+                                        displayMessage('', 'lookup_msgs', result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+                                        $("#lookupLoading").hide();
+                                        $("#lookupTableDiv").show();
+                                    }
+                                }
+                            }
+                        }, 
+                        {escape: true}
+                    );
+                    //get the relationship data
+                    getRelationshipOptions(oneProjRecord.theSObject.Id, null);
+                    
+                    if(node != null)
+                    {
+                    	$('#projectView').treeview('selectNode', [ node, { silent: true } ]);
+                    }
+                    //show collapse if not already open
+                    if(!$("#new_related_records_collapse").hasClass("in"))
+                    {
+                        $("#new_related_records_collapse").collapse('show');
+                    }
+                }
+            }
+            
+        }
+        function getRelationshipOptions(recId, lastRemoteResult)
+        {
+        	//get relationship table data
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.crProjectViewController.getRelationshipListOptionsWithRRObj}',
+                recId, '{!CodeRobot__CR_Project__c.Id}', lastRemoteResult,
+                function(result, event)
+                {
+                    if(event.status) 
+                    {
+                        if(result != null)
+                        {
+                            if(result.errorMsg == '')
+                            {
+                                if(result.shouldContinue)
+                                {
+                                	getRelationshipOptions(recId, result);
+                                }
+                                else
+                                {
+                                	var firstWithRecs = '';
+	                                var firstWORecs = '';
+	                                //remove existing options
+            						$('#relationshipObjSelect').find('option').remove();
+                                	if(result.lstRelWrapper.length > 0)
+                                	{
+                                		
+                                		var hasRecs = '';
+	                                	var noRecs = '';
+	                                	$("#relationshipObjSelect").prop('disabled', false);
+	                                	//populate the relationship select list
+	                                	$.each(result.lstRelWrapper, function( index, value ) {
+	                                		if(result.lstRelWrapper[index].recCnt > 0)
+	                                		{
+	                                			if(firstWithRecs.length == 0)
+	                                				firstWithRecs = result.lstRelWrapper[index].relationshipName;
+	                                			hasRecs += '<option value="' + result.lstRelWrapper[index].relationshipName + '">' + result.lstRelWrapper[index].relationshipLabel + ' (' + result.lstRelWrapper[index].recCnt + ' found)' + '</option>';
+	                                		}
+	                                		else
+	                                		{
+	                                			if(firstWORecs.length == 0)
+	                                				firstWORecs = result.lstRelWrapper[index].relationshipName;
+	                                			noRecs += '<option value="' + result.lstRelWrapper[index].relationshipName + '">' + result.lstRelWrapper[index].relationshipLabel + '</option>'
+	                                		}
+						                });
+						                if(hasRecs.length > 0 && noRecs.length > 0)
+						                {
+						                	$("#relationshipObjSelect").append('<option disabled="true">Relationships with data</option>' + hasRecs);
+						                	$("#relationshipObjSelect").append('<option disabled="true">Relationships without data</option>' + noRecs);
+						                }
+						                else if(hasRecs.length > 0 && noRecs.length == 0)
+						                {
+						                	$("#relationshipObjSelect").append('<option disabled="true">Relationships with data</option>' + hasRecs);
+						                }
+						                if(hasRecs.length == 0 && noRecs.length > 0)
+						                {
+						                	$("#relationshipObjSelect").append('<option disabled="true">[No relationships with data found]</option>' + noRecs);
+						                }
+                                	}
+                                	else
+                                	{
+                                		$("#relationshipObjSelect").append('<option value="">None</option>');
+                						$("#relationshipObjSelect").prop("disabled", "disabled");
+                                	}
+                                	var firstRel = firstWithRecs.length == 0 ? firstWORecs : firstWithRecs;
+	                                populateRelationships(recId, firstRel);
+                                }
+                            }
+                            else
+                            {
+                                displayMessage('', 'relationship_msgs', result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+                                $("#relationshipLoading").hide();
+                                $("#relationshipTableDiv").show();
+                            }
+                        }
+                    }
+                    else 
+                    {
+                        displayMessage('', 'relationship_msgs', event.message, 'alert-danger', false, '', {!isDebug});
+                    }
+                }, 
+                {escape: false}
+            );
+        }
+        function populateRelationships(recId, relationship)
+        {
+        	//get relationship table data
+			Visualforce.remoting.Manager.invokeAction(
+			    '{!$RemoteAction.crProjectViewController.getRelationshipRecords}',
+			    recId, relationship, '', '{!CodeRobot__CR_Project__c.Id}',
+			    function(result, event)
+			    {
+			        if(event.status) 
+			        {
+			            if(result != null)
+			            {
+			                if(result.errorMsg == '')
+			                {
+			                    $("#relationshipLoading").hide();
+			                    $("#relationshipTableDiv").show();
+			                    $("#relationshipSelectDiv").show();
+			                    $("#relationshipListviewSelectRow").show();
+			                    populateSelectListOptions('relationshipListview', result.mapOptionTypeToOptions['{!JSENCODE(LIST_VIEW_OPTIONS)}']);
+			                    createListViewTable(result, 'tbl_related_records', 'relationshipTblChkBox');
+			                }
+			                else
+			                {
+			                    displayMessage('', 'relationship_msgs', result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+			                    $("#relationshipLoading").hide();
+			                    $("#relationshipTableDiv").show();
+			                }
+			            }
+			        }
+			        else 
+			        {
+			            displayMessage('', 'relationship_msgs', event.message, 'alert-danger', false, '', {!isDebug});
+			        }
+			    }, 
+			    {escape: true}
+			);
+        }
+        //loads the selected relationship onchange of "relationshipObjSelect" select list
+        function loadRelationshipRecords(listViewId)
+        {
+            $("#relationshipLoading").show();
+            $("#relationshipTableDiv").hide();
+            $("#relationshipListviewSelectRow").hide();
+            
+            clearMessage("relationship_msgs");
+            
+            var selectedRel = $("#relationshipObjSelect").val();
+            var parentRecId = $("#related_sobject_rec_id_hidden").val();
+            if(selectedRel.length > 0 && parentRecId.length > 0)
+            {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.crProjectViewController.getRelationshipRecords}',
+                    parentRecId, selectedRel, listViewId, '{!CodeRobot__CR_Project__c.Id}',
+                    function(result, event)
+                    {
+                        if(event.status) 
+                        {
+                            if(result != null)
+                            {
+                            	if(result.errorMsg == '')
+                                {
+                                    $("#relationshipLoading").hide();
+									$("#relationshipTableDiv").show();
+									$("#relationshipListviewSelectRow").show();
+									if(listViewId == '')
+									{
+									    populateSelectListOptions('relationshipListview', result.mapOptionTypeToOptions['{!JSENCODE(LIST_VIEW_OPTIONS)}']);
+									}
+									createListViewTable(result, 'tbl_related_records', 'relationshipTblChkBox');
+                                }
+                                else
+                                {
+                                    displayMessage('', 'relationship_msgs', result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+                                    $("#relationshipLoading").hide();
+                                    $("#relationshipTableDiv").show();
+                                }
+                            }
+                        }
+                    }, 
+                    {escape: true}
+                );
+            }
+        }
+        
+        //adds options to a specified select list
+        function populateSelectListOptions(selectListId, optionMap)
+        {
+            //remove existing options
+            $('#' + selectListId).find('option').remove();
+            if(optionMap)
+            {
+                $("#" + selectListId).prop('disabled', false);
+                //add new options
+                $.each(optionMap, function( key, value ) {
+                    $("#" + selectListId).append('<option value="' + key + '">' + value + '</option>');
+                });
+                //select first option
+                $("#" + selectListId)[0].selectedIndex = 0;
+            }
+            else
+            {
+                $("#" + selectListId).append('<option value="">None</option>');
+                $("#" + selectListId).prop("disabled", "disabled");
+            }
+        }
+        
+        
+        var origAddType = ''; 
+        //adds records to the project
+        function addRecordsToProject(addType, theBtn)
+        {
+        	//needed for automatic loads through single id as it changes through multiple invocations
+        	origAddType = addType;
+            toggleLoadingButton(theBtn, "show");
+            
+            //manually hide the tooltip
+            $(theBtn).parent().tooltip('hide');
+            
+            var selectedRecords;
+            var theParentCRPId = "";
+            var relType = "";
+            var nodeId = $("#related_rec_nodeid_hidden").val(); //parent node id
+            var level = Math.ceil(countCharacters(nodeId, "\\.")/2);
+            var msgElementId = "";
+            if(addType == "listview")
+            {
+                msgElementId = "listview_msgs";
+                selectedRecords = $("input:checked", $("#tbl_listView").DataTable().rows().nodes()).map(function() {
+                                                                                                        return {recordId: this.id, referencedInField: "", parentCRPId: ""};
+                                                                                                    })
+                                                                                                    .get();
+            }
+            else if(addType == "singleId")
+            {
+                msgElementId = "importRecordDiv";
+                if($("#inputRecordId").val().length == 0)
+                {
+                    displayMessage(addType, msgElementId, "Record ID is required.", '', false, '', {!isDebug});
+                    toggleLoadingButton(theBtn, "hide");
+                    return;
+                }
+                else
+                {
+                    var selRec = {recordId: $("#inputRecordId").val(), referencedInField: "", parentCRPId: ""};
+                    selectedRecords = [selRec];
+                }
+            }
+            else if(addType == "lookup")
+            {
+                msgElementId = "lookup_msgs";
+                theParentCRPId = $("#related_crp_rec_id_hidden").val();
+                selectedRecords = $("input:checked", $("#tbl_lookup_records").DataTable().rows().nodes()).map(function() {
+                                                                                                        return {recordId: this.id, referencedInField: this.dataset.refFld, parentCRPId: theParentCRPId};
+                                                                                                    })
+                                                                                                    .get();                                             
+                relType = LOOKUP_REL;                       
+            }
+            else if(addType == "relationship")
+            {
+                msgElementId = "relationship_msgs";
+                theParentCRPId = $("#related_crp_rec_id_hidden").val();
+                selectedRecords = $("input:checked", $("#tbl_related_records").DataTable().rows().nodes()).map(function() {
+                                                                                                        return {recordId: this.id, referencedInField: this.dataset.refFld, parentCRPId: theParentCRPId};
+                                                                                                    })
+                                                                                                    .get();
+                relType = PARENT_CHILD_REL;                                         
+            }
+            
+            //clear any existing message
+            clearMessage(msgElementId);
+            
+            //show progress modal
+            initProgressBar();
+            
+            if(selectedRecords.length > 0)
+            {
+                saveRecs(selectedRecords, relType, addType, theBtn, msgElementId, false);
+            }
+            else
+            {
+                displayMessage(addType, msgElementId, 'No records selected.', 'alert-info', false, '', {!isDebug});
+                hideModal('progressModal');
+                toggleLoadingButton(theBtn, "hide");
+            }
+            
+        }
+        var saveOps = 0;
+        function saveRecs(selectedRecords, relType, addType, theBtn, msgElementId, isAuto)
+        {
+        	saveOps++;
+        	//remoteaction to get project view
+             Visualforce.remoting.Manager.invokeAction(
+                 '{!$RemoteAction.crProjectViewController.saveRecordsToProjectV2}',
+                 '{!CodeRobot__CR_Project__c.Id}', JSON.stringify(selectedRecords), relType, userTheme, isAuto,
+                 function(result, event)
+                 {
+                     if(event.status) 
+                     {
+                         if(result != null)
+                         {
+                         	saveOps--;
+                             if(result.lstRecords.length > 0 && result.errorMsg == '')
+                             {
+                                addToProjectView(result.lstRecords, addType);
+                                //add to to the table
+                                //for(var i = 0; i < result.lstRecords.length; i++)
+								//{
+								//   $("#tbl_project_list").DataTable().row.add($(getProjectListRow(result.lstRecords, i))[0]).draw();
+								//}
+								if(result.lstAutoLookupRecs.length > 0)
+								{
+									saveRecs(result.lstAutoLookupRecs, LOOKUP_REL, 'lookup', theBtn, msgElementId, true);
+								}
+								if(result.lstAutoRelatedRecs.length > 0)
+								{
+									saveRecs(result.lstAutoRelatedRecs, PARENT_CHILD_REL, 'relationship', theBtn, msgElementId, true);
+								}
+                                
+                             }
+                             //if(result.lstRecords.length == 0 || result.lstAutoLookupRecs.length == 0)
+                             if(saveOps == 0)
+                             {
+                             	//rebuild the table list view
+                             	buildProjectList('add', theBtn);
+                             	if(result.errorMsg.length > 0)
+	                            {
+	                                displayMessage(origAddType, msgElementId, result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+	                            }
+	                            else if(result.infoMsg.length == 0)
+	                            {
+	                            	displayMessage(origAddType, msgElementId, "Success!", 'alert-success', true, '', {!isDebug});
+	                            }
+	                            //hideModal('progressModal');
+	                            //toggleLoadingButton(theBtn, "hide");
+                             }
+                             if(result.infoMsg.length > 0)
+                             {
+                             	displayMessage(origAddType, msgElementId, result.infoMsg, 'alert-info', false, '', {!isDebug});
+                             }
+                         }
+                     } 
+                     else 
+                     {
+                         displayMessage(origAddType, msgElementId, event.message, 'alert-danger', false, '', {!isDebug});
+                         toggleLoadingButton(theBtn, "hide");
+                         hideModal('progressModal');
+                     }
+                 }, 
+                 {escape: false}
+             );
+        }
+        
+        function addToProjectView(lstRecs, addType)
+        {
+            
+            var parentToNodeMap = {};
+            for(var i = 0; i < lstRecs.length; i++)
+            {
+            	var oneNode = createOneNode(lstRecs[i]);
+            	var key = lstRecs[i].parentCRPId;
+            	if(key === undefined)
+            		key = 'root';
+                var nodeArr = parentToNodeMap[key];
+                if(nodeArr === undefined)
+                {
+                	nodeArr = [];
+                }
+                nodeArr.push(oneNode);
+                parentToNodeMap[key] = nodeArr;
+                
+            }
+            for (var k in parentToNodeMap){
+			    if (parentToNodeMap.hasOwnProperty(k)) {
+			         var nodeArr = parentToNodeMap[k];
+					//add node outside of loop -- performance issues
+		            if(addType == "lookup")
+		            {
+		                //lookup node for record is always node id + .0 -- ex root node: 0.0 -- ex lookup node: 0.0.0
+		                var parent = $('#projectView').treeview('findNodes', ['^' + k + '_lookup$', 'id']);
+		                $('#projectView').treeview('addNode', [ nodeArr, parent, 0, { silent: true } ]);
+		            }
+		            else if(addType == "relationship")
+		            {
+		                //relationship node for record is always node id + .1 -- ex root node: 0.0 -- ex relationship node: 0.0.1
+		                var parent = $('#projectView').treeview('findNodes', ['^' + k + '_relationship$', 'id']);
+		                $('#projectView').treeview('addNode', [ nodeArr, parent, 0, { silent: true } ]);
+		            }
+		            else
+		            {
+		                $('#projectView').treeview('addNode', [ nodeArr, null, 0,{ silent: true } ]);
+		            }
+			    }
+			}
+            //remove placeholder if present
+            var placeHolder = $('#projectView').treeview('findNodes', ['^No records.$', 'text']);
+            if(placeHolder.length > 0)
+            {
+                $('#projectView').treeview('removeNode', [placeHolder, { silent: true } ]);
+            }
+            //hideModal('progressModal');
+        }
+        function deleteRecord(target, node)
+        {
+            //reset modal for next project delete
+            $("#deleteModal button.close").show();
+            $("#deleteModal .modalFooterControls").show();
+            $("#deleteModal .modalFooterLoading").hide();
+            
+            var oneProjRecord = projectContentsMap.get(target.context.id);
+            
+            createRecordHeader("delete", oneProjRecord);
+                
+            //load modal
+            var nodeId;
+            if(node != null)
+            {
+            	nodeId = node.nodeId;
+            }
+            else
+            {
+            	//get the node id from the tree view
+            	nodeId = $("#" + target.context.id).attr("data-nodeid");
+            }
+            $('#deleteModal').data('id', target.context.id);
+            $('#deleteModal').data('level', Math.floor(countCharacters(nodeId, "\\.")/2));
+            $('#deleteModal').modal('show');
+        }
+        function confirmDelete()
+        {
+            var parentId = $('#deleteModal').data('id');
+            var level = $('#deleteModal').data('level');
+            
+            toggleLoading('deleteModal');
+            
+            var idArr = [];
+            idArr.push(parentId);
+            removeRecordsFromProject(idArr);
+        }
+        function removeRecordsFromProject(idArr)
+        {
+        	//remoteaction to get project view
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.crProjectViewController.deleteRecordByParentId}',
+                "{!CodeRobot__CR_Project__c.Id}", idArr,
+                function(result, event)
+                {
+                    if(event.status) 
+                    {
+                        if(result != null)
+                        {
+                        	if(result.errorMsg.length == 0)
+	                 		{
+	                 			//remove from project list and tree
+	                            removeRowsFromProjectContents(result.stDeletedIds);
+	                            //reload the table list
+	                            buildProjectList('delete', null);
+	                            //hide the modal
+	                            //hideModal("deleteModal");
+	                            //resetModal("deleteModal", "deleteMsgs");
+	                 		}
+	                 		else if(result.errorMsg.length > 0)
+	                 		{
+	                 			displayMessage("", "deleteMsgs", result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+	                 			toggleLoading("deleteModal");
+	                 		}
+                        }
+                    }
+                }, 
+                {escape: false}
+            );
+        }
+        function removeRowsFromProjectContents(idArr)
+        {
+        	if(idArr.length == 1)
+            {
+                //remove all elements from the project contents section that were deleted
+                $('li[id^=' + idArr[0] + ']').remove();
+                //remove from table
+                //$('#tbl_project_list').DataTable().row($('#tbl_project_list tr[id^=' + idArr[0] + ']')).remove();
+            }
+            else if(idArr.length > 1)
+            {
+                //remove all elements from the project contents section that were deleted
+                $('li[id^=' + idArr.join('],li[id^=')).remove();
+                //remove from table
+                //$('#tbl_project_list').DataTable().rows($('#tbl_project_list tr[id^=' + idArr.join('],tr[id^='))).remove();
+            }
+            //close the relationship section for the record if it is open
+            if($("#new_related_records_collapse").hasClass("in"))
+            {
+                for(var i = 0; i < idArr.length; i++)
+                {
+                    if(idArr[i] == $("#related_crp_rec_id_hidden").val())
+                    {
+                        //close the related records section for deleted records
+                        $("#new_related_records_collapse").collapse('hide');
+                    }
+                }
+            }
+            //check if any records left, if not, add no records line
+            if($("#projectView > .list-group > li").length == 0)
+            {
+                var placeholderNode = {};
+                placeholderNode.text = 'No records.';
+                placeholderNode.dataAttr = { nodeType: 'placeholder' };
+                placeholderNode.selectable = false;
+                placeholderNode.nodes = [];
+                
+                $('#projectView').treeview('addNode', [ placeholderNode, null, 0,{ silent: true } ]);
+            }
+        }
+        function generateCode()
+        {
+        	// clear lic msgs
+        	showLicMsgs(false, null);
+        	
+        	//clear code generation messages
+        	clearMessage("genCode_msgs")
+        	//hide progress continue section
+        	$("#progressContinue").hide();
+            //show progress modal
+            initProgressBar();
+            
+            $("#progressModal").find(".modal-footer").html("Step 1/5: Analyzing setup..");
+            analyzeConfig(true);
+        }
+        //called to analyze setup and configuration settings like remote site onload of the page and on click of "Generate Source"
+        function analyzeConfig(initSrcGen)
+        {
+        	Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.crProjectViewController.generateStep_analyzeConfig}',
+                 function(result, event)
+                 {
+	                 if(event.status) 
+	                 {
+						if(result != null)
+						{
+							if(result.hasMdt && result.hasProd && result.hasSandbox && result.hasCRB)
+							{
+								if(initSrcGen)
+								{
+									$("#progressModal").find(".modal-footer").html("Step 2/5: Removing old project data..");
+						            //clear old editor value
+						            editor.setValue("");
+						            deleteOldFVPs(true);
+					            }
+							}
+							else
+							{
+								$("#progressModal").find(".modal-footer").html("");
+                            	hideModal('progressModal');
+								//set the response variable in crSetup.component
+								setupResponse = result;
+								parseSetupResponse();
+								$('#setupModal').data('initSrcGen', initSrcGen);
+								$('#setupModal').modal('show');
+							}
+						}
+					}
+				}, 
+				{escape: false, timeout: 120000}
+			);
+        }
+        function deleteOldFVPs(shouldContinue)
+        {
+            Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.crProjectViewController.generateStep_deleteOldFVPs}',
+	            '{!CodeRobot__CR_Project__c.Id}',
+                 function(result, event)
+                 {
+	                 if(event.status) 
+	                 {
+	                 	if(result.errorMsg.length == 0)
+	                 	{
+	                 		if(result.cnt > 0)
+							{
+							    //call again to see if there are more fvps to delete
+							    deleteOldFVPs(shouldContinue);
+							}
+							else if(shouldContinue)
+							{
+								//$("#progressModal").find(".modal-footer").html("Step 3/5: Collecting data..");
+								//saveRecordFVPs('');
+								deleteInvalidRecords('', 'srcGen', true);
+							}
+							else
+							{
+								//this is called as the last step to src gen
+								$("#progressModal").find(".modal-footer").html("");
+								hideModal('progressModal');
+								if($("#idLicMktgMsg_msg").html().length > 0)
+        							$("#marketingModal").modal('show');
+        						if($("#idLicUserMsg_msg").html().length > 0)
+        							$("#userMsgModal").modal('show');
+							}
+	                 	}
+	                 	else if(result.errorMsg.length > 0)
+	                 	{
+	                 		displayMessage("", "genCode_msgs", result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+                            hideModal('progressModal');
+	                 	}
+					}
+				}, 
+				{escape: false, timeout: 120000}
+			);
+        }
+        function continueSrcGen()
+        {
+        	$("#progressContinue").hide();
+        	saveRecordFVPs('');
+        }
+        function deleteInvalidRecords(result, processType, shouldAutoDel)
+        {
+        	Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.crProjectViewController.findInvalidProjectRecordsV2}',
+	            '{!CodeRobot__CR_Project__c.Id}', result, shouldAutoDel,
+                 function(result, event)
+                 {
+	                 if(event.status) 
+	                 {
+	                 	if(result.errorMsg.length == 0)
+	                 	{
+	                 		if(result.cnt > 0)
+							{
+							    //call again to see if there are more records to delete
+							    deleteInvalidRecords(JSON.stringify(result), processType, shouldAutoDel);
+							}
+							else
+							{
+								if(processType == 'srcGen')
+								{
+									if(result.stDeletedIds.length > 0)
+									{
+										removeRowsFromProjectContents(result.stDeletedIds);
+										$("#progressContinue").show();
+										$("#progressContinueMsg").text("Removed " + result.stDeletedIds.length + " project records with missing dependencies.");
+									}
+									else
+									{
+										//$("#progressModal").find(".modal-footer").html("Step 3/5: Collecting data..");
+										//saveRecordFVPs('');
+										updateProject('');
+									}
+								}
+								else if(processType == 'init')
+								{
+                                    if(result.stIdsToDelete.length > 0 && !shouldAutoDel)
+                                    {
+                                        //get user confirmation before executing dml
+    									$('#delInvRecModal').modal('show');
+                                    }
+                                    else
+                                    {
+                                        hideModal('delInvRecModal');
+                                        //start building the project view from first level
+                                        buildProjectView(0);
+                                        
+                                        //project list 
+                                        buildProjectList('init', null);
+                                        //remove from project and display message
+                                        if(result.stDeletedIds.length > 0)
+                                        {
+                                            removeRecordsFromProject(result.stDeletedIds);
+                                            displayMessage('', 'pageMsgs', 'Removed ' + result.stDeletedIds.length + ' project records missing its dependent source record.', 'alert-info', true, '', {!isDebug});
+                                            $("#pageMsgs").fadeTo(10000, 500).slideUp(500, function(){
+                                                $("#pageMsgs").slideUp(500);
+                                                clearMessage("pageMsgs");
+                                            });
+                                        }
+                                        
+                                    }
+								}
+							}
+	                 	}
+	                 	else if(result.errorMsg.length > 0)
+	                 	{
+	                 		displayMessage("", "genCode_msgs", result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+                            hideModal('progressModal');
+	                 	}
+					}
+				}, 
+				{escape: false, timeout: 120000}
+			);
+        }
+        function updateProject(result)
+        {
+        	Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.crProjectViewController.generateStep_updateProject}',
+                '{!CodeRobot__CR_Project__c.Id}', result,
+                function(result, event)
+                {
+                    if(event.status) 
+                    {
+                        if(result.shouldContinue)
+                        {
+                            updateProject(JSON.stringify(result));
+                        }
+                        else if(result.errorMsg.length == 0)
+                        {
+                            $("#progressModal").find(".modal-footer").html("Step 3/5: Collecting data..");
+							saveRecordFVPs('');
+                        }
+                        else if(result.errorMsg.length > 0)
+                        {
+                            displayMessage("", "genCode_msgs", result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+                            hideModal('progressModal');
+                        }
+                    }
+                }, 
+                {escape: false, timeout: 120000}
+            );
+        }
+        function saveRecordFVPs(result)
+        {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.crProjectViewController.generateStep_collectFVP}',
+                '{!CodeRobot__CR_Project__c.Id}', result,
+                function(result, event)
+                {
+                    if(event.status) 
+                    {
+                        if(result.shouldContinue)
+                        {
+                            saveRecordFVPs(JSON.stringify(result));
+                        }
+                        else if(result.errorMsg.length == 0)
+                        {
+                            //next call generate method stubs
+                            $("#progressModal").find(".modal-footer").html("Step 4/5: Generating code...");
+                            generateMethodStubs(null);
+                            //clear existing editor values
+                            $("#editor_hm").html("");
+                            $("#editor_gv").html("");
+                            $("#editor_mb").html("");
+                        }
+                        else if(result.errorMsg.length > 0)
+                        {
+                            displayMessage("", "genCode_msgs", result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+                            hideModal('progressModal');
+                        }
+                    }
+                }, 
+                {escape: false, timeout: 120000}
+            );
+        }
+        function generateMethodStubs(result)
+        {
+            //todo separate calls
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.crProjectViewController.generateStep_srcCode}',
+                '{!CodeRobot__CR_Project__c.Id}', result,
+                function(result, event)
+                {
+                    if(event.status) 
+                    {
+                    	//insert global variable declarations
+                    	//need to escape < >
+                        $("#editor_gv").append(crb_htmlEscape(result.globalVars));
+                        //editor.insert(result.globalVars);
+                        //editor.insert("\n");
+                        //insert current set of OMs
+                        //
+                        //insert helper methods
+                        $("#editor_hm").append(crb_htmlEscape(result.helperMethods));
+                        
+                        //need to clear list of OMs on client side or error: "Visualforce Remoting Exception: QueryResult must start with '{'"
+                        //result.lstOMs = []; -- maintain OMs
+                        result.globalVars = '';
+                        result.helperMethods = '';
+                         
+                        if(result.shouldContinue)
+                        {
+                            //call again
+                            generateMethodStubs(JSON.stringify(result));
+                            
+                        }
+                        else
+                        {
+                        	if(result.errorMsg.length == 0)
+                        	{
+                        		//insert OMs
+                        		insertOMs(result.lstOMs);
+		                    	//append the class header
+		                    	if(result.classHeaderSrc.length > 0)
+		                    		editor.insert(result.classHeaderSrc);
+	                            //prepend the main method to the main body
+	                            $("#editor_mb").prepend(crb_htmlEscape(result.mainMethod));
+	                            //add a new line between sections
+	                            $("#editor_gv").append("\n");
+	                            //$("#editor_mb").append("\n");
+	                            
+	                            editor.insert($("#editor_gv").text());
+	                            editor.insert($("#editor_mb").text());
+	                            editor.insert($("#editor_hm").text());
+	                            editor.scrollToLine(1, true, true, function () {});
+	                            editor.gotoLine(1, 1, true);
+	                            $("#progressModal").find(".modal-footer").html("Step 5/5: Cleaning up...");
+	                            
+	                            //set the json
+	                            try
+	                            {
+	                            	var unescapedUsage = unescapeHtml(result.usageJSON);
+	                            	var jsonObj = JSON.parse(unescapedUsage);
+	                            	$("#transmissionDiv").text(JSON.stringify(jsonObj, undefined, 4));
+	                            }
+	                            catch(err)
+	                            {
+	                            	alert(err);
+	                            }
+	                            
+	                            $("#transmissionInfo").show();
+	                            //show marketing message
+	                            setCRBMsg(result.lh_mktgmsg, "idLicMktgMsg_msg");
+	                            //set user msg
+	                            setCRBMsg(result.lh_usrmsg, "idLicUserMsg_msg");
+	                            if(!{!isDebug})
+	                            	deleteOldFVPs(false);
+                            }
+                            else
+                            {
+                            	displayMessage("", "genCode_msgs", result.errorMsg, 'alert-danger', false, result.errorStackTrace, {!isDebug});
+                            	$("#progressModal").find(".modal-footer").html("");
+                            	hideModal('progressModal');
+                            }
+                            if({!isDebug})
+                            {
+                            	$("#progressModal").find(".modal-footer").html("");
+                            	hideModal('progressModal');
+                            	if($("#idLicMktgMsg_msg").html().length > 0)
+        							$("#marketingModal").modal('show');
+        						if($("#idLicUserMsg_msg").html().length > 0)
+        							$("#userMsgModal").modal('show');
+                            }
+                            showLicMsgs(true, result);
+                        }
+                    }
+                }, 
+                {escape: false, timeout: 120000}
+            );
+        }
+        function insertOMs(lstOMs)
+        {
+            if(lstOMs != null)
+            {
+                for(var i = 0; i < lstOMs.length; i++)
+                {
+                    //editor.insert(lstOMs[i].SrcCode);
+                    $("#editor_mb").append(crb_htmlEscape(lstOMs[i].SrcCode));
+                }
+            }
+        }
+        function addError(msg)
+        {
+        
+        }
+        function countCharacters(str, char) {
+            return ( str.match( RegExp(char,'g') ) || [] ).length;
+        }
+        //sets the editor options
+        function initEditor()
+        {
+            editor = ace.edit("editor");
+            editor.setTheme("ace/theme/eclipse");
+            editor.getSession().setMode("ace/mode/java");
+            //editor.setReadOnly(true);
+            editor.setShowPrintMargin(false);
+            
+        }
+        function backToProjects()
+        {
+            window.location.href = "/apex/CodeRobot__crMain";
+        }
+        function openApexClasses()
+        {
+            window.open("/01p");
+        }
+        //adds a spinner and disables button while executing operation, and reenables once done
+        function toggleLoadingButton(theBtn, showOrHide)
+        {
+            if(showOrHide == "hide")
+            {
+                
+                //reenable button and remove spinner and set btn text
+                $(theBtn).removeAttr("disabled");
+                $(theBtn).find("span.glyphicon-refresh-animate").remove();
+                $(theBtn).text($(theBtn).attr("data-orig-value"));
+            }
+            else if(showOrHide == "show")
+            {
+                //disable the button and show spinner with new text
+                $(theBtn).attr("disabled", "disabled");
+                $(theBtn).html('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"/> ' + $(theBtn).attr("data-loading-value")); 
+        
+            }
+        }
+        //init show progress bar
+        function initProgressBar()
+        {
+            //$("#progressTextSpan").text('0%');
+            $("#progressBarDiv").attr('aria-valuenow', '100');
+            $("#progressBarDiv").css('width', '100%');
+            $('#progressModal').modal('show');
+        }
+        var rightOrig = 0;
+        function toggleEditorSize(theBtn)
+        {
+        	//manually hide the tooltip
+            $(theBtn).parent().tooltip('hide');
+            
+        	var iconSpan = $(theBtn).find('span');
+        	//close open relationship or add record sections
+        	$("#new_records_collapse").hide();
+        	$("#new_related_records_collapse").hide();
+        	$("#new_records_collapse").collapse('hide');
+        	$("#new_related_records_collapse").collapse('hide');
+        	$("#new_records_collapse").css("display", "");
+        	$("#new_related_records_collapse").css("display", "");
+        	$(".list-group > li").removeClass("node-selected");
+        	
+        	if(iconSpan.hasClass('glyphicon-resize-full'))
+        	{
+        		//preserve the size before collapse
+        		var classArr = $("#rightPane").attr('class').split(' ');
+        		for(var i=0; i< classArr.length; i++){
+					if(classArr[i].match("^col-xs-"))
+					{
+						rightOrig = classArr[i].split('-')[2];
+					}
+				}
+
+        		iconSpan.removeClass('glyphicon-resize-full');
+        		iconSpan.addClass('glyphicon glyphicon-resize-small');
+       			//collapse left pane
+       			$("#leftPane").hide();
+       			//$("#leftPane").animate({width: 'toggle'}, function() { 
+       				//make right pane full
+        			$("#rightPane").removeClass('col-xs-' + rightOrig);
+        			$("#rightPane").addClass('col-xs-12');
+        			editor.resize();
+       			//});
+        	}
+        	else
+        	{
+        		iconSpan.removeClass('glyphicon-resize-small');
+        		iconSpan.addClass('glyphicon-resize-full');
+       			//expand left pane
+       			$("#leftPane").show();
+       			//$("#leftPane").animate({width: 'toggle'}, function() { 
+       				//make right pane full
+        			$("#rightPane").removeClass('col-xs-12');
+        			$("#rightPane").addClass('col-xs-' + rightOrig);
+        			editor.resize();
+       			//});
+        	}
+        }
+        function toggleProjectListFormat(theBtn)
+        {
+        	//dont toggle until list is loaded
+        	if($('#projectLoading').is(':visible'))
+        		return;
+        	var iconSpan = $(theBtn).find('span');
+        	if(iconSpan.hasClass('glyphicon-align-justify'))
+        	{
+        		iconSpan.removeClass('glyphicon-align-justify');
+        		iconSpan.addClass('glyphicon-align-left');
+        		$("#projectView").hide();
+        		$("#projectList").show();
+        		//columns are drawn misaligned -- adjust after instantiating
+			    $("#tbl_project_list").DataTable().columns.adjust().draw();
+			    $(theBtn).attr("title", "Table View");
+        	}
+        	else
+        	{
+        		iconSpan.removeClass('glyphicon-align-left');
+        		iconSpan.addClass('glyphicon-align-justify');
+        		$("#projectView").show();
+				$("#projectList").hide();
+				$(theBtn).attr("title", "Tree View");
+        	}
+        }
+        //copies the contents of the editor to clipboard
+        function copyToClipboard(theBtn)
+        {
+        	//original tooltip text
+			var origText = $(theBtn).attr('data-original-title');
+			
+			try
+			{
+	        	var sel = editor.selection.toJSON(); // save selection
+				editor.selectAll();
+				editor.focus();
+				var successful = document.execCommand('copy');
+				editor.selection.fromJSON(sel); // restore selection
+				var msg = successful ? 'Copied!' : 'Cannot copy!';
+				$(theBtn).attr('data-original-title', msg).tooltip('show');
+			}
+			catch(err)
+			{
+				alert('Could not copy text. Please select all and manually copy!');
+			}
+			
+			//set original text back
+			$(theBtn).attr('data-original-title', origText);
+			
+        }
+        //redraws the tables on this page -- called by resizing.js
+        function redrawTables()
+        {
+        	//project table      
+            if($.fn.DataTable.isDataTable("#tbl_project_list"))
+            {
+            	 $("#tbl_project_list").DataTable().draw();
+            }
+            //list view table
+            if($.fn.DataTable.isDataTable("#tbl_listView"))
+            {
+            	 $("#tbl_listView").DataTable().draw();
+            }
+            //lookup table
+            if($.fn.DataTable.isDataTable("#tbl_lookup_records"))
+            {
+            	 $("#tbl_lookup_records").DataTable().draw();
+            }
+            //related table
+            if($.fn.DataTable.isDataTable("#tbl_related_records"))
+            {
+            	 $("#tbl_related_records").DataTable().draw();
+            }
+        }
+        
+        function showLicMsgs(isShow, result) {
+        	if (isShow) {
+        		if (result.lh_msg && result.lh_msg.length > 0) {
+        			var m = result.lh_msg;
+        			if (m.indexOf('{{DANGER}}') >=0) {
+        				$("#idLicMsg_msg").removeClass('alert-success alert-info alert-warning').addClass('alert-danger');
+        				m = m.replace('{{DANGER}}', '');
+        			}
+        			else if (m.indexOf('{{WARN}}') >=0) {
+        				$("#idLicMsg_msg").removeClass('alert-success alert-info alert-danger').addClass('alert-warning');
+        				m = m.replace('{{WARN}}', '');
+        			} 
+        			else if (m.indexOf('{{SUCC}}') >=0) {
+        				$("#idLicMsg_msg").removeClass('alert-danger alert-info alert-warning').addClass('alert-success');
+        				m = m.replace('{{SUCC}}', '');
+        			} 
+        			$("#idLicMsg_msg").html(cnvrttags(m));
+        			$("#idLicMsg_msg").show();
+        		}
+        	}
+        	else {
+        		$("#idLicMsg_msg").hide();
+        		$("#idLicMsg_msg").html("");
+        	}
+        }
+        function cnvrttags(s) {        	
+        	while (s.indexOf('{{q}}') >= 0) {
+        		s = s.replace('{{q}}', '"');
+        	}
+        	while (s.indexOf('{{') >= 0) {
+        		s = s.replace('{{', '<');
+        	}
+        	while (s.indexOf('}}') >= 0) {
+	        	s = s.replace('}}', '>');
+	        }
+        	return s;
+        }
+        function setCRBMsg(msg, msgId)
+        {
+        	//clear msg
+        	$("#" + msgId).html("");
+        	//if (result.lh_mktgmsg && result.lh_mktgmsg.length > 0) {
+       		//	var m = result.lh_mktgmsg;
+       		//	$("#idLicMktgMsg_msg").html(cnvrttags(m));
+       		//}
+       		if (msg && msg.length > 0) {
+       			//var m = result.lh_mktgmsg;
+       			$("#" + msgId).html(cnvrttags(msg));
+       		}
+        }
+
+        </script>
+        <style>
+            #editor { 
+                min-height: 768px;
+                width: 100%;
+            }
+            #projectView {
+            	max-height: 768px;
+    			overflow-y: scroll;
+            }
+            /* Needed to prevent modal from shifting body padding */
+            body { 
+                padding-right: 0 !important 
+            }
+            .tree-icon {
+                width: 20px;
+                height: 20px;
+                margin-right: 5px;
+            }
+            html {
+                /*overflow-y: scroll;  Always shows scroll bar so content doesn't shift when scroll bar appears/disappears vertically' */
+            }
+            .header-table {
+                margin-bottom: 15px;
+                width: 100%;
+            }
+            
+            .load-spinner {
+                text-align: center;
+                font-size: 20px;
+                
+            }
+            .project-view-item {
+                margin-left: 20px;
+                border-radius: 4px;
+                padding: 10px 15px;
+                background-color: #fff;
+                border: 1px solid #ddd;
+            }
+            #relationshipSelectDiv select {
+            	width: 100%;
+            }
+            .top-buffer { 
+            	margin-top:20px; 
+            }
+            #tbl_project_list_wrapper > .top {
+            	padding: 10px;
+            }
+            .alert-nomargin {
+            	margin-bottom: 2px !important;
+            }
+            .objApiName {
+            	font-style: initial;
+    			color: #BCBEC0;
+            }
+            select option:disabled {
+			    color: black;
+			    font-weight: bold;
+			}
+        </style>
+    </head>
+    <body style="font-size:75%">
+        <div class="bs">
+            <div class="container-fluid">
+                <div class="row top-buffer">
+                	<div class="col-xs-3 col-md-3">
+                		<h2 style="color:grey"><apex:outputText value="{!CodeRobot__CR_Project__c.Name}"/></h2>
+                	</div>
+                	<div class="col-xs-6 col-md-6">
+                	
+                	</div>
+                	<div class="col-xs-3 col-md-3 text-right">
+                		<span data-toggle="tooltip" data-placement="top" title="Information/Help">
+	                		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#helpModal">
+								<span class="glyphicon glyphicon-info-sign" style="font-size:17px" aria-hidden="true"></span>
+							</button>
+						</span>
+	                    <span class="button-space"/>
+                		<span data-toggle="tooltip" data-placement="top" title="Project wide configuration settings">
+	                		<button type="button" class="btn btn-primary" onclick="getAppSetting();" data-toggle="modal" data-target="#configModal">
+								<span class="glyphicon glyphicon-cog" style="font-size:17px" aria-hidden="true"></span>
+							</button>
+						</span>
+                        <span class="button-space"/>
+                        <span data-toggle="tooltip" data-placement="top" title="Back to project list">
+							<button type="button" class="btn btn-primary" onclick="backToProjects();">Back to Projects</button>
+						</span>
+                	</div>
+                </div>
+                <div class="row top-buffer">
+                	<div class="col-xs-12 col-md-12">
+                		<div id="pageMsgs"/>
+                	</div>
+                </div>
+                <div class="grid">
+	                <div class="row top-buffer">
+	                    <div class="col-xs-4" style="height:100%" id="leftPane">
+	                    	<div class="well">
+	                    		<div class="row">
+	                    			<div class="col-xs-6 col-md-6">
+	                    				<h3>Project Contents</h3>
+	                    			</div>
+	                    			<div class="col-xs-6 col-md-6 text-right">
+	                    				<button type="button" class="btn btn-primary" onclick="toggleProjectListFormat(this)" data-toggle="tooltip" title="Toggle between the project tree view and list view">
+											<span class="glyphicon glyphicon-align-justify" style="font-size:17px" aria-hidden="true"></span>
+										</button>
+		                                <span class="button-space"/>
+		                                <span data-toggle="tooltip" data-placement="top" title="Add records to the project">
+		                                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#new_records_collapse" aria-expanded="false" aria-controls="new_records_collapse">
+		                                        Add Record(s)
+		                                    </button>
+	                                    </span>
+	                    			</div>
+	                    		</div>
+	                    		<div class="row top-buffer" >
+	                    			<div class="col-xs-12 col-md-12">
+	                    				<div class="load-spinner project-view-item" id="projectLoading">
+				                            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"/>
+				                        </div>
+			                        	<div id="projectView" style="display:none;"/>
+			                        	<div id="projectList" class="table-responsive table" style="display:none;">
+			                        		<div class="panel panel-default">
+												<div class="panel-body" style="padding:0px">
+													<table id="tbl_project_list" class="table table-striped table-hover" cellspacing="0" width="100%" />
+												</div>
+											</div>
+			                        		
+			                        	</div>
+	                    			</div>
+	                    		</div>
+	                        </div>
+	                    </div>
+	                    <div class="col-xs-8" id="rightPane">
+	                        <div class="collapse" id="new_related_records_collapse">
+	                            <input type="hidden" value="" id="related_sobject_rec_id_hidden"/>
+	                            <input type="hidden" value="" id="related_crp_rec_id_hidden"/>
+	                            <input type="hidden" value="" id="related_rec_nodeid_hidden"/>
+	                            <div class="well" style="overflow: hidden;background-color: white;">
+		                            <div class="row">
+		                            	<div class="col-xs-6">
+				                            <div class="lightningIcon">
+												<div class="slds-scope">
+													<div class="slds-grid slds-col slds-has-flexi-truncate slds-media--center">
+														<div class="slds-media__figure slds-icon forceEntityIcon">
+															<span class="slds-icon_container" id="lds_related_icon_container_span"/>
+														</div>
+														<div class="slds-media__body">
+															<p class="slds-text-heading--label slds-line-height--reset" style="opacity: 1;" id="lds_related_record_obj_name_p"/>
+															<h1 class="slds-page-header__title slds-m-right--small slds-truncate slds-align-middle">
+																<span class="uiOutputText" data-aura-class="uiOutputText" id="lds_related_rec_name_span"/>
+															</h1>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="classicIcon">
+												<table>
+				                                    <tr>
+				                                        <td rowspan="2" id="related_record_icon_td"/>
+				                                        <td style="font-size: .8em; font-weight: bold; color: #4a4a56;" id="related_record_obj_name_td"/>
+				                                    </tr>
+				                                    <tr>
+				                                        <td style="font-size: 1.8em; font-weight: normal; line-height: 1.1em;" id="related_rec_name_td"/>
+				                                    </tr>
+				                                </table>
+				                            </div>
+			                            </div>
+			                            <div class="col-xs-6" style="text-align:right">
+			                            	<span class="glyphicon glyphicon-remove btn_cancel_new_related_record" aria-hidden="true" style="cursor: pointer;" data-toggle="tooltip" data-placement="left" title="Close this section"></span>
+			                            </div>
+		                            </div>
+	                                <br/>
+	                                <div id="recordMsgs"/>
+	                                <div class="panel panel-default" style="border-color:#989898">
+	                                    <div class="panel-heading">
+	                                        Select <b>lookup records</b> associated with this record to include in your project:
+	                                    </div>
+	                                    <div class="panel-body">
+	                                        <br/>
+	                                        <div class="load-spinner" id="lookupLoading">
+	                                            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"/>
+	                                        </div>
+	                                        <div class="table-responsive table" id="lookupTableDiv">
+	                                            <table id="tbl_lookup_records" class="table table-striped table-hover" cellspacing="0" width="100%"/>
+	                                            <div id="lookup_msgs"/>
+	                                            <span data-toggle="tooltip" data-placement="top" title="Add selected lookup records to the project">
+		                                            <button type="button" class="btn btn-primary" data-orig-value="Add Lookup Record(s)" data-loading-value="Adding Lookup Record(s)" onclick="addRecordsToProject('lookup', this);">
+		                                                Add Lookup Record(s)
+		                                            </button>
+	                                            </span>
+	                                        </div>
+	                                    </div>
+	                                    <br/>
+	                                </div>
+	                                <br/>
+	                                <div class="panel panel-default" id="relationshipPanel" style="border-color:#989898">
+	                                    <div class="panel-heading">
+	                                        Find <b>related records</b> associated with this record:
+	                                    </div>
+	                                    <div class="panel-body">
+	                                        <div id="relationshipSelectDiv">
+	                                            <table>
+	                                                <tr>
+	                                                    <td>
+	                                                        <label for="relationshipObjSelect" style="text-align: left; font-weight: bold; padding-right: .69em;">
+	                                                            Related Objects:
+	                                                        </label>
+	                                            
+	                                                    </td>
+	                                                    <td>
+	                                                        <select class="form-control" id="relationshipObjSelect" onchange="loadRelationshipRecords('');"/>
+	                                                    </td>
+	                                                </tr>
+	                                                <tr id="relationshipListviewSelectRow">
+	                                                    <td>
+	                                                        <label for="relationshipListview" style="text-align: left; font-weight: bold; padding-right: .69em;">
+	                                                            View: <a href="#" onclick="return false;" data-toggle="tooltip" title="Formats the table with matching columns from a predefined list view, but only displays records related to the selected record.">[?]</a>:
+	                                                        </label>
+	                                                    </td>
+	                                                    <td>
+	                                                        <select class="form-control" id="relationshipListview" onchange="loadRelationshipRecords(this.value);"/>
+	                                                    </td>
+	                                                </tr>
+	                                            </table>
+	                                        </div>
+	                                        <br/>
+	                                        <div class="load-spinner" id="relationshipLoading">
+	                                            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"/>
+	                                        </div>
+	                                        <div class="table-responsive table" id="relationshipTableDiv">
+	                                            <table id="tbl_related_records" class="table table-striped table-hover" cellspacing="0" width="100%" />
+	                                            <div id="relationship_msgs"/>
+	                                            <span data-toggle="tooltip" data-placement="top" title="Add selected relationship records to the project">
+		                                            <button type="button" class="btn btn-primary" data-orig-value="Add Related Record(s)" data-loading-value="Adding Related Record(s)" onclick="addRecordsToProject('relationship', this);" style="margin:10px">
+		                                                Add Related Record(s)
+		                                            </button>
+	                                            </span>
+	                                        </div>
+	                                        <br/>
+	                                    </div>
+	                                </div>
+	                                <div style="float:right">
+	                                	<span data-toggle="tooltip" data-placement="top" title="Close this section">
+		                                    <button class="btn btn-primary btn_cancel_new_related_record" type="button">
+		                                        Close
+		                                    </button>
+	                                    </span>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div class="collapse" id="new_records_collapse">
+	                            <div class="well" style="overflow: hidden;background-color: white;">
+	                            	<div class="row">
+	                            		<div class="col-xs-6">
+	                            			<h3>Add New Records</h3>
+	                            		</div>
+	                            		<div class="col-xs-6" style="text-align:right">
+			                            	<span class="glyphicon glyphicon-remove btn_cancel_new_record" aria-hidden="true" style="cursor: pointer;" data-toggle="tooltip" data-placement="left" title="Close this section"></span>
+			                            </div>
+	                            	</div>
+	                                <br/>
+	                                <ul class="nav nav-tabs" role="tablist" id="tabUl">
+	                                	<li role="presentation" class="active">
+	                                        <a href="#addViaListViewPane" aria-controls="addViaListViewPane" role="tab" data-toggle="tab">
+	                                            Add Records via List Views
+	                                        </a>
+	                                    </li>
+	                                    <li role="presentation">
+	                                        <a href="#addSingleRecordPane" aria-controls="addSingleRecordPane" role="tab" data-toggle="tab">
+	                                            Add Single Record
+	                                        </a>
+	                                    </li>
+	                                </ul>
+	                                <!-- Tab panes -->
+	                                <div class="tab-content">
+	                                    <div role="tabpanel" class="tab-pane active" id="addViaListViewPane">
+	                                        <br/>
+	                                        <div id="objSelectionDiv">
+	                                            <div class="form-group has-feedback">
+	                                                <input type="text" class="form-control" id="objFilter" onkeyup="filterObjList(this)" placeholder="Filter..."/>
+	                                                <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+	                                            </div>
+	                                            <div style="text-align:right;width: 100%;font-size: 12px;color: grey;">Only objects with list controllers are shown below.</div>
+	                                            <div class="load-spinner" id="objLoading">
+						                            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"/>
+						                        </div>
+	                                            <div  class="list-group" id="objList" style="display:none"/> 
+	                                        </div>
+	                                        <div class="panel panel-default" id="listViewPanel"  style="display:none">
+	                                            <div class="panel-heading">
+	                                                Selected Object: <span id="listViewSelectedObj" style="font-weight:bold"/> <a href="#" onclick="changeListViewObj();return false;">[Change]</a>
+	                                            </div>
+	                                            <div class="panel-body">
+	                                                <div id="listViewSelectDiv">
+	                                                	<table>
+	                                                		<tr>
+			                                                    <td>
+			                                                    	<label for="listViewSelect" style="text-align: left; font-weight: bold; padding-right: .69em;">
+				                                                        View:
+				                                                    </label>
+			                                                    </td>
+			                                                    <td>
+			                                                    	<select class="form-control" id="listViewSelect" onchange="loadObjectListView(false);"/>
+			                                                    </td>
+	                                                    	</tr>
+	                                                    </table>
+	                                                </div>
+	                                                <br/>
+	                                                <div class="load-spinner" id="listViewLoading">
+	                                                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"/>
+	                                                </div>
+	                                                <div class="table-responsive" id="listviewTableDiv">
+	                                                    <table id="tbl_listView" class="table table-striped table-hover" cellspacing="0" width="100%" />
+	                                                    <div id="listview_msgs"/>
+	                                                    <span data-toggle="tooltip" data-placement="top" title="Add the selected list view records to the project">
+		                                                    <button type="button" class="btn btn-primary" data-orig-value="Add Records" data-loading-value="Adding Records" onclick="addRecordsToProject('listview', this);">
+		                                                        Add Records
+		                                                    </button>
+	                                                    </span>
+	                                                </div>
+	                                                <br/>
+	                                            </div>
+	                                        </div>
+	                                    </div>
+	                                    <div role="tabpanel" class="tab-pane" id="addSingleRecordPane">
+	                                        <div class="list-group">
+	                                            <br/>
+	                                            <div class="form-group has-feedback" id="importRecordDiv">
+	                                                <label class="control-label" for="inputRecordId">Enter a Single Record ID:</label>
+	                                                <input type="text" class="form-control" id="inputRecordId" placeholder="ex: 00141000008L8OO"/>
+	                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+	                                                <span id="inputRecordHelpBlock" class="help-block"/>
+	                                            </div>
+	                                            <span data-toggle="tooltip" data-placement="top" title="Add the record to the project">
+		                                            <button type="button" class="btn btn-primary" data-orig-value="Add Record" data-loading-value="Adding Record" onclick="addRecordsToProject('singleId', this);">
+		                                                    Add Record
+		                                            </button>
+	                                            </span>
+	                                        </div>
+	                                    </div>  
+	                                </div>
+	                                <div style="float:right">
+	                                	<span data-toggle="tooltip" data-placement="top" title="Close this section">
+		                                    <button class="btn btn-primary btn_cancel_new_record" type="button">
+		                                        Close
+		                                    </button>
+	                                    </span>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div class="well">
+	                        	<div class="row">
+		                        	<div class="col-xs-3 col-md-3">
+		                        		<h3>Generated Code</h3> <span class="glyphicon glyphicon-info-sign" id="transmissionInfo" style="font-size:17px;cursor: pointer;display:none;color:#ffa14d;" aria-hidden="true" data-toggle="modal" data-target="#transmissionModal"></span>
+		                        	</div>
+		                        	<div class="col-xs-5 col-md-5">
+		                        		<div class="alert alert-dismissible alert-nomargin" role="alert" id="idLicMsg_msg" style="display:none;white-space:pre-line;"></div>
+		                        	</div>
+		                        	<div class="col-xs-4 col-md-4 text-right">
+		                        		<span data-toggle="tooltip" data-placement="top" title="Toggle the editor size">
+			                        		<button type="button" class="btn btn-primary" onclick="toggleEditorSize(this)">
+												<span class="glyphicon glyphicon-resize-full" style="font-size:17px" aria-hidden="true"></span>
+											</button>
+										</span>
+										<span class="button-space"/>
+		                                <button type="button" class="btn btn-primary" onclick="copyToClipboard(this)" data-toggle="tooltip" title="Copy code to clipboard">
+											<span class="glyphicon glyphicon-copy" style="font-size:17px" aria-hidden="true"></span>
+										</button>
+										<span class="button-space"/>
+		                                <button type="button" class="btn btn-primary" onclick="openApexClasses()" data-toggle="tooltip" title="Open Apex Classes Window">
+											<span class="glyphicon glyphicon-list-alt" style="font-size:17px" aria-hidden="true"></span>
+										</button>
+		                                <span class="button-space"/>
+		                                <span data-toggle="tooltip" data-placement="top" title="Generate the source code for this project">
+		                                    <button type="button" class="btn btn-primary" onclick="generateCode();">
+		                                        Generate Code
+		                                    </button>
+	                                    </span>
+		                        	</div>
+	                        	</div>
+	                        	<div class="row">
+	                        		<div class="col-xs-12 col-md-12">
+	                        			<div id="genCode_msgs"/>
+	                        		</div>
+	                        	</div>
+	                           	<div class="row top-buffer">
+	                           		<div class="col-xs-12 col-md-12">
+	                           			<div id="editor"/>
+			                            <div id="editor_gv" style="display:none"/>
+			                            <div id="editor_mb" style="display:none"/>
+			                            <div id="editor_hm" style="display:none"/>
+	                           		</div>
+	                           	</div>
+	                        </div>
+	                    </div>
+	                </div>
+         		</div>   
+            </div>
+            <!-- Delete Modal -->
+            <div class="modal fade bs-example-modal-lg" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <!-- <apex:outputPanel rendered="{!$User.UIThemeDisplayed == 'Theme4d'}"> -->
+                            <div class="lightningIcon">
+								<div class="slds-scope">
+									<div class="slds-grid slds-col slds-has-flexi-truncate slds-media--center">
+										<div class="slds-media__figure slds-icon forceEntityIcon">
+											<span class="slds-icon_container" id="lds_delete_icon_container_span"/>
+										</div>
+										<div class="slds-media__body">
+											<p class="slds-text-heading--label slds-line-height--reset" style="opacity: 1;" id="lds_delete_record_obj_name_p"/>
+											<h1 class="slds-page-header__title slds-m-right--small slds-truncate slds-align-middle">
+												<span class="uiOutputText" data-aura-class="uiOutputText" id="lds_delete_rec_name_span"/>
+											</h1>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- </apex:outputPanel> -->
+                            <!-- <apex:outputPanel rendered="{!$User.UIThemeDisplayed != 'Theme4d'}"> -->
+							<div class="classicIcon">
+								<table>
+								    <tr>
+								        <td rowspan="2" id="delete_record_icon_td"/>
+								        <td style="font-size: .8em; font-weight: bold; color: #4a4a56;" id="delete_record_obj_name_td"/>
+								    </tr>
+								    <tr>
+								        <td style="font-size: 1.8em; font-weight: normal; line-height: 1.1em;" id="delete_rec_name_td"/>
+								    </tr>
+								</table>
+							</div>
+                            <!-- </apex:outputPanel> -->
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete this project record and all its children?
+                            <br/>
+                            <strong>Note: </strong>Source records are never deleted or modified.
+                            <span id="deleteRecordName"/>
+                        </div>
+                        <div class="modal-footer">
+                        	<div id="deleteMsgs"/>
+                            <div class="modalFooterControls">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="confirmDelete();">Delete</button>
+                            </div>
+                            <div class="modalFooterLoading" style="display:none">
+                                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Deleting...</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Progress Modal -->
+            <div class="modal fade bs-example-modal-lg" id="progressModal" tabindex="-1" role="dialog" aria-labelledby="progressLabel" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="progressLabel">
+                                Processing...
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" id="progressBarDiv" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                    
+                                </div>
+                            </div>
+                            <div id="progressContinue" class="alert alert-info fade in" style="display:none">
+                            	<div id="progressContinueMsg" />
+                            	<div style="text-align:right">
+	                            	<button type="button" class="btn btn-primary" onclick="continueSrcGen();">Continue</button>
+	                            	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            	</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Transmission Modal -->
+            <div class="modal fade bs-example-modal-lg" id="transmissionModal" tabindex="-1" role="dialog" aria-labelledby="transmissionLabel" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">
+								Transmitted Information
+							</h4>
+                        </div>
+                        <div class="modal-body">
+                        	<strong>Your privacy is important to us and we want to be transparent about what we send to our server.</strong>
+                        	<br/>
+                        	The following data has been transmitted:
+                        	<br/>
+                        	<br/>
+                        	<code id="transmissionDiv" style="white-space: pre-wrap"/>
+                        	<br/>
+                        	<br/>
+                        	We are sending this information to make it easier to work with Code Robot and generate test code in any of your environments.<br/> 
+                        	Details on our web site <a href="https://code-robot.com/help-center/#how-our-licensing-model-works" target="_blank">here</a>.
+                        	<br/>
+                        	You can read more about our privacy commitment on our web site <a href="https://code-robot.com" target="_blank">code-robot.com</a>.
+                        </div>
+                        <div class="modal-footer">
+                        	<div id="transmissionMsgs"/>
+                            <div class="modalFooterControls">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Marketing Modal -->
+            <div class="modal fade bs-example-modal-lg" id="marketingModal" tabindex="-1" role="dialog" aria-labelledby="marketingLabel" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="marketingTitle">
+                            	Message from the Code Robot Team
+                            </h4>
+                        </div>
+                        <div class="modal-body" id="marketingBody">
+                        	<div id="idLicMktgMsg_msg"/>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="modalFooterControls">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- User Msg Modal -->
+            <div class="modal fade bs-example-modal-lg" id="userMsgModal" tabindex="-1" role="dialog" aria-labelledby="userMsgLbl" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="userMsgTitle">
+                            	Special message for you, from the Code Robot Team
+                            </h4>
+                        </div>
+                        <div class="modal-body" id="userMsgBody">
+                        	<div id="idLicUserMsg_msg"/>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="modalFooterControls">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Delete invalid records Modal -->
+            <div class="modal fade bs-example-modal-lg" id="delInvRecModal" tabindex="-1" role="dialog" aria-labelledby="delInvMsgLbl" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">
+                                <span class="glyphicon glyphicon-alert" style="color:red" aria-hidden="true"></span> Invalid records found!
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            Code Robot has found invalid records in this project. This is usually caused by records referenced in the project being inaccessible or deleted from the org.
+                            <br/>
+                            Please click the "refresh" button below to remove these records from the project, or exit to do this at another time.
+                        </div>
+                        <div class="modal-footer">
+                            <div class="modalFooterControls">
+                                <button type="button" class="btn btn-primary" onclick="deleteInvalidRecords('', 'init', true);">Refresh</button>
+                                <button type="button" class="btn btn-default" onclick="backToProjects();">Back to Projects</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Component for managing code robot settings -->
+            <c:crSettings theProjectId="{!CodeRobot__CR_Project__c.Id}"/>
+            <!-- Component for managing setup configuration -->
+            <c:crSetup />
+            <!-- Component for the help modal -->
+            <c:crHelp theLocation="projectPage"/>
+            <!-- Component for the CRUD modal -->
+            <c:crPermissions />
+        </div> 
+    </body>
+   </html>
+</apex:page>

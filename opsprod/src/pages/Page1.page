@@ -1,0 +1,13 @@
+<apex:page docType="html-5.0"  controller="mycon" >
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockSection >
+               <!-- Date1: <apex:input type="date" value="{!date1}"/>
+                Date2: <apex:input type="date" value="{!date2}"/> -->
+                
+                Name: <apex:input type="text" value="{!name}" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:commandButton value="Display" action="{!display}" />
+    </apex:form>
+</apex:page>

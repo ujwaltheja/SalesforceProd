@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>AccountHierarchy__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>AccountHierarchy Page</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BuildMeAFunction__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>BuildMeAFunction Page</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BuildTaskMatches__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>BuildTaskMatches Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CreateTaskFromCase__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>CreateTaskFromCase Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DownloadKeywords__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>DownloadKeywords Page</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>FocusOnKeywords__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>FocusOnKeywords Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Generations__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Generations Page</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ImportTasks__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>ImportTasks Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IncludeClassesInSearch__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>IncludeClassesInSearch Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IncreaseSESLimits__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>IncreaseSESLimits Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>JiraAndVerion1__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>JiraAndVerion1 Page</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>KnownIssues__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>KnownIssues Page</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MVPApprover__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>MVPApprover Page</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PreventDownloadOfClasses__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>PreventDownloadOfClasses Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectCreation__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>ProjectCreation Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuickEntry__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>QuickEntry Page</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Request_Function__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Request Function Page</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SESGlobalCodeReviewer__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>SESGlobalCodeReviewer Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SESInstall__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>SESInstall Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SESMenu__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>SESMenu Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SESPrivateToGlobalTransfer__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>SESPrivateToGlobalTransfer Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SESTasksToGlobalTransfer__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>SESTasksToGlobalTransfer Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TransferPrivateToGlobalTaskOrg__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>TransferPrivateToGlobalTaskOrg Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UpdateCustomSettings__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>UpdateCustomSettings Page</label>
+        <length>100</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Help Files</label>
+    <visibility>Public</visibility>
+</CustomObject>

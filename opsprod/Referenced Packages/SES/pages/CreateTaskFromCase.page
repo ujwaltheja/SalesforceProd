@@ -1,0 +1,146 @@
+<apex:page id="CreateTaskFromCase" controller="ses.CreateTaskFromCase" TabStyle="ses__Task_Name__c">
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" />
+
+<style>
+
+    .NewLine{ 
+        margin-bottom: 2em; 
+    }
+    .spaces{
+        padding-left: 200px;
+    }
+
+	.btnHeight
+	{
+	height: 40px
+	}  
+	
+	.firstbtn{
+		margin-left: 120px !IMPORTANT; 
+	}
+	
+</style>
+
+<apex:Form >
+<apex:PageBlock >
+    <apex:outputPanel layout="block" styleclass="NewLine" />
+    <apex:outputPanel id="taskType" >
+    	<apex:pagemessages />	
+		<div class="fixed sidebar" style="background-color:transparent;" id="sidebarDiv">
+			<div class="sidebarModule recentItemModule" style="height: 30px;">
+			<div class="sidebarModuleHeader">
+			<h2>Cases</h2>
+		</div></div></div>
+		<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.CreateTaskFromCase__c}');" >  
+			<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+		</apex:commandLink>-->
+
+			<apex:pageBlockTable title="Cases" value="{!allTheseCases}" var="eachcs">
+				<apex:column headerValue="Subject" title="Subject" value="{!eachcs.PassCases.Subject}"/>	
+				<apex:column headerValue="Description" title="Description" value="{!eachcs.PassCases.Description}"/>    
+					<apex:column headerValue="Create Task" title="Create Task" >	
+						 <apex:inputcheckBox value="{!eachcs.selectCase}" />
+					</apex:column>	
+			</apex:pageBlockTable>	
+			<apex:outputPanel layout="block" styleclass="NewLine" />
+		    <apex:pageBlockSection title="Convert To Task" columns="1">
+		        <apex:pageBlockSectionItem >
+		        	<apex:outputPanel >
+			        	<apex:outputLabel value="You can select a Task Name record or a Lower Task record if you are creating a Sub Task record" />
+			        	<apex:outputPanel layout="block" styleclass="NewLine" />
+			        	<apex:outputLabel value="You can select a Sub Task record if you are creating a Lower Task record" />
+			        	<apex:outputPanel layout="block" styleclass="NewLine" />
+			        </apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				
+				<apex:pageBlockSection title="" columns="2">
+				<apex:pageBlockSectionItem >
+					<apex:outputPanel layout="block">
+						<div class="fixed sidebar" style="background-color:transparent;" id="sidebarDiv">
+							<div class="sidebarModule recentItemModule" style="height: 30px;">
+							<div class="sidebarModuleHeader">
+							<h2>Link To Existing Record</h2>
+						</div></div></div>
+						<apex:outputPanel layout="block" styleclass="NewLine" />
+						<apex:outputLabel value="Select a record if the new record will be linked to an existing selected record" />
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+				        	<apex:outputLabel value="Select Task Name record" /><apex:inputField value="{!subTk.ses__Parent_Task__c}" />			        	
+					</apex:pageBlockSectionItem>
+					<apex:outputPanel layout="block" styleclass="NewLine" />
+					<apex:pageBlockSectionItem >
+				        	<apex:outputLabel value="Select Sub Task record" /><apex:inputField value="{!lowerTk.ses__Sub_Task__c}" />
+					</apex:pageBlockSectionItem>
+					<apex:outputPanel layout="block" styleclass="NewLine" />
+					<apex:pageBlockSectionItem >
+				        	<apex:outputLabel value="Select Lower Task record" /><apex:inputField value="{!subTk.ses__Lower_Level_Sub_Task__c}" />
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+				<apex:outputPanel layout="block" styleclass="NewLine" />
+	            
+	            <apex:pageBlockSection columns="1">
+		            <apex:outputPanel >
+		            <apex:commandButton id="TaskName" styleclass="btnPrimary publishersharebutton btn" action="{!createNewTaskFunction}"  value="Create New Task Names" rerender="taskType,newtasks" >
+		                <apex:param name="newTaskType" assignTo="{!newTaskType}" value="TaskName" />
+		            </apex:commandButton> 
+		            
+		            <apex:outputPanel styleclass="spaces" />
+		            
+		            <apex:commandButton id="SubTaskName" styleclass="btnPrimary publishersharebutton btn" action="{!createNewTaskFunction}" value="Create New Sub Tasks" rerender="taskType,newtasks" >
+		                <apex:param name="newTaskType" assignTo="{!newTaskType}" value="SubTask" />
+		            </apex:commandButton> 
+		
+		            <apex:outputPanel styleclass="spaces" />
+		            
+		            <apex:commandButton id="LowerTaskName" styleclass="btnPrimary publishersharebutton btn" action="{!createNewTaskFunction}" value="Create New Lower Tasks" rerender="taskType,newtasks"  >
+		                <apex:param name="newTaskType" assignTo="{!newTaskType}" value="LowerTaskName" />
+		            </apex:commandButton>
+		            </apex:outputPanel>
+		        </apex:pageBlockSection> 
+		</apex:pageBlockSection>
+		
+	</apex:outputPanel>
+
+	    <apex:outputPanel id="newtasks" >
+		    <apex:pageBlockSection rendered="{!newTaskNames}" title="New Task Name Records Created" columns="1" > 
+		        <apex:pageBlockSectionItem >
+		        	<apex:outputPanel >
+			        	<apex:pageBlockTable value="{!allTks}" var="tk">
+							<apex:column headerValue="Link" title="Link" >    
+								 <apex:outputlink target="_blank" value="{!URLFOR('/'+tk.id)}" >{!tk.ses__Task_Caption__c}</apex:outputlink>
+							</apex:column>	
+						</apex:pageBlockTable>
+					</apex:outputPanel>	
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+									
+		    <apex:pageBlockSection rendered="{!newSubTasks}" title="New Sub Task Records Created" columns="1" > 
+		        <apex:pageBlockSectionItem >
+		        	<apex:outputPanel >
+			        	<apex:pageBlockTable value="{!allSubtks}" var="stk">
+							<apex:column headerValue="Link" title="Link" >    
+								 <apex:outputlink target="_blank" value="{!URLFOR('/'+stk.id)}" >{!stk.ses__Task_Caption__c}</apex:outputlink>
+							</apex:column>	
+						</apex:pageBlockTable>
+					</apex:outputPanel>	
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+	
+		    <apex:pageBlockSection rendered="{!newLowerTasks}" title="New Lower Task Records Created" columns="1" > 
+		        <apex:pageBlockSectionItem >
+		        	<apex:outputPanel >
+			        	<apex:pageBlockTable value="{!allLowtks}" var="ltk">
+							<apex:column headerValue="Link" title="Link" >    
+								 <apex:outputlink target="_blank" value="{!URLFOR('/'+ltk.id)}" >{!ltk.ses__Task_Caption__c}</apex:outputlink>
+							</apex:column>	
+						</apex:pageBlockTable>
+					</apex:outputPanel>	
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+		</apex:outputPanel>
+
+</apex:PageBlock>
+</apex:Form>	
+</apex:page>

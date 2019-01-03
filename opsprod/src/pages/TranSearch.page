@@ -1,0 +1,96 @@
+<apex:page controller="TransactSearchController" sidebar="false" tabStyle="Product2" >
+  
+  <apex:form >
+  <apex:pageMessages id="errors" />
+
+  <apex:pageBlock title="Find Me A Transaction!" mode="edit">
+
+  <table width="100%" border="0">
+  <tr>  
+    <td width="200" valign="top">
+
+      <apex:pageBlock title="Parameters" mode="edit" id="criteria">
+
+      <script type="text/javascript">
+      function doSearch() {
+        searchServer(
+          document.getElementById("AccountNumber").value,
+          );
+      }
+      </script> 
+
+      <apex:actionFunction name="searchServer" action="{!runSearch}" rerender="results,debug,errors">
+          <apex:param name="AccountNumber" value="" />
+      </apex:actionFunction>
+
+      <table cellpadding="2" cellspacing="2">
+      <tr>
+        <td style="font-weight:bold;">Account Number<br/>
+        <input type="text" id="AccountNumber" onkeyup="doSearch();"/>
+        </td>
+      </tr>
+      
+      </table>
+
+      </apex:pageBlock>
+
+    </td>
+    <td valign="top">
+
+    <apex:pageBlock mode="edit" id="results">
+
+        <apex:pageBlockTable value="{!transactions}" var="transaction">
+
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:commandLink value="Account Number" action="{!toggleSort}" rerender="results,debug">
+                        <apex:param name="sortField" value="Account_Number__c" assignTo="{!sortField}"/>
+                    </apex:commandLink>
+                </apex:facet>
+                <apex:outputField value="{!transaction.Account_Number__c}"/>
+            </apex:column>
+
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:commandLink value="Credit/Debit" action="{!toggleSort}" rerender="results,debug">
+                        <apex:param name="sortField" value="Credit_Debit__c" assignTo="{!sortField}"/>
+                    </apex:commandLink>
+                </apex:facet>
+                <apex:outputField value="{!transaction.Credit_Debit__c}"/>
+            </apex:column>
+
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:commandLink value="DateTimeStamp" action="{!toggleSort}" rerender="results,debug">
+                        <apex:param name="sortField" value="DateTimeStamp__c" assignTo="{!sortField}"/>
+                    </apex:commandLink>
+                </apex:facet>
+                <apex:outputField value="{!transaction.DateTimeStamp__c}"/>
+            </apex:column>
+
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:commandLink value="Transaction Type" action="{!toggleSort}" rerender="results,debug">
+                        <apex:param name="sortField" value="Transaction_Type__c" assignTo="{!sortField}"/>
+                    </apex:commandLink>
+                </apex:facet>
+                <apex:outputField value="{!transaction.Transaction_Type__c}"/>
+            </apex:column>
+
+        </apex:pageBlockTable>
+
+    </apex:pageBlock>
+
+    </td>
+  </tr>
+  </table>
+
+  <apex:pageBlock title="Debug - SOQL" id="debug">
+      <apex:outputText value="{!debugSoql}" />           
+  </apex:pageBlock>    
+
+  </apex:pageBlock>
+
+  </apex:form>
+
+</apex:page>

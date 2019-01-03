@@ -1,0 +1,112 @@
+<apex:page id="QuickEntry"  controller="ses.SearchFunction" TabStyle="ses__Task_Name__c" >
+<apex:includescript value="{!URLFOR($Resource.ses__SESjs)}" /> 
+<style>
+    .noSecondHeader{
+    	color: white !important;
+    }
+	.NewLine{
+        margin-bottom: 2em;
+    }
+	.LargeNewLine{
+        margin-bottom: 4em;
+    }
+</style>
+
+	<apex:Form >
+		
+		<apex:PageBlock >  
+			<apex:SectionHeader title="Quick Entry Task Matching" />
+			<!-- <apex:commandLink onclick="openImgLarge('/apex/ShowPopUp?q={!$Setup.Help_Files__c.QuickEntry__c}');" >  
+				<apex:image value="{!URLFOR($Resource.SESImages,'helpses.png')}" styleclass="helpOrb" />
+			</apex:commandLink> -->
+ 
+			 <apex:pageBlockSection title="SES Auto-Matching" columns="1">
+				 <apex:pageBlockSectionItem >
+				 	<apex:outputLabel value="Enter Task Short Description" />
+				 	<apex:inputTextArea value="{!searchEntry}" rows="6" cols="70" />
+				 </apex:pageBlockSectionItem>
+				 <apex:pageBlockSectionItem > 
+				 	<apex:outputLabel value="Enter Task Detail Description" />
+				 	<apex:inputTextArea value="{!searchDetailEntry}" rows="8" cols="70" />
+				 </apex:pageBlockSectionItem>
+				 <apex:pageBlockSectionItem >
+					 <apex:outputPanel >
+						 <apex:outputLabel value="Refresh Task Matches" /> 
+						 <apex:inputCheckBox value="{!refreshTaskMatching}"></apex:inputCheckBox>
+					 </apex:outputPanel>
+				 </apex:pageBlockSectionItem>
+				 <apex:pageBlockSectionItem >
+					 <apex:outputPanel >
+			             <apex:outputLabel value="Select Scope Of Search" />
+			             <apex:selectList value="{!ScopeSearch}" size="1" >
+			                 <apex:SelectOptions value="{!ScopeSearchOptions}" ></apex:SelectOptions>
+			             </apex:selectList>
+					 </apex:outputPanel>
+				 </apex:pageBlockSectionItem>
+				
+				<apex:outputPanel id="NewTaskNames" >
+					<apex:pagemessages />
+					<!-- if limits hit show link to increase limits -->
+				     	  <apex:outputpanel Rendered="{!apiLimitWarning}">
+				     	 <apex:outputLink target="_blank" Value="{!$Page.ses__UpdateCustomSettings}" id="UpdateCustomSettings" styleclass="btnPrimary publishersharebutton btn firstbtn" >
+				            Update Required Limits
+				            </apex:outputLink>
+				     	 </apex:outputPanel>
+					<apex:commandButton id="RefreshMatches" styleclass="btnPrimary publishersharebutton btn" action="{!refreshTaskMatchQuickEntry}"  value="Refresh Matches" rerender="NewTaskNames" status="RefreshMatchesStatus"><!--  -->
+						<apex:actionStatus startText="loading....." id="RefreshMatchesStatus" />
+					 </apex:commandButton>
+					<apex:outputLink target="_top"  id="NewTask" styleclass="btnPrimary publishersharebutton btn" value="{!$Page.ses__QuickEntry}"  >Start A New Task</apex:outputLink>
+					<apex:outputPanel layout="block" styleclass="NewLine" /> 
+				
+					<!-- Update New Class Names For Tasks -->
+					<apex:outputPanel rendered="{!displayNewTaskNames}">					
+						<apex:pageBlockTable title="Update New Class Name For Tasks" value="{!newTaskNames}" var="TaskFunctions">
+							<apex:outputLabel value="{!TaskFunctions.ses__Document_Relating_To_Function__c}" />	
+							<apex:column headerValue="New Class Name" title="New Class Name" >
+								<apex:inputField value="{!TaskFunctions.ses__Assoc_Class__c}" />
+							</apex:column>
+							<apex:column headerValue="Task ID" title="Task ID" >
+								<apex:outputlink target="_blank" value="/{!URLFOR(TaskFunctions.id)}" >Open New Task</apex:outputlink>
+							</apex:column>
+							<apex:column headerValue="Task Caption" title="Task Caption" value="{!TaskFunctions.ses__Task_Caption__c}"/>
+							<apex:column headerValue="New Class Method" title="New Class Method" value="{!TaskFunctions.ses__Assoc_Method__c}"/>
+							<apex:column headerValue="Function Class" title="Function Class" value="{!TaskFunctions.ses__Function_Class__c}"/>
+							<apex:column headerValue="Function Name" title="Function Name" value="{!TaskFunctions.ses__Function_Method__c}"/>
+							<apex:column headerValue="Link To Document" title="Link To Document" >
+								<apex:outputLink target="_blank" id="OpenDocument" value="{!URLFOR('/' + TaskFunctions.ses__Document_Relating_To_Function__c)}" >
+									Document
+								</apex:outputLink>
+							</apex:column>							
+						</apex:pageBlockTable>
+						<apex:commandButton id="UpdateClassOnTasks" styleclass="btnPrimary publishersharebutton btn" action="{!updateClassOnTasks}" value="Update Class Names On Tasks"  />			 
+					 </apex:outputPanel>
+					 
+					 <apex:outputPanel layout="block" styleclass="NewLine" /> 
+					 
+					 <!-- When page is loaded all functions that were matched and that are Global are shown below along with the details of the company/person who
+					 originally created the function. This is why companies/people will upload and share their functions in the community -->
+					 <apex:outputPanel rendered="{!displayGlobalFuncs}">
+					 	<apex:outputPanel layout="block" styleclass="LargeNewLine" />			 			
+			 			<div class="fixed sidebar" style="background-color:transparent;" id="sidebarDiv">
+							<div class="sidebarModule recentItemModule" style="height: 30px;">
+							<div class="sidebarModuleHeader">
+							<h2>Developers of Matched Code</h2>
+						</div></div></div>					 	 
+						<apex:pageBlockTable title="Global Functions Used To Build New Classes"  value="{!displayGlobalFuncsUsed}" var="func">
+							<apex:column headerValue="Class Method" title="Class Method" value="{!func.classMethod}"/>	
+							<apex:column headerValue="Company Name" title="Company Name" value="{!func.globalProfile.ses__CompanyName__c}"/>	
+							<apex:column headerValue="Logo" title="Logo" >
+								<apex:outputlink target="_blank" value="{!func.globalProfile.ses__Contributor_Website__c}"><apex:image value="{!func.globalProfile.ses__logo__c}" /></apex:outputlink>
+							</apex:column>
+							<apex:column headerValue="Website" title="Website" value="{!func.globalProfile.ses__Contributor_Website__c}"/>	
+							<apex:column headerValue="Profile" title="Profile" value="{!func.globalProfile.ses__Contributor_Short_Profile__c}"/>	
+							<apex:column headerValue="Name" title="Name" value="{!func.globalProfile.ses__Contributor_Name__c}"/>	
+							<apex:column headerValue="Main Telephone" title="Main Telephone" value="{!func.globalProfile.ses__Contributor_Main_Telephone__c}"/>	
+							<apex:column headerValue="2nd Telephone" title="2nd Telephone" value="{!func.globalProfile.ses__Contributor_Second_Telephone__c}"/>	
+						</apex:pageBlockTable>
+					</apex:outputPanel>	
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+		</apex:PageBlock>	
+	</apex:Form>
+</apex:page>

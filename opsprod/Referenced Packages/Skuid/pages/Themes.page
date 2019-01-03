@@ -1,0 +1,13 @@
+<apex:page standardStyleSheets="false"
+        standardController="skuid__Theme__c"
+        title="Skuid Themes" 
+        readonly="true"
+        sidebar="false"
+        showHeader="{!$Setup.Preferences__c.Show_SF_Header_Skuid_Core__c}"
+        docType="html-5.0"
+        extensions="skuid.ThemeComposerController">  
+    <head>
+        <title>Skuid Pages</title>
+    </head>
+    <c:page page="ThemeList"/>
+</apex:page>
